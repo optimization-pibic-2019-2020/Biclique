@@ -19,6 +19,9 @@ int main() {
 		graph->sort(); 
 		//graph->showGraphInformations(); // It is used to see all the informations of the input Graph
 		Solution s(graph);
+		s.generateRandomSolution();
+		cout << "Initial Random Solution:" << endl;
+		s.printSolution();
 	}
 	catch (std::exception &e) {
 		cerr << e.what();

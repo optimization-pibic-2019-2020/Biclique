@@ -49,6 +49,8 @@ private:
 
 public:
 	Solution(Graph *graph);
+	void checkFreePartition();
+	void checkNonFreePartition();
 	void moveFreeToSolutionPartition(int u, int code);
 	void moveFreeToNonFreePartition(int u, int code);
  	void moveSolutionToFreePartition(int u, int code);
@@ -57,5 +59,7 @@ public:
 	bool isMaximal(int code);
 	void addRandomVertex(int code);
 	bool checkIntegrity();
+	bool checkMu();
 	void generateRandomSolution();
+	void printSolution();
 };
