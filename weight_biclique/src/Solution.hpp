@@ -61,5 +61,6 @@ public:
 	bool checkIntegrity();
 	bool checkMu();
 	void generateRandomSolution();
+	void restartSolution();
 	void printSolution();
 };

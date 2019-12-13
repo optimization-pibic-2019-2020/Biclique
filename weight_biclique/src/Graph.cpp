@@ -31,11 +31,27 @@ vector<vector<int>> Graph::get_adjList() {
 	return adjList;
 }
 
+void Graph::addEdges(int u, int t) {
+	adjList[u].push_back(t);
+	adjList[t].push_back(u);
+	return;
+}
+
+void Graph::removeEdges(int u, int t) {
+	return;
+}
+
+void Graph::sort() {
+	for(int idx = 0; idx < v; idx++) {
+		std::sort(adjList[idx].begin(), adjList[idx].end());
+	}
+}
+
 void Graph::readEdges() {
 	int u, t;
 	for(int idx = 0; idx < e; idx++) {
 		cin >> u >> t;
-		addEdges(u, t);
+		addEdges(u - 1, t - 1);
 	}
 }
 
@@ -67,20 +83,4 @@ void Graph::showWeight() {
 		cout << "Vertex: " << idx << " Weight: " << weight[idx] << endl;
 	}
 	cout << endl;
-}
-
-void Graph::addEdges(int u, int t) {
-	adjList[u].push_back(t);
-	adjList[t].push_back(u);
-	return;
-}
-
-void Graph::removeEdges(int u, int t) {
-	return;
-}
-
-void Graph::sort() {
-	for(int idx = 0; idx < v; idx++) {
-		std::sort(adjList[idx].begin(), adjList[idx].end());
-	}
 }
