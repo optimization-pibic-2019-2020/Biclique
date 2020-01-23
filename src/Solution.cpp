@@ -1,7 +1,8 @@
 #include <bits/stdc++.h>
 #include <random>
 #include "Solution.hpp"
-
+#define NDEBUG
+#include <assert.h>
 using namespace std;
 
 Solution::Solution(Graph *graph) { // initialize all the variables and vectors
@@ -48,6 +49,16 @@ Solution::Solution(Graph *graph) { // initialize all the variables and vectors
 bool Solution::isMaximal(int code) { // code == 0 for solution A and code != 0 for solution B
 	if(code == 0) return free_size_A == 0;
 	else return free_size_B == 0; 
+}
+
+bool Solution::checkBicliqueSize() {
+	if(solution_size_A == solution_size_B) return true;
+
+	return false;
+}
+
+int Solution::getTotalWeight() {
+	return total_weight;
 }
 
 void Solution::moveFreeToSolutionPartition(int u, int code) { // code == 0 for solution A and code != 0 for solution B
@@ -274,18 +285,51 @@ void Solution::checkFreePartition() {
 void Solution::checkNonFreePartition() { 
 	int vertex, u, V = graph->getV();
 	
-	for(vertex = solution_size_A + free_size_A; vertex < V; vertex++) { // verify the free partition of solution A
+	for(vertex = solution_size_A + free_size_A; vertex < V; vertex++) { // verify the non-free partition of solution A
 		u = solution_A[vertex];
 		if(tightness_A[u] == 0 && tightness_B[u] == solution_size_B) {
 			moveNonFreeToFreePartition(u, 0);
-			vertex--;  
+			if(vertex >= solution_size_A + free_size_A) vertex--;  
 		}
 	}
-	for(vertex = solution_size_B + free_size_B; vertex < V; vertex++) { // verify the free partition of solution A
+	for(vertex = solution_size_B + free_size_B; vertex < V; vertex++) { // verify the non-free partition of solution B
 		u = solution_B[vertex];
 		if(tightness_B[u] == 0 && tightness_A[u] == solution_size_A) {
 			moveNonFreeToFreePartition(u, 1);  
-			vertex--;
+			if(vertex >= solution_size_B + free_size_B) vertex--; 
+		}
+	}
+}
+
+// remove a vertex from solution A or B
+void Solution::removeVertex(int u, int code) { // code == 0 for solution A and code != 0 for solution B
+	int weight_u = graph->get_weight(u);
+	total_weight -= weight_u;
+
+	moveSolutionToFreePartition(u, code);
+
+	vector<int> adj_l = graph->get_vertex_adjList(u);
+
+	if(code == 0) {
+		for(int neighbor : adj_l) {
+			tightness_A[neighbor]--;
+			mu_A[neighbor] += weight_u;
+
+			// if the neighbor becomes free
+			if(tightness_A[neighbor] == 0 && tightness_B[neighbor] == solution_size_B) {
+				moveNonFreeToFreePartition(neighbor, code);
+			}
+		}
+	}
+	else {
+		for(int neighbor : adj_l) {
+			tightness_B[neighbor]--;
+			mu_B[neighbor] += weight_u;
+
+			// if the neighbor becomes free
+			if(tightness_B[neighbor] == 0 && tightness_A[neighbor] == solution_size_A) {
+				moveNonFreeToFreePartition(neighbor, code);
+			}
 		}
 	}
 }
@@ -358,7 +402,11 @@ bool Solution::checkIntegrity() { // checks the integrity of the solution
 		int vertex_u = solution_A[idx];
 		int neighbor_amount_B = 0; // variable to check the amount of neighbors in solution B
 
-		if(tightness_A[vertex_u] > 0 || tightness_B[vertex_u] != solution_size_B) return false;
+		if(tightness_A[vertex_u] > 0 || tightness_B[vertex_u] != solution_size_B) {
+			
+			return false;
+		}
+
 
 		// verify if every vertex in solution A is disconnected to all the vertices in solution A
 		// and if every vertex in solution B is connected to every vertex in solution A 
@@ -480,7 +528,7 @@ bool Solution::checkMu() { // check if mu_A and mu_B are correct
 }
 
 void Solution::generateRandomSolution()  {
-	while(free_size_A != 0 && free_size_B != 0) {
+	while(free_size_A != 0 && free_size_B != 0) { // can generate a solution with an extra vertex in solution A
 		addRandomVertex(0); // add a random vertex in solution A
 		addRandomVertex(1); // add a random vertex in solution B
 		assert(checkIntegrity());
@@ -517,6 +565,144 @@ void Solution::restartSolution() {
 	}
 }
 
+void Solution::swap1_1(int vertex, int code) { // code == 0 for partition A and code != 0 for partition B
+	vector<int> adjList = graph->get_vertex_adjList(vertex);
+	int new_position;
+
+	if(code == 0) {
+		for(int neighbor : adjList) {
+			if(position_A[neighbor] < solution_size_A) {
+				// move the neighbor to the nonFreePartition B
+				removeVertex(neighbor, code);
+				moveFreeToNonFreePartition(neighbor, code);
+				// move the vertex to the solution B
+				addVertex(vertex, code);
+				break;
+			}
+		}
+	}
+	else {
+		for(int neighbor : adjList) {
+			if(position_B[neighbor] < solution_size_B) {
+				// move the neighbor to the nonFreePartition B
+				removeVertex(neighbor, code);
+				moveFreeToNonFreePartition(neighbor, code);
+				// move the vertex to the solution B
+				addVertex(vertex, code);
+				break;
+			}
+		}
+	}
+
+	checkFreePartition();
+	checkNonFreePartition();
+}
+
+bool Solution::oneImprovement(int code) { // code == 0 for partition A and code != 0 for partition B
+	int V = graph->getV(), vertex, best_vertex, improvement = 0; // improvement means how much weight the partition will get after the swap
+	if(code == 0) {
+		for(int iter = solution_size_A + free_size_A; iter < V; iter++) {
+			vertex = solution_A[iter];
+			if(tightness_A[vertex] == 1 && tightness_B[vertex] == solution_size_B && mu_A[vertex] > 0) { // possible candidate for swap(1,1)
+				if(mu_A[vertex] > improvement) {
+					best_vertex = vertex;
+					improvement = mu_A[vertex];
+				} 
+			}
+		}
+	}
+	else {
+		for(int iter = solution_size_B + free_size_B; iter < V; iter++) {
+			vertex = solution_B[iter];
+			if(tightness_B[vertex] == 1 && tightness_A[vertex] == solution_size_A && mu_B[vertex] > 0) { // possible candidate for swap(1,1)
+				if(mu_B[vertex] > improvement) {
+					best_vertex = vertex;
+					improvement = mu_B[vertex];
+				} 
+			}
+		}
+	}
+
+	if(improvement > 0) {
+		swap1_1(best_vertex, code);
+		return true;
+	}
+
+	return false;
+}
+
+bool Solution::add() { // verify if can add a pair of vertices to the solution (one to partition A and one to partition B)
+	if(free_size_A > 0 && free_size_B > 0) {
+		vector<int> adjListTemp;
+		int vertex1, vertex2, best_improvement = 0;
+		for(int u = solution_size_A; u < solution_size_A + free_size_A; u++) { // check if there is a best pair to improve the solution
+			adjListTemp = graph->get_vertex_adjList(u);
+			for(int t : adjListTemp) {
+				// check if there is an edge between these free vertices and if it is the best improvement
+				if(position_B[t] >= solution_size_B && position_B[t] < solution_size_B + free_size_B && best_improvement < mu_A[u] + mu_B[t]) {
+					vertex1 = u;
+					vertex2 = t;
+					best_improvement = mu_A[u] + mu_B[t];
+				}
+			}
+		}
+
+		if(best_improvement > 0) {
+			addVertex(vertex1, 0);
+			addVertex(vertex2, 1);
+			checkFreePartition();
+			return true;
+		}
+	}
+	return false;
+}
+
+void Solution::VND() { // run VND iterations
+	do {
+		while(oneImprovement(0)); // do oneImprovement with partition A until maximize it 
+		while(oneImprovement(1)); // do oneImprovement with partition B until maximize it
+	}while(add());
+}
+
+void Solution::shake(int z) {
+	random_device device;
+	mt19937 generator(device());
+
+	int vertices_to_remove_A = solution_size_A / z; // the quantity of vertices to remove in solution A
+	int vertices_to_remove_B = solution_size_B / z; // the quantity of vertices to remove in solution B
+	int free_pos, vertex;
+
+	while(vertices_to_remove_A--) {
+		// generate a random number between [0, free_size_A - 1]
+		uniform_int_distribution<int> distribution(0, solution_size_A - 1);
+		free_pos = distribution(generator);
+		vertex = solution_A[free_pos];
+		removeVertex(vertex, 0); 
+	}
+	while(vertices_to_remove_B--) {
+		// generate a random number between [0, free_size_B - 1]
+		uniform_int_distribution<int> distribution(0, solution_size_B - 1);
+		free_pos = distribution(generator);
+		vertex = solution_B[free_pos];
+		removeVertex(vertex, 1); 
+	}
+	checkNonFreePartition();
+}
+
+void Solution::balanceBiclique() { // remove the vertex with the worst weight in solution A to balance the Biclique
+	int minimum_weight = solution_A[0], vertex_to_remove = solution_A[0], actual_vertex;
+	for(int iter = 1; iter < solution_size_A; iter++) {
+		actual_vertex = solution_A[iter];
+		if(mu_A[actual_vertex] < minimum_weight) {
+			vertex_to_remove = actual_vertex;
+			minimum_weight = mu_A[actual_vertex];
+		}
+	}
+
+	removeVertex(vertex_to_remove, 0); // remove the worst vertex in solution A
+	checkNonFreePartition();
+}
+
 void Solution::printSolution() {
 	cout << "Partition A:" << endl;
 	for(int idx = 0; idx < solution_size_A; idx++) {
@@ -526,5 +712,5 @@ void Solution::printSolution() {
 	for(int idx = 0; idx < solution_size_B; idx++) {
 		cout << solution_B[idx] << " ";
 	}
-	cout << endl;
+	cout << "\nTotal Weight: " << total_weight << "\n" << endl;
 }

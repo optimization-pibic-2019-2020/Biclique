@@ -49,6 +49,8 @@ private:
 
 public:
 	Solution(Graph *graph);
+	int getTotalWeight();
+	bool checkBicliqueSize();
 	void checkFreePartition();
 	void checkNonFreePartition();
 	void moveFreeToSolutionPartition(int u, int code);
@@ -56,11 +58,18 @@ public:
  	void moveSolutionToFreePartition(int u, int code);
 	void moveNonFreeToFreePartition(int u, int code); 
 	void addVertex(int u, int code);
+	void removeVertex(int u, int code);
 	bool isMaximal(int code);
 	void addRandomVertex(int code);
 	bool checkIntegrity();
 	bool checkMu();
 	void generateRandomSolution();
 	void restartSolution();
+	void swap1_1(int vertex, int code);
+	bool oneImprovement(int code);
+	bool add();
+	void VND();
+	void shake(int z);
+	void balanceBiclique();
 	void printSolution();
 };
