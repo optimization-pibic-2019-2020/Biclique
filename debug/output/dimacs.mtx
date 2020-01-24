@@ -1,0 +1,735 @@
+C1000-9.mtx-2	Initial Random Solution:
+Partition A:
+23 857 654 811 
+Partition B:
+604 62 53 896 
+Total Weight: 368
+
+Final Solution:
+Partition A:
+751 857 635 222 
+Partition B:
+604 62 53 896 
+Total Weight: 488
+
+
+C125-9.mtx-2	Initial Random Solution:
+Partition A:
+27 37 4 
+Partition B:
+41 62 114 
+Total Weight: 291
+
+Final Solution:
+Partition A:
+111 104 77 
+Partition B:
+41 62 114 
+Total Weight: 515
+
+
+C250-9.mtx-2	Initial Random Solution:
+Partition A:
+124 91 
+Partition B:
+182 64 
+Total Weight: 465
+
+Final Solution:
+Partition A:
+198 175 157 
+Partition B:
+195 186 223 
+Total Weight: 940
+
+
+C500-9.mtx-2	Initial Random Solution:
+Partition A:
+178 463 285 
+Partition B:
+337 228 232 
+Total Weight: 529
+
+Final Solution:
+Partition A:
+178 174 176 
+Partition B:
+379 398 175 
+Total Weight: 1086
+
+
+MANN-a27.mtx-2	Initial Random Solution:
+Partition A:
+196 15 
+Partition B:
+95 16 
+Total Weight: 326
+
+Final Solution:
+Partition A:
+196 197 195 
+Partition B:
+193 194 192 
+Total Weight: 1173
+
+
+MANN-a9.mtx-2	Initial Random Solution:
+Partition A:
+41 40 39 
+Partition B:
+29 27 28 
+Total Weight: 210
+
+Final Solution:
+Partition A:
+41 40 39 
+Partition B:
+29 27 28 
+Total Weight: 210
+
+
+brock200-1.mtx-2	Initial Random Solution:
+Partition A:
+9 6 92 49 
+Partition B:
+84 63 32 136 
+Total Weight: 479
+
+Final Solution:
+Partition A:
+172 155 183 174 
+Partition B:
+101 189 162 173 
+Total Weight: 1317
+
+
+brock200-2.mtx-2	Initial Random Solution:
+Partition A:
+176 55 26 146 
+Partition B:
+102 122 190 
+Total Weight: 824
+
+Final Solution:
+Partition A:
+146 193 178 134 
+Partition B:
+190 163 138 128 
+Total Weight: 1278
+
+
+brock200-3.mtx-2	Initial Random Solution:
+Partition A:
+139 180 114 
+Partition B:
+64 192 
+Total Weight: 694
+
+Final Solution:
+Partition A:
+191 199 162 180 
+Partition B:
+186 197 192 175 
+Total Weight: 1490
+
+
+brock200-4.mtx-2	Initial Random Solution:
+Partition A:
+10 86 63 127 
+Partition B:
+192 6 141 44 
+Total Weight: 677
+
+Final Solution:
+Partition A:
+155 199 185 136 
+Partition B:
+192 44 138 180 
+Total Weight: 1237
+
+
+brock400-1.mtx-2	Initial Random Solution:
+Partition A:
+368 55 228 189 
+Partition B:
+394 102 284 109 
+Total Weight: 937
+
+Final Solution:
+Partition A:
+368 55 189 182 
+Partition B:
+394 109 157 90 
+Total Weight: 1152
+
+
+brock400-2.mtx-2	Initial Random Solution:
+Partition A:
+348 333 204 66 
+Partition B:
+85 306 79 345 
+Total Weight: 774
+
+Final Solution:
+Partition A:
+197 333 196 359 
+Partition B:
+85 306 79 345 
+Total Weight: 1108
+
+
+brock400-3.mtx-2	Initial Random Solution:
+Partition A:
+134 142 280 225 
+Partition B:
+75 390 274 13 
+Total Weight: 741
+
+Final Solution:
+Partition A:
+134 142 170 148 
+Partition B:
+187 390 359 387 
+Total Weight: 1325
+
+
+brock400-4.mtx-2	Initial Random Solution:
+Partition A:
+392 373 200 
+Partition B:
+211 372 122 
+Total Weight: 676
+
+Final Solution:
+Partition A:
+193 391 397 126 
+Partition B:
+396 197 192 116 
+Total Weight: 1416
+
+
+c-fat200-1.mtx-2	Initial Random Solution:
+Partition A:
+144 68 
+Partition B:
+180 
+Total Weight: 395
+
+Final Solution:
+Partition A:
+181 
+Partition B:
+180 
+Total Weight: 363
+
+
+c-fat200-2.mtx-2	Initial Random Solution:
+Partition A:
+118 
+Partition B:
+100 
+Total Weight: 220
+
+Final Solution:
+Partition A:
+191 11 
+Partition B:
+190 192 
+Total Weight: 588
+
+
+c-fat200-5.mtx-2	Initial Random Solution:
+Partition A:
+161 5 
+Partition B:
+111 
+Total Weight: 280
+
+Final Solution:
+Partition A:
+196 23 
+Partition B:
+195 197 
+Total Weight: 615
+
+
+c-fat500-1.mtx-2	Initial Random Solution:
+Partition A:
+67 145 
+Partition B:
+386 
+Total Weight: 401
+
+Final Solution:
+Partition A:
+387 
+Partition B:
+386 
+Total Weight: 375
+
+
+c-fat500-10.mtx-2	Initial Random Solution:
+Partition A:
+480 86 
+Partition B:
+479 
+Total Weight: 248
+
+Final Solution:
+Partition A:
+198 
+Partition B:
+399 
+Total Weight: 399
+
+
+c-fat500-2.mtx-2	Initial Random Solution:
+Partition A:
+394 472 
+Partition B:
+393 
+Total Weight: 462
+
+Final Solution:
+Partition A:
+394 
+Partition B:
+393 
+Total Weight: 389
+
+
+c-fat500-5.mtx-2	Initial Random Solution:
+Partition A:
+309 
+Partition B:
+117 
+Total Weight: 228
+
+Final Solution:
+Partition A:
+198 24 
+Partition B:
+197 199 
+Total Weight: 622
+
+
+gen200-p0-9-44.mtx-2	Initial Random Solution:
+Partition A:
+73 6 194 
+Partition B:
+53 131 162 
+Total Weight: 625
+
+Final Solution:
+Partition A:
+34 194 90 
+Partition B:
+189 162 183 
+Total Weight: 858
+
+
+gen200-p0-9-55.mtx-2	Initial Random Solution:
+Partition A:
+135 51 117 24 
+Partition B:
+88 153 62 192 
+Total Weight: 830
+
+Final Solution:
+Partition A:
+135 51 117 24 
+Partition B:
+88 153 62 192 
+Total Weight: 830
+
+
+gen400-p0-9-55.mtx-2	Initial Random Solution:
+Partition A:
+332 156 103 
+Partition B:
+186 49 22 
+Total Weight: 654
+
+Final Solution:
+Partition A:
+332 156 103 178 
+Partition B:
+186 384 393 258 
+Total Weight: 1198
+
+
+gen400-p0-9-65.mtx-2	Initial Random Solution:
+Partition A:
+253 120 156 
+Partition B:
+90 91 331 
+Total Weight: 647
+
+Final Solution:
+Partition A:
+372 120 398 
+Partition B:
+393 396 192 
+Total Weight: 1077
+
+
+gen400-p0-9-75.mtx-2	Initial Random Solution:
+Partition A:
+96 182 180 111 
+Partition B:
+48 279 78 116 
+Total Weight: 898
+
+Final Solution:
+Partition A:
+96 182 180 334 
+Partition B:
+165 367 78 383 
+Total Weight: 1193
+
+
+hamming6-2.mtx-2	Initial Random Solution:
+Partition A:
+4 0 
+Partition B:
+44 45 
+Total Weight: 97
+
+Final Solution:
+Partition A:
+62 63 
+Partition B:
+44 45 
+Total Weight: 218
+
+
+hamming6-4.mtx-2	Initial Random Solution:
+Partition A:
+16 51 17 19 
+Partition B:
+14 46 44 45 
+Total Weight: 260
+
+Final Solution:
+Partition A:
+16 51 17 19 
+Partition B:
+14 46 44 45 
+Total Weight: 260
+
+
+hamming8-2.mtx-2	Initial Random Solution:
+Partition A:
+241 225 
+Partition B:
+115 99 
+Total Weight: 284
+
+Final Solution:
+Partition A:
+191 190 
+Partition B:
+127 126 
+Total Weight: 638
+
+
+hamming8-4.mtx-2	Initial Random Solution:
+Partition A:
+70 246 231 103 119 38 118 110 98 102 100 230 
+Partition B:
+139 155 154 147 159 187 11 25 219 27 137 153 
+Total Weight: 2302
+
+Final Solution:
+Partition A:
+70 246 230 103 119 38 118 110 98 102 100 126 
+Partition B:
+139 155 154 147 159 187 153 185 219 27 137 171 
+Total Weight: 2717
+
+
+johnson8-2-4.mtx-2	Initial Random Solution:
+Partition A:
+17 8 1 
+Partition B:
+22 11 4 
+Total Weight: 69
+
+Final Solution:
+Partition A:
+17 19 15 
+Partition B:
+22 26 24 
+Total Weight: 129
+
+
+keller4.mtx-2	Initial Random Solution:
+Partition A:
+39 36 37 78 43 82 66 74 
+Partition B:
+88 154 141 153 108 103 104 142 
+Total Weight: 1464
+
+Final Solution:
+Partition A:
+39 36 37 78 43 82 66 74 
+Partition B:
+88 154 141 153 108 142 104 155 
+Total Weight: 1516
+
+
+p-hat300-3.mtx-2	Initial Random Solution:
+Partition A:
+4 36 120 199 
+Partition B:
+79 276 237 235 
+Total Weight: 594
+
+Final Solution:
+Partition A:
+4 36 199 156 
+Partition B:
+79 276 195 155 
+Total Weight: 908
+
+
+p-hat500-2.mtx-2	Initial Random Solution:
+Partition A:
+378 93 285 177 
+Partition B:
+34 496 74 332 
+Total Weight: 877
+
+Final Solution:
+Partition A:
+378 153 177 303 
+Partition B:
+398 496 122 391 
+Total Weight: 1226
+
+
+p-hat500-3.mtx-2	Initial Random Solution:
+Partition A:
+256 458 294 170 
+Partition B:
+332 103 309 376 
+Total Weight: 906
+
+Final Solution:
+Partition A:
+170 357 175 198 
+Partition B:
+184 103 391 365 
+Total Weight: 1351
+
+
+san200-0-7-1.mtx-2	Initial Random Solution:
+Partition A:
+50 189 173 
+Partition B:
+58 118 46 
+Total Weight: 640
+
+Final Solution:
+Partition A:
+50 189 173 152 
+Partition B:
+46 118 198 179 
+Total Weight: 1113
+
+
+san200-0-7-2.mtx-2	Initial Random Solution:
+Partition A:
+40 108 54 
+Partition B:
+46 63 74 
+Total Weight: 391
+
+Final Solution:
+Partition A:
+40 108 62 123 196 54 39 53 57 
+Partition B:
+164 138 149 154 180 121 46 69 74 
+Total Weight: 1864
+
+
+san200-0-9-1.mtx-2	Initial Random Solution:
+Partition A:
+174 28 38 
+Partition B:
+46 155 32 
+Total Weight: 479
+
+Final Solution:
+Partition A:
+156 196 182 
+Partition B:
+46 155 145 
+Total Weight: 886
+
+
+san200-0-9-2.mtx-2	Initial Random Solution:
+Partition A:
+169 43 83 
+Partition B:
+118 87 125 
+Total Weight: 631
+
+Final Solution:
+Partition A:
+169 43 83 
+Partition B:
+118 125 190 
+Total Weight: 734
+
+
+san200-0-9-3.mtx-2	Initial Random Solution:
+Partition A:
+50 29 117 
+Partition B:
+194 69 61 
+Total Weight: 526
+
+Final Solution:
+Partition A:
+99 199 144 
+Partition B:
+194 69 61 
+Total Weight: 772
+
+
+san400-0-5-1.mtx-2	Initial Random Solution:
+Partition A:
+27 3 196 231 305 390 
+Partition B:
+215 319 88 26 53 115 
+Total Weight: 980
+
+Final Solution:
+Partition A:
+27 3 196 231 305 390 
+Partition B:
+215 319 88 26 53 115 
+Total Weight: 980
+
+
+san400-0-7-1.mtx-2	Initial Random Solution:
+Partition A:
+121 297 282 393 
+Partition B:
+281 186 349 115 
+Total Weight: 1032
+
+Final Solution:
+Partition A:
+393 297 389 366 373 
+Partition B:
+115 186 136 374 306 
+Total Weight: 1545
+
+
+san400-0-7-2.mtx-2	Initial Random Solution:
+Partition A:
+95 129 66 332 140 86 
+Partition B:
+326 122 36 367 85 9 
+Total Weight: 1205
+
+Final Solution:
+Partition A:
+86 168 66 332 140 353 136 
+Partition B:
+326 122 36 367 85 9 212 
+Total Weight: 1452
+
+
+san400-0-7-3.mtx-2	Initial Random Solution:
+Partition A:
+288 269 332 232 205 
+Partition B:
+235 125 99 95 161 
+Total Weight: 851
+
+Final Solution:
+Partition A:
+149 205 113 366 357 391 287 46 86 69 393 288 150 70 26 53 148 232 
+Partition B:
+384 161 99 95 345 294 191 45 59 78 278 349 235 318 248 48 71 186 
+Total Weight: 3679
+
+
+san400-0-9-1.mtx-2	Initial Random Solution:
+Partition A:
+299 337 
+Partition B:
+181 379 
+Total Weight: 600
+
+Final Solution:
+Partition A:
+191 399 336 
+Partition B:
+398 389 148 
+Total Weight: 1067
+
+
+sanr200-0-7.mtx-2	Initial Random Solution:
+Partition A:
+150 11 83 
+Partition B:
+35 135 134 
+Total Weight: 554
+
+Final Solution:
+Partition A:
+168 185 195 3 
+Partition B:
+181 184 191 52 
+Total Weight: 1167
+
+
+sanr200-0-9.mtx-2	Initial Random Solution:
+Partition A:
+131 28 129 
+Partition B:
+187 10 0 
+Total Weight: 491
+
+Final Solution:
+Partition A:
+131 28 160 
+Partition B:
+187 127 48 
+Total Weight: 687
+
+
+sanr400-0-5.mtx-2	Initial Random Solution:
+Partition A:
+87 209 267 178 232 
+Partition B:
+193 45 46 101 
+Total Weight: 767
+
+Final Solution:
+Partition A:
+197 333 178 395 
+Partition B:
+193 265 161 360 
+Total Weight: 1290
+
+
+sanr400-0-7.mtx-2	Initial Random Solution:
+Partition A:
+271 283 148 188 
+Partition B:
+139 273 364 198 
+Total Weight: 1072
+
+Final Solution:
+Partition A:
+161 144 148 193 
+Partition B:
+184 198 364 142 
+Total Weight: 1342
+
+
