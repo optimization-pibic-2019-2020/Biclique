@@ -403,7 +403,7 @@ bool Solution::checkIntegrity() { // checks the integrity of the solution
 		int neighbor_amount_B = 0; // variable to check the amount of neighbors in solution B
 
 		if(tightness_A[vertex_u] > 0 || tightness_B[vertex_u] != solution_size_B) {
-			
+			cout << "Tightness error" << endl;
 			return false;
 		}
 
@@ -430,7 +430,10 @@ bool Solution::checkIntegrity() { // checks the integrity of the solution
 		int vertex_u = solution_B[idx];
 		int neighbor_amount_A = 0; // variable to check the amount of neighbors in solution A
 
-		if(tightness_B[vertex_u] > 0 || tightness_A[vertex_u] != solution_size_A) return false;
+		if(tightness_B[vertex_u] > 0 || tightness_A[vertex_u] != solution_size_A) {
+			cout << "Tightness error" << endl;
+			return false;
+		}
 
 		// verify if every vertex in solution B is disconnected to all the vertices in solution B
 		// and if every vertex in solution A is connected to every vertex in solution B 
@@ -567,15 +570,14 @@ void Solution::restartSolution() {
 
 void Solution::swap1_1(int vertex, int code) { // code == 0 for partition A and code != 0 for partition B
 	vector<int> adjList = graph->get_vertex_adjList(vertex);
-	int new_position;
 
 	if(code == 0) {
 		for(int neighbor : adjList) {
 			if(position_A[neighbor] < solution_size_A) {
-				// move the neighbor to the nonFreePartition B
+				// move the neighbor to the nonFreePartition A
 				removeVertex(neighbor, code);
 				moveFreeToNonFreePartition(neighbor, code);
-				// move the vertex to the solution B
+				// move the vertex to the solution A
 				addVertex(vertex, code);
 				break;
 			}
@@ -603,22 +605,18 @@ bool Solution::oneImprovement(int code) { // code == 0 for partition A and code 
 	if(code == 0) {
 		for(int iter = solution_size_A + free_size_A; iter < V; iter++) {
 			vertex = solution_A[iter];
-			if(tightness_A[vertex] == 1 && tightness_B[vertex] == solution_size_B && mu_A[vertex] > 0) { // possible candidate for swap(1,1)
-				if(mu_A[vertex] > improvement) {
-					best_vertex = vertex;
-					improvement = mu_A[vertex];
-				} 
+			if(tightness_A[vertex] == 1 && tightness_B[vertex] == solution_size_B && mu_A[vertex] > improvement) { // possible candidate for swap(1,1)
+				best_vertex = vertex;
+				improvement = mu_A[vertex];
 			}
 		}
 	}
 	else {
 		for(int iter = solution_size_B + free_size_B; iter < V; iter++) {
 			vertex = solution_B[iter];
-			if(tightness_B[vertex] == 1 && tightness_A[vertex] == solution_size_A && mu_B[vertex] > 0) { // possible candidate for swap(1,1)
-				if(mu_B[vertex] > improvement) {
-					best_vertex = vertex;
-					improvement = mu_B[vertex];
-				} 
+			if(tightness_B[vertex] == 1 && tightness_A[vertex] == solution_size_A && mu_B[vertex] > improvement) { // possible candidate for swap(1,1)
+				best_vertex = vertex;
+				improvement = mu_B[vertex];
 			}
 		}
 	}
@@ -634,8 +632,9 @@ bool Solution::oneImprovement(int code) { // code == 0 for partition A and code 
 bool Solution::add() { // verify if can add a pair of vertices to the solution (one to partition A and one to partition B)
 	if(free_size_A > 0 && free_size_B > 0) {
 		vector<int> adjListTemp;
-		int vertex1, vertex2, best_improvement = 0;
-		for(int u = solution_size_A; u < solution_size_A + free_size_A; u++) { // check if there is a best pair to improve the solution
+		int u, vertex1, vertex2, best_improvement = 0;
+		for(int iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // check if there is a best pair to improve the solution
+			u = solution_A[iter];
 			adjListTemp = graph->get_vertex_adjList(u);
 			for(int t : adjListTemp) {
 				// check if there is an edge between these free vertices and if it is the best improvement
@@ -659,7 +658,7 @@ bool Solution::add() { // verify if can add a pair of vertices to the solution (
 
 void Solution::VND() { // run VND iterations
 	do {
-		while(oneImprovement(0)); // do oneImprovement with partition A until maximize it 
+		while(oneImprovement(0)); // do oneImprovement with partition A until maximize it
 		while(oneImprovement(1)); // do oneImprovement with partition B until maximize it
 	}while(add());
 }
@@ -668,18 +667,18 @@ void Solution::shake(int z) {
 	random_device device;
 	mt19937 generator(device());
 
-	int vertices_to_remove_A = solution_size_A / z; // the quantity of vertices to remove in solution A
-	int vertices_to_remove_B = solution_size_B / z; // the quantity of vertices to remove in solution B
+	int vertices_to_remove_A = 1; // the quantity of vertices to remove in solution A
+	int vertices_to_remove_B = 1 ; // the quantity of vertices to remove in solution B
 	int free_pos, vertex;
 
-	while(vertices_to_remove_A--) {
+	while(vertices_to_remove_A-- && solution_size_A > 0) {
 		// generate a random number between [0, free_size_A - 1]
 		uniform_int_distribution<int> distribution(0, solution_size_A - 1);
 		free_pos = distribution(generator);
 		vertex = solution_A[free_pos];
 		removeVertex(vertex, 0); 
 	}
-	while(vertices_to_remove_B--) {
+	while(vertices_to_remove_B-- && solution_size_B > 0) {
 		// generate a random number between [0, free_size_B - 1]
 		uniform_int_distribution<int> distribution(0, solution_size_B - 1);
 		free_pos = distribution(generator);
@@ -704,13 +703,26 @@ void Solution::balanceBiclique() { // remove the vertex with the worst weight in
 }
 
 void Solution::printSolution() {
-	cout << "Partition A:" << endl;
+	int real_weight = 0;
+	cout << "Biclique Size = " << solution_size_A << endl;
+	cout << "Partition A = { ";
 	for(int idx = 0; idx < solution_size_A; idx++) {
-		cout << solution_A[idx] << " ";
+		real_weight += graph->get_weight(solution_A[idx]);
+		if(idx == solution_size_A - 1) {
+			cout << solution_A[idx] << " }" << endl;
+			break;
+		}
+		cout << solution_A[idx] << " , ";
 	}
-	cout << "\nPartition B:" << endl;
+
+	cout << "Partition B = { ";
 	for(int idx = 0; idx < solution_size_B; idx++) {
-		cout << solution_B[idx] << " ";
+		real_weight += graph->get_weight(solution_B[idx]);
+		if(idx == solution_size_A - 1) {
+			cout << solution_B[idx] << " }" << endl;
+			break;
+		}
+		cout << solution_B[idx] << " , ";
 	}
-	cout << "\nTotal Weight: " << total_weight << "\n" << endl;
+	cout << "Weight = " << total_weight << endl;
 }
