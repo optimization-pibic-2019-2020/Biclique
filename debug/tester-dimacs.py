@@ -24,7 +24,6 @@ for r, d, f in os.walk(input_path):
         file_path.append([file, os.path.join(r,file)])
 
 file_path.sort()
-
 for (x, y) in file_path:
     print("Testing: " + x)
     f = open(output_path + "/dimacs.mtx", 'a+', buffering=1)

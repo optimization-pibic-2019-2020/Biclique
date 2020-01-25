@@ -7,8 +7,8 @@
 using namespace std;
 
 int z = 4; // constant related to the number of vertices that will be removed in the function shake()
-int k = 10000; // limit of iterations that dont improve the biclique
-int total_iterations = 100000; // number of ils iterations
+int k = 10; // limit of iterations that dont improve the biclique
+int total_iterations = 100; // number of ils iterations
 double total_time = 0;
 
 int main() {
@@ -70,7 +70,10 @@ int main() {
 			assert(next_s.checkMu());
 		}
 
-		if(s.checkBicliqueSize() == false) s.balanceBiclique();
+		if(s.checkBicliqueSize() == false) {
+			s.balanceBiclique();
+			best_weight = s.getTotalWeight();
+		}
 		assert(next_s.checkIntegrity());
 		assert(next_s.checkMu());
 

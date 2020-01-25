@@ -703,11 +703,9 @@ void Solution::balanceBiclique() { // remove the vertex with the worst weight in
 }
 
 void Solution::printSolution() {
-	int real_weight = 0;
 	cout << "Biclique Size = " << solution_size_A << endl;
 	cout << "Partition A = { ";
 	for(int idx = 0; idx < solution_size_A; idx++) {
-		real_weight += graph->get_weight(solution_A[idx]);
 		if(idx == solution_size_A - 1) {
 			cout << solution_A[idx] << " }" << endl;
 			break;
@@ -717,8 +715,7 @@ void Solution::printSolution() {
 
 	cout << "Partition B = { ";
 	for(int idx = 0; idx < solution_size_B; idx++) {
-		real_weight += graph->get_weight(solution_B[idx]);
-		if(idx == solution_size_A - 1) {
+		if(idx == solution_size_B - 1) {
 			cout << solution_B[idx] << " }" << endl;
 			break;
 		}
