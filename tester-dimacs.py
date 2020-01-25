@@ -34,6 +34,6 @@ for (x, y) in file_path:
     (output, err) = process.communicate()
     pEndTime = time.time()
     #Now store values
-    f.write(x + "\t" + str(output.decode('UTF-8')) + "\n")
+    f.write(x + "\t" + str(output.decode('UTF-8')))
     f.flush()
     f.close()
