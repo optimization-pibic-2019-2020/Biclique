@@ -1,6 +1,6 @@
 SRC = ./src
-OBJ = ./obj
 TEST = ./test
+DEBUG = ./debug
 
 all: main.o Graph.o Solution.o
 	g++ main.o Graph.o Solution.o -o main
@@ -20,3 +20,20 @@ exec:
 clean:
 	rm main
 	rm ./*.o
+
+copy:
+	cp main \debug
+
+generatorW:
+	python3 $(DEBUG)/generatorWeightedVertices.py
+
+generatorU:
+	python3 $(DEBUG)/generatorUniformVertices.py
+
+tester:
+	python3 $(DEBUG)/testerBarabasiAlbert.py
+	python3 $(DEBUG)/testerBhoslib.py
+	python3 $(DEBUG)/testerDimacs.py
+	python3 $(DEBUG)/testerErdosRenyi.py
+
+	

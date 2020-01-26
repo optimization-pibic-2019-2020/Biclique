@@ -38,6 +38,7 @@ int main() {
         while(loop--) {
 	        // start the first random solution
 			s.generateRandomSolution();
+			if(s.checkBicliqueSize() == false) s.balanceBiclique();
 
 			int x = k, best_weight = s.getTotalWeight(), local_weight;
 			Solution next_s(s);
@@ -45,21 +46,10 @@ int main() {
 				next_s.VND();
 				local_weight = next_s.getTotalWeight();
 				if(local_weight > best_weight) {
-					if(next_s.checkBicliqueSize()) {
-						s = next_s;
-						best_weight = local_weight;
-						x = k;
-					}
-					else {
-						next_s.balanceBiclique();
-						if(local_weight > best_weight) {
-							s = next_s;
-							best_weight = local_weight;
-							x = k;
-						}
-						else x--;
-					}
-				}
+					s = next_s;
+					best_weight = local_weight;
+					x = k;
+				}	
 				else x--;
 
 				if(x == 0) {
@@ -85,6 +75,7 @@ int main() {
 
 			assert(next_s.checkIntegrity());
 			assert(next_s.checkMu());
+
 			s.restartSolution();
 		}
 

@@ -667,9 +667,14 @@ void Solution::shake(int z) {
 	random_device device;
 	mt19937 generator(device());
 
-	int vertices_to_remove_A = 1; // the quantity of vertices to remove in solution A
-	int vertices_to_remove_B = 1 ; // the quantity of vertices to remove in solution B
+	int vertices_to_remove_A = solution_size_A / z; // the quantity of vertices to remove in solution A
+	int vertices_to_remove_B = solution_size_B / z ; // the quantity of vertices to remove in solution B
 	int free_pos, vertex;
+
+	if(vertices_to_remove_A == 0 && vertices_to_remove_B == 0) {
+		vertices_to_remove_A += 1;
+		vertices_to_remove_B += 1;
+	}
 
 	while(vertices_to_remove_A-- && solution_size_A > 0) {
 		// generate a random number between [0, free_size_A - 1]
@@ -706,18 +711,18 @@ void Solution::printSolution() {
 	cout << "{ {";
 	for(int idx = 0; idx < solution_size_A; idx++) {
 		if(idx == solution_size_A - 1) {
-			cout << solution_A[idx] << "}";
+			cout << solution_A[idx] + 1 << "}";
 			break;
 		}
-		cout << solution_A[idx] << ", ";
+		cout << solution_A[idx] + 1 << ", ";
 	}
 	cout << ", {";
 	for(int idx = 0; idx < solution_size_B; idx++) {
 		if(idx == solution_size_B - 1) {
-			cout << solution_B[idx] << "}";
+			cout << solution_B[idx] + 1 << "}";
 			break;
 		}
-		cout << solution_B[idx] << ", ";
+		cout << solution_B[idx] + 1 << ", ";
 	}
 	cout << " }" << endl;
 	/*cout << "Biclique Size = " << solution_size_A << endl;
@@ -737,6 +742,6 @@ void Solution::printSolution() {
 			break;
 		}
 		cout << solution_B[idx] << " , ";
-	}
-	cout << "Weight = " << total_weight << endl;*/
+	}*/
+	//cout << "Weight = " << total_weight << endl;
 }
