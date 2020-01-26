@@ -7,7 +7,9 @@ import time
 file_path = list()
 current_path = str(Path(__file__).parent.absolute())
 
-input_path = current_path + "/input/DIMACS_V/"
+#input_path = current_path + "/input/DIMACS_V/"
+#input_path = current_path + "/input/DIMACS_V_2/"
+input_path = current_path + "/input/DIMACS_U/"
 #input_path = current_path + "/input/RANDOM/"
 
 if not os.path.exists(input_path):
