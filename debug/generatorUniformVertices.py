@@ -23,7 +23,7 @@ for (inputPath,outputPath) in folders:
 		for file in f:
 			files.append([file, os.path.join(r,file)])
 	files.sort(key=lambda x: (len(x[0]), x[0]))
-	file_path.sort(key=lambda x: (len(x[0]), x[0]))
+	folders.sort(key=lambda x: (len(x[0]), x[0]))
 	for (x, y) in files:
 		p = os.path.basename(os.path.dirname(y))
 		if not os.path.exists(outputPath + p + "/"):

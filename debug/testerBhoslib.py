@@ -7,8 +7,8 @@ import time
 file_path = list()
 current_path = str(Path(__file__).parent.absolute())
 
-input_path = current_path + "/input/BHOSLIB/"
-#input_path = current_path + "/input/BHOSLIB-V/"
+#input_path = current_path + "/input/BHOSLIB/"
+input_path = current_path + "/input/BHOSLIB-V/"
 #input_path = current_path + "/input/BHOSLIB-U/"
 
 if not os.path.exists(input_path):

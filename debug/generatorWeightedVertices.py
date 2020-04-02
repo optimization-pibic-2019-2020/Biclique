@@ -10,9 +10,9 @@ files = list()
 
 absolute = str(Path(__file__).parent.absolute())
 
-#folders = [(absolute+"/input/DIMACS/", absolute+"/input/DIMACS-V/")]
+folders = [(absolute+"/input/DIMACS/", absolute+"/input/DIMACS-V/")]
 #folders = [(absolute+"/input/BHOSLIB/", absolute+"/input/BHOSLIB-V/")]
-folders = [(absolute+"/input/Barabasi-Albert/", absolute+"/input/Barabasi-Albert-V/")]
+#folders = [(absolute+"/input/Barabasi-Albert/", absolute+"/input/Barabasi-Albert-V/")]
 #folders = [(absolute+"/input/Erdos-Renyi/", absolute+"/input/Erdos-Renyi-V/")]
 
 for (inputPath,outputPath) in folders:
@@ -34,8 +34,8 @@ for (inputPath,outputPath) in folders:
 		edges = [[int(z) for z in line.split()] for line in f]
 		s.write(str(vertex_count) + " " + str(edge_count) + "\n")
 		for i in range(vertex_count):
-			#s.write(str((i*int(edge_count/vertex_count)%vertex_count)+vertex_count-i) + '\n')
-			s.write(str((i%200)+1) + '\n')
+			s.write(str((i*int(edge_count/vertex_count)%vertex_count)+vertex_count-i) + '\n')
+			#s.write(str((i%200)+1) + '\n')
 		for edge_list in edges:
 			for i in range(len(edge_list)):
 				s.write(str(edge_list[i]) + " ")

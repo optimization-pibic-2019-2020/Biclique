@@ -65,11 +65,12 @@ public:
 	bool checkMu();
 	void generateRandomSolution();
 	void restartSolution();
-	void swap1_1(int vertex, int code);
-	bool oneImprovement(int code);
-	bool add();
+	void oneImprovement(int vertex, int code);
+	bool swap1_1(int code);
+	bool addFirstVertex();
+	bool addBestVertex();
 	void VND();
-	void shake(int z);
+	void shake(double z);
 	void balanceBiclique();
 	void printSolution();
 };

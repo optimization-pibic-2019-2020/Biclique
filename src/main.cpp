@@ -6,9 +6,9 @@
 
 using namespace std;
 
-int z = 4; // constant related to the number of vertices that will be removed in the function shake()
-int k = 10; // limit of iterations that dont improve the biclique
-int total_iterations = 100; // number of ils iterations
+double z = 0.75; // constant related to the number of vertices that will be removed in the function shake()
+int k = 5; // limit of iterations that dont improve the biclique
+int total_iterations = 1000; // number of ils iterations
 double total_time = 0;
 
 int main() {
@@ -56,7 +56,7 @@ int main() {
 					next_s.restartSolution();
 					next_s.generateRandomSolution();
 				}
-				else next_s.shake(z); // alterar o shake
+				else next_s.shake(z);
 
 				assert(next_s.checkIntegrity());
 				assert(next_s.checkMu());
@@ -91,7 +91,8 @@ int main() {
         //5 digits precision is enough
         total_time += elapsed_seconds.count();
         cout << best_solution << "\t" << avarage_solution / 10 << "\t" << std::setprecision(4) << total_time / 10.0 << "\t";
-        best_s.printSolution(); 
+        //best_s.printSolution(); 
+		cout << "\n";
         // execution time
 	    //cout << "Execution time: " << std::setprecision(4) << total_time << " seconds." << endl;
 	}

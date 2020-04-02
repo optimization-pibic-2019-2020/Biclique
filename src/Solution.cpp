@@ -568,7 +568,7 @@ void Solution::restartSolution() {
 	}
 }
 
-void Solution::swap1_1(int vertex, int code) { // code == 0 for partition A and code != 0 for partition B
+void Solution::oneImprovement(int vertex, int code) { // code == 0 for partition A and code != 0 for partition B
 	vector<int> adjList = graph->get_vertex_adjList(vertex);
 
 	if(code == 0) {
@@ -600,7 +600,7 @@ void Solution::swap1_1(int vertex, int code) { // code == 0 for partition A and 
 	checkNonFreePartition();
 }
 
-bool Solution::oneImprovement(int code) { // code == 0 for partition A and code != 0 for partition B
+bool Solution::swap1_1(int code) { // code == 0 for partition A and code != 0 for partition B
 	int V = graph->getV(), vertex, best_vertex, improvement = 0; // improvement means how much weight the partition will get after the swap
 	if(code == 0) {
 		for(int iter = solution_size_A + free_size_A; iter < V; iter++) {
@@ -622,14 +622,48 @@ bool Solution::oneImprovement(int code) { // code == 0 for partition A and code 
 	}
 
 	if(improvement > 0) {
-		swap1_1(best_vertex, code);
+		oneImprovement(best_vertex, code);
 		return true;
 	}
 
 	return false;
 }
 
-bool Solution::add() { // verify if can add a pair of vertices to the solution (one to partition A and one to partition B)
+bool Solution::addFirstVertex() { // verify if can add a pair of vertices to the solution (one to partition A and one to partition B)
+	if(free_size_A > 0 && free_size_B > 0) {
+		random_device device;
+		mt19937 generator(device());
+		uniform_int_distribution<int> distribution(0, free_size_A - 1);
+		int iter = solution_size_A + distribution(generator);
+		int u, vertex1 = -1, vertex2 = -1, loop = free_size_A;
+		vector<int> adjListTemp;
+		
+		while(loop--) { // check if there is a pair to join the solution
+			if(iter < free_size_A) u = solution_A[iter];
+			else u = solution_A[(iter % free_size_A) + solution_size_A]; 
+
+			adjListTemp = graph->get_vertex_adjList(u);
+			for(int t : adjListTemp) {
+				// check if there is an edge between these free vertices
+				if(position_B[t] >= solution_size_B && position_B[t] < solution_size_B + free_size_B && 0 <= mu_A[u] + mu_B[t]) {
+					vertex1 = u;
+					vertex2 = t;
+					break;
+				}
+			}
+			if(vertex1 != -1 && vertex2 != -1) {
+				addVertex(vertex1, 0);
+				addVertex(vertex2, 1);
+				checkFreePartition();
+				return true;
+			}
+			iter++;
+		}
+	}
+	return false;
+}
+
+bool Solution::addBestVertex() { // verify if can add a pair of vertices to the solution (one to partition A and one to partition B)
 	if(free_size_A > 0 && free_size_B > 0) {
 		vector<int> adjListTemp;
 		int u, vertex1, vertex2, best_improvement = 0;
@@ -658,23 +692,24 @@ bool Solution::add() { // verify if can add a pair of vertices to the solution (
 
 void Solution::VND() { // run VND iterations
 	do {
-		while(oneImprovement(0)); // do oneImprovement with partition A until maximize it
-		while(oneImprovement(1)); // do oneImprovement with partition B until maximize it
-	}while(add());
+		while(addFirstVertex());
+	}while(swap1_1(0) || swap1_1(1));
 }
 
-void Solution::shake(int z) {
+void Solution::shake(double z) {
 	random_device device;
 	mt19937 generator(device());
 
-	int vertices_to_remove_A = solution_size_A / z; // the quantity of vertices to remove in solution A
-	int vertices_to_remove_B = solution_size_B / z ; // the quantity of vertices to remove in solution B
+	int vertices_to_remove_A = solution_size_A * z; // the quantity of vertices to remove in solution A
+	int vertices_to_remove_B = solution_size_B * z; // the quantity of vertices to remove in solution B
 	int free_pos, vertex;
+	//cout << vertices_to_remove_A << " " << vertices_to_remove_B << endl;
 
 	if(vertices_to_remove_A == 0 && vertices_to_remove_B == 0) {
 		vertices_to_remove_A += 1;
 		vertices_to_remove_B += 1;
 	}
+
 
 	while(vertices_to_remove_A-- && solution_size_A > 0) {
 		// generate a random number between [0, free_size_A - 1]
