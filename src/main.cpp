@@ -6,10 +6,10 @@
 
 using namespace std;
 
-double z = 0.75; // constant related to the number of vertices that will be removed in the function shake()
+double z = 0.8; // constant related to the number of vertices that will be removed in the function shake()
 int k = 5; // limit of iterations that dont improve the biclique
 int total_iterations = 1000; // number of ils iterations
-double total_time = 0;
+double total_time = 0, time_to_best = 0;
 
 int main() {
 	try {
@@ -32,7 +32,7 @@ int main() {
 		// initialize C++ timer
         std::chrono::time_point<std::chrono::system_clock> start, end;
 
-        int loop = 10, best_solution = 0, avarage_solution = 0;
+        int loop = 10, best_solution = 0, avarage_solution = 0, K = 3;
         // start timing
         start = std::chrono::system_clock::now();
         while(loop--) {
@@ -43,7 +43,7 @@ int main() {
 			int x = k, best_weight = s.getTotalWeight(), local_weight;
 			Solution next_s(s);
 			for(int iter = 0; iter < total_iterations; iter++) { // run ILS iterations
-				next_s.VND();
+				next_s.VND(K);
 				local_weight = next_s.getTotalWeight();
 				if(local_weight > best_weight) {
 					s = next_s;
@@ -71,6 +71,8 @@ int main() {
 			if(best_solution <= best_weight) {
 				best_s = s;
 				best_solution = best_weight;
+				std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - start; 
+				time_to_best = elapsed_seconds.count();
 			}
 
 			assert(next_s.checkIntegrity());
@@ -90,9 +92,8 @@ int main() {
 
         //5 digits precision is enough
         total_time += elapsed_seconds.count();
-        cout << best_solution << "\t" << avarage_solution / 10 << "\t" << std::setprecision(4) << total_time / 10.0 << "\t";
+        cout << best_solution << "\t" << avarage_solution / 10 << "\t" << std::setprecision(4) << total_time / 10.0 << "\t" << time_to_best << "\n";
         //best_s.printSolution(); 
-		cout << "\n";
         // execution time
 	    //cout << "Execution time: " << std::setprecision(4) << total_time << " seconds." << endl;
 	}

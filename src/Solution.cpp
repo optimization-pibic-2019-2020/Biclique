@@ -61,6 +61,33 @@ int Solution::getTotalWeight() {
 	return total_weight;
 }
 
+bool Solution::isNeighbor(int vertex1, int vertex2) { // checks if two vertices are neighbors
+	vector<int> neighbors = graph->get_vertex_adjList(vertex1);
+	for(int neighbor : neighbors) {
+		if(neighbor == vertex2) return true;
+	}
+
+	return false;
+}
+
+bool Solution::sameNeighbor(int vertex1, int vertex2, int code) { // checks if two vertices share the same neighbor in a partition's solution
+	int solutionVertex;
+	if(code == 0) { // verify partition A
+		for(int iter = 0; iter < solution_size_A; iter++) {
+			solutionVertex = solution_A[iter];
+			if(isNeighbor(vertex1, solutionVertex) != isNeighbor(vertex2, solutionVertex)) return false;
+		}
+	}
+	else { // verify partition B
+		for(int iter = 0; iter < solution_size_B; iter++) {
+			solutionVertex = solution_B[iter];
+			if(isNeighbor(vertex1, solutionVertex) != isNeighbor(vertex2, solutionVertex)) return false;
+		}
+	}
+
+	return true;
+}
+
 void Solution::moveFreeToSolutionPartition(int u, int code) { // code == 0 for solution A and code != 0 for solution B
 	assert(u < graph->getV());
 
@@ -629,6 +656,48 @@ bool Solution::swap1_1(int code) { // code == 0 for partition A and code != 0 fo
 	return false;
 }
 
+bool Solution::swap2_2(int code) { // code == 0 for partition A and code != 0 for partition B
+	int V = graph->getV(), vertex1, vertex2, improvement = 0; // improvement means how much weight the partition will get after the swap
+	if(code == 0 && solution_size_A >= 2) {
+		for(int iter = solution_size_A + free_size_A; iter < V; iter++) {
+			vertex1 = solution_A[iter];
+			if(tightness_A[vertex1] == 1 && tightness_B[vertex1] == solution_size_B) { // possible candidate for swap2_2
+				for(int iter2 = iter; iter2 < V; iter2++) {
+					vertex2 = solution_A[iter2];
+					if(tightness_A[vertex2] == 1 && tightness_B[vertex2] == solution_size_B) { // another possible candidate for swap2_2
+						if((mu_A[vertex1] + mu_A[vertex2]) > 0 && !isNeighbor(vertex1, vertex2) && !sameNeighbor(vertex1, vertex2, code)) { // verify if they are neighbors and if they share the same neighbor in the solution
+							// do the swap2_2
+							oneImprovement(vertex1, code);
+							oneImprovement(vertex2, code);
+							return true;	
+						}
+					}	
+				}
+			}
+		}
+	}
+	else if(code != 0 && solution_size_B >= 2) {
+		for(int iter = solution_size_B + free_size_B; iter < V; iter++) {
+			vertex1 = solution_B[iter];
+			if(tightness_B[vertex1] == 1 && tightness_A[vertex1] == solution_size_A) { // possible candidate for swap2_2
+				for(int iter2 = iter; iter2 < V; iter2++) {
+					vertex2 = solution_B[iter2];
+					if(tightness_B[vertex2] == 1 && tightness_A[vertex2] == solution_size_A) { // another possible candidate for swap2_2
+						if((mu_B[vertex1] + mu_B[vertex2]) > 0 && !isNeighbor(vertex1, vertex2) && !sameNeighbor(vertex1, vertex2, code)) { // verify if they are neighbors and if they share the same neighbor in the solution
+							// do the swap2_2
+							oneImprovement(vertex1, code);
+							oneImprovement(vertex2, code);
+							return true;	
+						}
+					}	
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
 bool Solution::addFirstVertex() { // verify if can add a pair of vertices to the solution (one to partition A and one to partition B)
 	if(free_size_A > 0 && free_size_B > 0) {
 		random_device device;
@@ -690,10 +759,32 @@ bool Solution::addBestVertex() { // verify if can add a pair of vertices to the 
 	return false;
 }
 
-void Solution::VND() { // run VND iterations
-	do {
-		while(addFirstVertex());
-	}while(swap1_1(0) || swap1_1(1));
+void Solution::VND(int K) { // run VND iterations
+	srand (time(NULL));
+	int k = 1, code;
+	while(k <= K) {
+		switch(k) {
+			case 1:
+				if(addFirstVertex()) k = 1;
+				else k++;
+				break;
+			case 2:
+				code = rand() % 2; // try to randomly choose a partition
+				if(swap1_1(code)) k = 1;
+				else if(swap1_1(abs(code - 1))) k = 1; // if first partition goes wrong it will try the next partition
+				else k++;
+				break;
+			case 3:
+				code = rand() % 2; // try to randomly choose a partition
+				if(swap2_2(code)) k = 1;			
+				else if(swap2_2(abs(code - 1))) k = 1; // if first partition goes wrong it will try the next partition
+				else k++;
+				break;
+			default:
+				k++;
+				break;
+		}
+	}
 }
 
 void Solution::shake(double z) {

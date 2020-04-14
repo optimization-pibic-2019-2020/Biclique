@@ -50,6 +50,8 @@ private:
 public:
 	Solution(Graph *graph);
 	int getTotalWeight();
+	bool isNeighbor(int vertex1, int vertex2);
+	bool sameNeighbor(int vertex1, int vertex2, int code);
 	bool checkBicliqueSize();
 	void checkFreePartition();
 	void checkNonFreePartition();
@@ -67,9 +69,10 @@ public:
 	void restartSolution();
 	void oneImprovement(int vertex, int code);
 	bool swap1_1(int code);
+	bool swap2_2(int code);
 	bool addFirstVertex();
 	bool addBestVertex();
-	void VND();
+	void VND(int K);
 	void shake(double z);
 	void balanceBiclique();
 	void printSolution();

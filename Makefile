@@ -17,7 +17,7 @@ Solution.o: $(SRC)/Solution.cpp $(SRC)/Solution.hpp
 exec: 
 	./main <$(TEST)/in
 
-clean:
+clear:
 	rm main
 	rm ./*.o
 
