@@ -28,7 +28,7 @@ file_path.sort(key=lambda x: (len(x[0]), x[0]))
 for (x, y) in file_path:
     print("Testing: " + x)
     f = open(output_path + "/BHOSLIB", 'a+', buffering=1)
-    cmd = str("timeout 60"+ " " + current_path + "/main" +  " < " +  y)
+    cmd = str("timeout 60" + " " + current_path + "/main" +  " < " +  y)
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     #Send it to run
     pStartTime = time.time()

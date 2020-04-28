@@ -47,6 +47,10 @@ private:
 	
 	int total_weight;
 
+	// vector of the restricted candidate list for the greedy randomized construction
+	
+	vector<int> rclList;
+
 public:
 	Solution(Graph *graph);
 	int getTotalWeight();
@@ -74,6 +78,8 @@ public:
 	bool addBestVertex();
 	void VND(int K);
 	void shake(double z);
+	void greedyRandomizedConstructive(double p);
+	void rclConstruction(int code, double p);
 	void balanceBiclique();
 	void printSolution();
 };

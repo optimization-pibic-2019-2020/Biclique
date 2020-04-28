@@ -6,8 +6,9 @@
 
 using namespace std;
 
-double z = 0.8; // constant related to the number of vertices that will be removed in the function shake()
-int k = 5; // limit of iterations that dont improve the biclique
+double z = 0.8; // variable related to the number of vertices that will be removed in the function shake()
+int k = 100; // limit of iterations that dont improve the biclique
+double p = 0.5; // variable related to the quality based construction in the RCL list
 int total_iterations = 1000; // number of ils iterations
 double total_time = 0, time_to_best = 0;
 
@@ -24,6 +25,7 @@ int main() {
 		Graph *graph = new Graph(v, e);
 		graph->readWeight(); // read all the weight and put into the weight vector
 		graph->readEdges(); // read all the edges and put into the adjList
+		graph->initializeVertexDegreeList();
 		graph->sort(); 
 		//graph->showGraphInformations(); // show all the informations of the input Graph
 		Solution s(graph); // initialize all the variables and structures for solution
@@ -32,17 +34,23 @@ int main() {
 		// initialize C++ timer
         std::chrono::time_point<std::chrono::system_clock> start, end;
 
-        int loop = 10, best_solution = 0, avarage_solution = 0, K = 3;
+        int loop = 10, best_solution = -1, avarage_solution = 0, K = 3;
         // start timing
         start = std::chrono::system_clock::now();
         while(loop--) {
 	        // start the first random solution
-			s.generateRandomSolution();
+			//s.generateRandomSolution();
+			//if(s.checkBicliqueSize() == false) s.balanceBiclique();
+
+			s.greedyRandomizedConstructive(p);
 			if(s.checkBicliqueSize() == false) s.balanceBiclique();
 
 			int x = k, best_weight = s.getTotalWeight(), local_weight;
 			Solution next_s(s);
 			for(int iter = 0; iter < total_iterations; iter++) { // run ILS iterations
+				next_s.greedyRandomizedConstructive(p); // starts a new optimal solution
+				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
+
 				next_s.VND(K);
 				local_weight = next_s.getTotalWeight();
 				if(local_weight > best_weight) {
@@ -50,14 +58,11 @@ int main() {
 					best_weight = local_weight;
 					x = k;
 				}	
-				else x--;
+				else if(local_weight == best_weight) x--;
 
-				if(x == 0) {
-					next_s.restartSolution();
-					next_s.generateRandomSolution();
-				}
-				else next_s.shake(z);
-
+				if(x == 0) break;
+				
+				next_s.restartSolution();
 				assert(next_s.checkIntegrity());
 				assert(next_s.checkMu());
 			}
@@ -68,7 +73,7 @@ int main() {
 			}
 
 			avarage_solution += best_weight;
-			if(best_solution <= best_weight) {
+			if(best_solution < best_weight) {
 				best_s = s;
 				best_solution = best_weight;
 				std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - start; 
@@ -92,8 +97,8 @@ int main() {
 
         //5 digits precision is enough
         total_time += elapsed_seconds.count();
-        cout << best_solution << "\t" << avarage_solution / 10 << "\t" << std::setprecision(4) << total_time / 10.0 << "\t" << time_to_best << "\n";
-        //best_s.printSolution(); 
+        cout << best_solution << "\t" << avarage_solution / 10 << "\t" << std::setprecision(4) << total_time / 10.0 << "\t" << time_to_best << "\t";
+		best_s.printSolution();
         // execution time
 	    //cout << "Execution time: " << std::setprecision(4) << total_time << " seconds." << endl;
 	}

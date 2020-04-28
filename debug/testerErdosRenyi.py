@@ -7,8 +7,8 @@ import time
 file_path = list()
 current_path = str(Path(__file__).parent.absolute())
 
-input_path = current_path + "/input/Erdos-Renyi/"
-#input_path = current_path + "/input/Erdos-Renyi-V/"
+#input_path = current_path + "/input/Erdos-Renyi/"
+input_path = current_path + "/input/Erdos-Renyi-V/"
 #input_path = current_path + "/input/Erdos-Renyi-U/"
 
 
@@ -36,6 +36,6 @@ for (x, y) in file_path:
     (output, err) = process.communicate()
     pEndTime = time.time()
     #Now store values
-    f.write(x + "\t" + str(output.decode('UTF-8')))
+    f.write(str(output.decode('UTF-8')))
     f.flush()
     f.close()

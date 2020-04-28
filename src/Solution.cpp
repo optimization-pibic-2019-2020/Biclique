@@ -819,6 +819,78 @@ void Solution::shake(double z) {
 	checkNonFreePartition();
 }
 
+void Solution::rclConstruction(int code, double p) { // construct the restricted candidate list for a specific partition and choose a random vertex from it to put in the solution
+	if(code == 0 && free_size_A != 0) { // partition A
+		random_device device;
+		mt19937 generator(device());
+		int iter, vertex, vertex_degree;
+		int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
+		vector<int> vertexDegreeList = graph->get_vertex_degree_list();
+		rclList.clear();
+
+		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // gets the c_min and c_max parameters from the free vertices
+			vertex = solution_A[iter];
+			vertex_degree = vertexDegreeList[vertex];
+			if(vertex_degree <= c_min) c_min = vertex_degree;
+			if(vertex_degree >= c_max) c_max = vertex_degree;
+		}
+
+		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // creates the rcl List based in a quality-based construction
+			vertex = solution_A[iter];
+			vertex_degree = vertexDegreeList[vertex];
+			if((c_min + p * (c_max - c_min)) <= ((double) vertex_degree) && ((double) vertex_degree) <= c_max) { // condition to get a good quality in the RCL list
+				rclList.push_back(vertex);
+			}
+		}
+		
+		// generate a random number between [0, rclList.size() - 1]
+		uniform_int_distribution<int> distribution(0, rclList.size() - 1);
+		int pos = distribution(generator);
+		vertex = rclList[pos]; 
+		addVertex(vertex, 0);
+		checkFreePartition();
+	}
+	else if(code != 0 && free_size_B != 0) { // partition B
+		random_device device;
+		mt19937 generator(device());
+		int iter, vertex, vertex_degree;
+		int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
+		vector<int> vertexDegreeList = graph->get_vertex_degree_list();
+		rclList.clear();
+
+		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // gets the c_min and c_max parameters from the free vertices
+			vertex = solution_B[iter];
+			vertex_degree = vertexDegreeList[vertex];
+			if(vertex_degree <= c_min) c_min = vertex_degree;
+			if(vertex_degree >= c_max) c_max = vertex_degree;
+		}
+
+		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // creates the rcl List based in a quality-based construction
+			vertex = solution_B[iter];
+			vertex_degree = vertexDegreeList[vertex];
+			if((c_min + p * (c_max - c_min)) <= ((double) vertex_degree) && ((double) vertex_degree) <= c_max) { // condition to get a good quality in the RCL list
+				rclList.push_back(vertex);
+			}
+		}
+
+		// generate a random number between [0, rclList.size() - 1]
+		uniform_int_distribution<int> distribution(0, rclList.size() - 1);
+		int pos = distribution(generator);
+		vertex = rclList[pos]; 
+		addVertex(vertex, 1);
+		checkFreePartition();
+	}
+}
+
+void Solution::greedyRandomizedConstructive(double p) { 
+	while(free_size_A != 0 && free_size_B != 0) { // can generate a solution with an extra vertex in solution A
+		rclConstruction(0, p); 
+		rclConstruction(1, p); 
+		assert(checkIntegrity());
+		assert(checkMu());
+	}
+}
+
 void Solution::balanceBiclique() { // remove the vertex with the worst weight in solution A to balance the Biclique
 	int minimum_weight = solution_A[0], vertex_to_remove = solution_A[0], actual_vertex;
 	for(int iter = 1; iter < solution_size_A; iter++) {
