@@ -5,6 +5,9 @@
 #include <assert.h>
 using namespace std;
 
+random_device device;
+mt19937 generator(device());
+
 Solution::Solution(Graph *graph) { // initialize all the variables and vectors
 	this->graph = graph;
 	int idx_weight, V = graph->getV();
@@ -62,7 +65,7 @@ int Solution::getTotalWeight() {
 }
 
 bool Solution::isNeighbor(int vertex1, int vertex2) { // checks if two vertices are neighbors
-	vector<int> neighbors = graph->get_vertex_adjList(vertex1);
+	vector<int> &neighbors = graph->get_vertex_adjList(vertex1);
 	for(int neighbor : neighbors) {
 		if(neighbor == vertex2) return true;
 	}
@@ -335,10 +338,10 @@ void Solution::removeVertex(int u, int code) { // code == 0 for solution A and c
 
 	moveSolutionToFreePartition(u, code);
 
-	vector<int> adj_l = graph->get_vertex_adjList(u);
+	vector<int> &neighbors = graph->get_vertex_adjList(u);
 
 	if(code == 0) {
-		for(int neighbor : adj_l) {
+		for(int neighbor : neighbors) {
 			tightness_A[neighbor]--;
 			mu_A[neighbor] += weight_u;
 
@@ -349,7 +352,7 @@ void Solution::removeVertex(int u, int code) { // code == 0 for solution A and c
 		}
 	}
 	else {
-		for(int neighbor : adj_l) {
+		for(int neighbor : neighbors) {
 			tightness_B[neighbor]--;
 			mu_B[neighbor] += weight_u;
 
@@ -368,10 +371,10 @@ void Solution::addVertex(int u, int code) { // code == 0 for solution A and code
 
 	moveFreeToSolutionPartition(u, code);
 
-	vector<int> adjListTemp = graph->get_vertex_adjList(u);
+	vector<int> &neighbors = graph->get_vertex_adjList(u);
 
 	if(code == 0) { // placing vertex u in solution A
-		for(int neighbor : adjListTemp) {
+		for(int neighbor : neighbors) {
 			// increase the tighness of each neighbor by one
 			tightness_A[neighbor]++;
 
@@ -380,7 +383,7 @@ void Solution::addVertex(int u, int code) { // code == 0 for solution A and code
 		}
 	}
 	else { // placing vertex u in solution B
-		for(int neighbor : adjListTemp) {
+		for(int neighbor : neighbors) {
 			// increase the tighness of each neighbor by one
 			tightness_B[neighbor]++;
 
@@ -392,9 +395,6 @@ void Solution::addVertex(int u, int code) { // code == 0 for solution A and code
 
 // add a random vertex to solution A or solution B
 void Solution::addRandomVertex(int code) { // code == 0 for solution A and code != 0 for solution B
-	random_device device;
-	mt19937 generator(device());
-
 	if(isMaximal(code)) return;
 	assert(!isMaximal(code));
 
@@ -417,7 +417,7 @@ void Solution::addRandomVertex(int code) { // code == 0 for solution A and code 
 } 
 
 bool Solution::checkIntegrity() { // checks the integrity of the solution 
-	vector<vector<int>> adjListTemp = graph->get_adjList();
+	vector<vector<int>> &neighbors = graph->get_adjList();
 	int V = graph->getV();
 
 	if(abs(solution_size_A - solution_size_B) > 1) { // both solution sizes cannot be different  
@@ -437,7 +437,7 @@ bool Solution::checkIntegrity() { // checks the integrity of the solution
 
 		// verify if every vertex in solution A is disconnected to all the vertices in solution A
 		// and if every vertex in solution B is connected to every vertex in solution A 
-		for(int neighbor : adjListTemp[vertex_u]) {
+		for(int neighbor : neighbors[vertex_u]) {
 			if(find(solution_A.begin(), solution_A.begin() + solution_size_A, neighbor) != solution_A.begin() + solution_size_A) {
 				cout << "There are neighbors in Solution A" << endl;
 				return false;
@@ -464,7 +464,7 @@ bool Solution::checkIntegrity() { // checks the integrity of the solution
 
 		// verify if every vertex in solution B is disconnected to all the vertices in solution B
 		// and if every vertex in solution A is connected to every vertex in solution B 
-		for(int neighbor : adjListTemp[vertex_u]) {
+		for(int neighbor : neighbors[vertex_u]) {
 			if(find(solution_B.begin(), solution_B.begin() + solution_size_B, neighbor) != solution_B.begin() + solution_size_B) {
 				cout << "There are neighbors in Solution B" << endl;
 				return false;
@@ -528,9 +528,9 @@ bool Solution::checkMu() { // check if mu_A and mu_B are correct
 	for(int idx = 0; idx < solution_size_A; idx++) { // calculate mu_A_temp
 		int u = solution_A[idx];
 		int weight_u = graph->get_weight(u);
-		vector<int> adjListTemp = graph->get_vertex_adjList(u);
+		vector<int> &neighbors = graph->get_vertex_adjList(u);
 
-		for(int neighbor : adjListTemp) {
+		for(int neighbor : neighbors) {
 			// update the value of mu_A_temp from each neighbor in solution A
 			mu_A_temp[neighbor] -= weight_u;
 		}
@@ -539,9 +539,9 @@ bool Solution::checkMu() { // check if mu_A and mu_B are correct
 	for(int idx = 0; idx < solution_size_B; idx++) { // calculate mu_B_temp
 		int u = solution_B[idx];
 		int weight_u = graph->get_weight(u);
-		vector<int> adjListTemp = graph->get_vertex_adjList(u);
+		vector<int> &neighbors = graph->get_vertex_adjList(u);
 
-		for(int neighbor : adjListTemp) {
+		for(int neighbor : neighbors) {
 			// update the value of mu_B_temp from each neighbor in solution B
 			mu_B_temp[neighbor] -= weight_u;
 		}
@@ -555,15 +555,6 @@ bool Solution::checkMu() { // check if mu_A and mu_B are correct
 	}
 
 	return true;
-}
-
-void Solution::generateRandomSolution()  {
-	while(free_size_A != 0 && free_size_B != 0) { // can generate a solution with an extra vertex in solution A
-		addRandomVertex(0); // add a random vertex in solution A
-		addRandomVertex(1); // add a random vertex in solution B
-		assert(checkIntegrity());
-		assert(checkMu());
-	}
 }
 
 void Solution::restartSolution() {
@@ -596,10 +587,10 @@ void Solution::restartSolution() {
 }
 
 void Solution::oneImprovement(int vertex, int code) { // code == 0 for partition A and code != 0 for partition B
-	vector<int> adjList = graph->get_vertex_adjList(vertex);
+	vector<int> &neighbors = graph->get_vertex_adjList(vertex);
 
 	if(code == 0) {
-		for(int neighbor : adjList) {
+		for(int neighbor : neighbors) {
 			if(position_A[neighbor] < solution_size_A) {
 				// move the neighbor to the nonFreePartition A
 				removeVertex(neighbor, code);
@@ -611,7 +602,7 @@ void Solution::oneImprovement(int vertex, int code) { // code == 0 for partition
 		}
 	}
 	else {
-		for(int neighbor : adjList) {
+		for(int neighbor : neighbors) {
 			if(position_B[neighbor] < solution_size_B) {
 				// move the neighbor to the nonFreePartition B
 				removeVertex(neighbor, code);
@@ -666,7 +657,7 @@ bool Solution::swap2_2(int code) { // code == 0 for partition A and code != 0 fo
 					vertex2 = solution_A[iter2];
 					if(tightness_A[vertex2] == 1 && tightness_B[vertex2] == solution_size_B) { // another possible candidate for swap2_2
 						if((mu_A[vertex1] + mu_A[vertex2]) > 0 && !isNeighbor(vertex1, vertex2) && !sameNeighbor(vertex1, vertex2, code)) { // verify if they are neighbors and if they share the same neighbor in the solution
-							// do the swap2_2
+							// do the swap2_2 for partition A
 							oneImprovement(vertex1, code);
 							oneImprovement(vertex2, code);
 							return true;	
@@ -684,7 +675,7 @@ bool Solution::swap2_2(int code) { // code == 0 for partition A and code != 0 fo
 					vertex2 = solution_B[iter2];
 					if(tightness_B[vertex2] == 1 && tightness_A[vertex2] == solution_size_A) { // another possible candidate for swap2_2
 						if((mu_B[vertex1] + mu_B[vertex2]) > 0 && !isNeighbor(vertex1, vertex2) && !sameNeighbor(vertex1, vertex2, code)) { // verify if they are neighbors and if they share the same neighbor in the solution
-							// do the swap2_2
+							// do the swap2_2 for partition B
 							oneImprovement(vertex1, code);
 							oneImprovement(vertex2, code);
 							return true;	
@@ -700,23 +691,20 @@ bool Solution::swap2_2(int code) { // code == 0 for partition A and code != 0 fo
 
 bool Solution::addFirstVertex() { // verify if can add a pair of vertices to the solution (one to partition A and one to partition B)
 	if(free_size_A > 0 && free_size_B > 0) {
-		random_device device;
-		mt19937 generator(device());
 		uniform_int_distribution<int> distribution(0, free_size_A - 1);
 		int iter = solution_size_A + distribution(generator);
 		int u, vertex1 = -1, vertex2 = -1, loop = free_size_A;
-		vector<int> adjListTemp;
 		
 		while(loop--) { // check if there is a pair to join the solution
 			if(iter < free_size_A) u = solution_A[iter];
 			else u = solution_A[(iter % free_size_A) + solution_size_A]; 
 
-			adjListTemp = graph->get_vertex_adjList(u);
-			for(int t : adjListTemp) {
+			vector<int> &neighbors = graph->get_vertex_adjList(u);
+			for(int neighbor : neighbors) {
 				// check if there is an edge between these free vertices
-				if(position_B[t] >= solution_size_B && position_B[t] < solution_size_B + free_size_B && 0 <= mu_A[u] + mu_B[t]) {
+				if(position_B[neighbor] >= solution_size_B && position_B[neighbor] < solution_size_B + free_size_B && 0 <= mu_A[u] + mu_B[neighbor]) {
 					vertex1 = u;
-					vertex2 = t;
+					vertex2 = neighbor;
 					break;
 				}
 			}
@@ -727,33 +715,6 @@ bool Solution::addFirstVertex() { // verify if can add a pair of vertices to the
 				return true;
 			}
 			iter++;
-		}
-	}
-	return false;
-}
-
-bool Solution::addBestVertex() { // verify if can add a pair of vertices to the solution (one to partition A and one to partition B)
-	if(free_size_A > 0 && free_size_B > 0) {
-		vector<int> adjListTemp;
-		int u, vertex1, vertex2, best_improvement = 0;
-		for(int iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // check if there is a best pair to improve the solution
-			u = solution_A[iter];
-			adjListTemp = graph->get_vertex_adjList(u);
-			for(int t : adjListTemp) {
-				// check if there is an edge between these free vertices and if it is the best improvement
-				if(position_B[t] >= solution_size_B && position_B[t] < solution_size_B + free_size_B && best_improvement < mu_A[u] + mu_B[t]) {
-					vertex1 = u;
-					vertex2 = t;
-					best_improvement = mu_A[u] + mu_B[t];
-				}
-			}
-		}
-
-		if(best_improvement > 0) {
-			addVertex(vertex1, 0);
-			addVertex(vertex2, 1);
-			checkFreePartition();
-			return true;
 		}
 	}
 	return false;
@@ -787,58 +748,24 @@ void Solution::VND(int K) { // run VND iterations
 	}
 }
 
-void Solution::shake(double z) {
-	random_device device;
-	mt19937 generator(device());
-
-	int vertices_to_remove_A = solution_size_A * z; // the quantity of vertices to remove in solution A
-	int vertices_to_remove_B = solution_size_B * z; // the quantity of vertices to remove in solution B
-	int free_pos, vertex;
-	//cout << vertices_to_remove_A << " " << vertices_to_remove_B << endl;
-
-	if(vertices_to_remove_A == 0 && vertices_to_remove_B == 0) {
-		vertices_to_remove_A += 1;
-		vertices_to_remove_B += 1;
-	}
-
-
-	while(vertices_to_remove_A-- && solution_size_A > 0) {
-		// generate a random number between [0, free_size_A - 1]
-		uniform_int_distribution<int> distribution(0, solution_size_A - 1);
-		free_pos = distribution(generator);
-		vertex = solution_A[free_pos];
-		removeVertex(vertex, 0); 
-	}
-	while(vertices_to_remove_B-- && solution_size_B > 0) {
-		// generate a random number between [0, free_size_B - 1]
-		uniform_int_distribution<int> distribution(0, solution_size_B - 1);
-		free_pos = distribution(generator);
-		vertex = solution_B[free_pos];
-		removeVertex(vertex, 1); 
-	}
-	checkNonFreePartition();
-}
-
 void Solution::rclConstruction(int code, double p) { // construct the restricted candidate list for a specific partition and choose a random vertex from it to put in the solution
 	if(code == 0 && free_size_A != 0) { // partition A
-		random_device device;
-		mt19937 generator(device());
-		int iter, vertex, vertex_degree;
+		int iter, vertex, vertex_weight;
 		int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
-		vector<int> vertexDegreeList = graph->get_vertex_degree_list();
+		vector<int> &weight = graph->get_weight_list();
 		rclList.clear();
 
 		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // gets the c_min and c_max parameters from the free vertices
 			vertex = solution_A[iter];
-			vertex_degree = vertexDegreeList[vertex];
-			if(vertex_degree <= c_min) c_min = vertex_degree;
-			if(vertex_degree >= c_max) c_max = vertex_degree;
+			vertex_weight = weight[vertex];
+			if(vertex_weight <= c_min) c_min = vertex_weight;
+			if(vertex_weight >= c_max) c_max = vertex_weight;
 		}
 
 		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // creates the rcl List based in a quality-based construction
 			vertex = solution_A[iter];
-			vertex_degree = vertexDegreeList[vertex];
-			if((c_min + p * (c_max - c_min)) <= ((double) vertex_degree) && ((double) vertex_degree) <= c_max) { // condition to get a good quality in the RCL list
+			vertex_weight = weight[vertex];
+			if((c_min + p * (c_max - c_min)) <= ((double) vertex_weight) && ((double) vertex_weight) <= c_max) { // condition to get a good quality in the RCL list
 				rclList.push_back(vertex);
 			}
 		}
@@ -851,24 +778,22 @@ void Solution::rclConstruction(int code, double p) { // construct the restricted
 		checkFreePartition();
 	}
 	else if(code != 0 && free_size_B != 0) { // partition B
-		random_device device;
-		mt19937 generator(device());
-		int iter, vertex, vertex_degree;
+		int iter, vertex, vertex_weight;
 		int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
-		vector<int> vertexDegreeList = graph->get_vertex_degree_list();
+		vector<int> &weight = graph->get_weight_list();
 		rclList.clear();
 
 		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // gets the c_min and c_max parameters from the free vertices
 			vertex = solution_B[iter];
-			vertex_degree = vertexDegreeList[vertex];
-			if(vertex_degree <= c_min) c_min = vertex_degree;
-			if(vertex_degree >= c_max) c_max = vertex_degree;
+			vertex_weight = weight[vertex];
+			if(vertex_weight <= c_min) c_min = vertex_weight;
+			if(vertex_weight >= c_max) c_max = vertex_weight;
 		}
 
 		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // creates the rcl List based in a quality-based construction
 			vertex = solution_B[iter];
-			vertex_degree = vertexDegreeList[vertex];
-			if((c_min + p * (c_max - c_min)) <= ((double) vertex_degree) && ((double) vertex_degree) <= c_max) { // condition to get a good quality in the RCL list
+			vertex_weight = weight[vertex];
+			if((c_min + p * (c_max - c_min)) <= ((double) vertex_weight) && ((double) vertex_weight) <= c_max) { // condition to get a good quality in the RCL list
 				rclList.push_back(vertex);
 			}
 		}
@@ -923,23 +848,4 @@ void Solution::printSolution() {
 		cout << solution_B[idx] + 1 << ", ";
 	}
 	cout << " }" << endl;
-	/*cout << "Biclique Size = " << solution_size_A << endl;
-	cout << "Partition A = { ";
-	for(int idx = 0; idx < solution_size_A; idx++) {
-		if(idx == solution_size_A - 1) {
-			cout << solution_A[idx] << " }" << endl;
-			break;
-		}
-		cout << solution_A[idx] << " , ";
-	}
-
-	cout << "Partition B = { ";
-	for(int idx = 0; idx < solution_size_B; idx++) {
-		if(idx == solution_size_B - 1) {
-			cout << solution_B[idx] << " }" << endl;
-			break;
-		}
-		cout << solution_B[idx] << " , ";
-	}*/
-	//cout << "Weight = " << total_weight << endl;
 }

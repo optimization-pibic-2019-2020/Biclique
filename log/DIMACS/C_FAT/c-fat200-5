@@ -1,0 +1,53 @@
+Using bound 399
+Instance with 200 vertices and 8473 edges
+No edges = 11427
+Tried aggregator 1 time.
+MIP Presolve eliminated 39786 rows and 0 columns.
+MIP Presolve modified 414 coefficients.
+Reduced MIP has 216 rows, 400 columns, and 2799 nonzeros.
+Reduced MIP has 400 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.16 sec. (60.17 ticks)
+Probing time = 0.00 sec. (2.89 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 216 rows, 400 columns, and 2799 nonzeros.
+Reduced MIP has 400 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.01 sec. (2.22 ticks)
+Probing time = 0.00 sec. (2.89 ticks)
+Clique table members: 214.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 0.00 sec. (0.58 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0      689.5000    14                    689.5000       15
+*     0+    0                          399.0000      689.5000            72.81%
+      0     0      628.9870    10      399.0000      Fract: 1       21   57.64%
+      0     0      599.6818    10      399.0000       Cuts: 3       30   50.30%
+      0     0      598.9570    11      399.0000   Flowcuts: 1       32   50.11%
+      0     0      595.7500     6      399.0000   ZeroHalf: 2       36   49.31%
+      0     0      595.6526    13      399.0000   Flowcuts: 1       38   49.29%
+      0     0      595.5207    13      399.0000   ZeroHalf: 2       39   49.25%
+      0     0      595.2958    13      399.0000   ZeroHalf: 1       41   49.20%
+      0     0      595.2593    14      399.0000    MIRcuts: 1       42   49.19%
+      0     0      593.9857    15      399.0000   ZeroHalf: 1       44   48.87%
+      0     2      593.9857    15      399.0000      592.4353       44   48.48%
+Elapsed time = 0.39 sec. (121.15 ticks, tree = 0.02 MB, solutions = 1)
+
+Zero-half cuts applied:  6
+Lift and project cuts applied:  1
+Gomory fractional cuts applied:  3
+
+Root node processing (before b&c):
+  Real time             =    0.40 sec. (121.00 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.31 sec. (86.94 ticks)
+  Sync time (average)   =    0.08 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =    0.70 sec. (207.94 ticks)
+MaximumVertices: 399
+x: 200
+y: 199

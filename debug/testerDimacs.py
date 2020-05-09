@@ -18,6 +18,9 @@ output_path = current_path + "/output/"
 
 if not os.path.exists(output_path):
     os.mkdir(output_path)
+else:
+    os.remove(output_path + "/DIMACS")
+
 
 for r, d, f in os.walk(input_path):
     for file in f:

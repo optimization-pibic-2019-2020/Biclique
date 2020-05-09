@@ -1,0 +1,51 @@
+Using bound 399
+Instance with 200 vertices and 3235 edges
+No edges = 16665
+Tried aggregator 1 time.
+MIP Presolve eliminated 39605 rows and 0 columns.
+MIP Presolve modified 595 coefficients.
+Reduced MIP has 397 rows, 400 columns, and 9870 nonzeros.
+Reduced MIP has 400 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.20 sec. (85.55 ticks)
+Probing time = 0.00 sec. (2.77 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 397 rows, 400 columns, and 9870 nonzeros.
+Reduced MIP has 400 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.01 sec. (7.67 ticks)
+Probing time = 0.00 sec. (2.77 ticks)
+Clique table members: 395.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 0.00 sec. (2.13 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                          399.0000    40200.0000              ---
+      0     0     1728.0000    18      399.0000     1728.0000       47  333.08%
+      0     0     1665.3575    22      399.0000       Cuts: 2       63  317.38%
+      0     0     1603.3308    29      399.0000       Cuts: 5       96  301.84%
+      0     2     1603.3308    29      399.0000     1603.3308       96  301.84%
+Elapsed time = 0.49 sec. (175.60 ticks, tree = 0.02 MB, solutions = 1)
+   4663   924        cutoff            399.0000     1563.4089    23671  291.83%
+   6852   996     1565.8842    36      399.0000      525.8000    29130   31.78%
+   9163   230     1361.1524    30      399.0000      525.8000    36588   31.78%
+  10106    23      558.3519    14      399.0000      525.8000    47213   31.78%
+
+Clique cuts applied:  1
+Zero-half cuts applied:  1
+Lift and project cuts applied:  2
+Gomory fractional cuts applied:  6
+
+Root node processing (before b&c):
+  Real time             =    0.49 sec. (175.31 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    2.86 sec. (1055.39 ticks)
+  Sync time (average)   =    0.77 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =    3.36 sec. (1230.71 ticks)
+MaximumVertices: 399
+x: 199
+y: 200

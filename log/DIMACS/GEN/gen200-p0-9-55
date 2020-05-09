@@ -1,0 +1,46 @@
+Using bound 1278
+Instance with 200 vertices and 17910 edges
+No edges = 1990
+Tried aggregator 1 time.
+MIP Presolve eliminated 15844 rows and 0 columns.
+MIP Presolve modified 2045 coefficients.
+Reduced MIP has 24158 rows, 400 columns, and 95473 nonzeros.
+Reduced MIP has 400 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 1.76 sec. (1134.59 ticks)
+Probing time = 0.02 sec. (2.96 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 24158 rows, 400 columns, and 95473 nonzeros.
+Reduced MIP has 400 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.26 sec. (135.70 ticks)
+Probing time = 0.03 sec. (2.96 ticks)
+Clique table members: 24156.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 0.65 sec. (184.18 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0    12149.3333   216                  12149.3333     1107
+*     0+    0                         1278.0000    12149.3333           850.65%
+      0     0     2468.6924   132     1278.0000 Cliques: 6139     3580   93.17%
+      0     0     1932.1110   139     1278.0000     Cuts: 253     4185   51.18%
+      0     0     1730.9848   167     1278.0000     Cuts: 962     4750   35.44%
+      0     0        cutoff           1278.0000     1278.0000     5027    0.00%
+Elapsed time = 55.71 sec. (17447.90 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  328
+Zero-half cuts applied:  1
+
+Root node processing (before b&c):
+  Real time             =   55.71 sec. (17448.24 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   55.71 sec. (17448.24 ticks)
+MaximumVertices: 1278
+x: 141 147 183 194
+y: 112 134 169 198

@@ -1,0 +1,42 @@
+Using bound 5565
+Instance with 450 vertices and 83151 edges
+No edges = 17874
+Tried aggregator 1 time.
+MIP Presolve eliminated 187381 rows and 0 columns.
+MIP Presolve modified 15569 coefficients.
+Reduced MIP has 15121 rows, 900 columns, and 201962 nonzeros.
+Reduced MIP has 900 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 7.81 sec. (5725.77 ticks)
+Probing time = 0.02 sec. (3.90 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 15121 rows, 900 columns, and 201962 nonzeros.
+Reduced MIP has 900 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.44 sec. (278.71 ticks)
+Probing time = 0.01 sec. (3.88 ticks)
+Clique table members: 15119.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 4.05 sec. (1776.96 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     5782.7689   425                   5782.7689       22
+*     0+    0                         5565.0000     5782.7689             3.91%
+      0     0        cutoff           5565.0000                   1126     ---
+Elapsed time = 32.39 sec. (17500.41 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  486
+
+Root node processing (before b&c):
+  Real time             =   32.39 sec. (17501.06 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   32.39 sec. (17501.06 ticks)
+MaximumVertices: 5565
+x: 181 182 183 184 185 186 187 188 189 190 191 192 193 194 195
+y: 376 377 378 379 380 381 382 383 384 385 386 387 388 389 390

@@ -1,0 +1,63 @@
+Using bound 1231
+Instance with 200 vertices and 17863 edges
+No edges = 2037
+Tried aggregator 1 time.
+MIP Presolve eliminated 18904 rows and 0 columns.
+MIP Presolve modified 2288 coefficients.
+Reduced MIP has 21098 rows, 400 columns, and 93043 nonzeros.
+Reduced MIP has 400 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.83 sec. (1144.64 ticks)
+Probing time = 0.01 sec. (2.92 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 21098 rows, 400 columns, and 93043 nonzeros.
+Reduced MIP has 400 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.12 sec. (131.85 ticks)
+Probing time = 0.01 sec. (2.92 ticks)
+Clique table members: 21096.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 0.44 sec. (252.57 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     9750.8333   196                   9750.8333     1674
+*     0+    0                         1231.0000     9750.8333           692.11%
+      0     0     2117.8117   162     1231.0000 Cliques: 5374     3815   72.04%
+      0     0     1929.7175   151     1231.0000      Cuts: 93     4217   56.76%
+      0     0     1799.2188   159     1231.0000     Cuts: 342     4607   46.16%
+      0     0     1715.2961   163     1231.0000  Cliques: 152     4952   39.34%
+      0     0     1661.0383   169     1231.0000     Cuts: 254     5266   34.93%
+      0     0     1637.9369   174     1231.0000      Cuts: 88     5511   33.06%
+      0     0     1620.7717   180     1231.0000   Cliques: 70     5715   31.66%
+      0     0     1606.3780   178     1231.0000      Cuts: 75     5919   30.49%
+      0     0     1597.2503   179     1231.0000   Cliques: 56     6057   29.75%
+      0     0     1588.4763   176     1231.0000   Cliques: 65     6196   29.04%
+      0     0     1579.8182   184     1231.0000   Cliques: 60     6338   28.34%
+      0     0     1571.4675   181     1231.0000   Cliques: 70     6491   27.66%
+      0     0     1565.7978   191     1231.0000   Cliques: 92     6628   27.20%
+      0     0     1562.3298   187     1231.0000      Cuts: 50     6726   26.92%
+      0     0     1558.6665   190     1231.0000   Cliques: 50     6837   26.62%
+      0     0     1555.3437   188     1231.0000      Cuts: 62     6922   26.35%
+      0     0     1551.3069   184     1231.0000   Cliques: 48     7017   26.02%
+      0     0     1547.7004   184     1231.0000   Cliques: 33     7108   25.73%
+      0     0     1545.0417   188     1231.0000   Cliques: 43     7213   25.51%
+      0     0     1539.8779   184     1231.0000   Cliques: 41     7330   25.09%
+      0     0     1536.1617   185     1231.0000   Cliques: 89     7435   24.79%
+      0     0        cutoff           1231.0000     1231.0000     7545    0.00%
+Elapsed time = 80.64 sec. (33582.84 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  216
+
+Root node processing (before b&c):
+  Real time             =   80.64 sec. (33583.16 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   80.64 sec. (33583.16 ticks)
+MaximumVertices: 1231
+x: 142 144 169 196
+y: 50 163 181 186

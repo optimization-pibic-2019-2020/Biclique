@@ -1,0 +1,102 @@
+Using bound 2040
+Instance with 400 vertices and 71820 edges
+No edges = 7980
+Tried aggregator 1 time.
+MIP Presolve eliminated 154577 rows and 0 columns.
+MIP Presolve modified 5823 coefficients.
+Reduced MIP has 5425 rows, 800 columns, and 110746 nonzeros.
+Reduced MIP has 800 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 6.65 sec. (4136.43 ticks)
+Probing time = 0.03 sec. (3.57 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 5425 rows, 800 columns, and 110746 nonzeros.
+Reduced MIP has 800 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.38 sec. (151.90 ticks)
+Probing time = 0.02 sec. (3.55 ticks)
+Clique table members: 5423.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 2.36 sec. (787.63 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     3153.8525   341                   3153.8525       22
+      0     0     2872.8041   386                   Cuts: 392     1534
+      0     0     2708.2602   433                   Cuts: 333     2863
+      0     0     2609.3590   428                Cliques: 327     4129
+      0     0     2539.2925   449                Cliques: 257     5252
+      0     0     2507.7815   478                Cliques: 272     6029
+      0     0     2486.0558   480                Cliques: 233     6775
+      0     0     2468.7303   484                Cliques: 195     7395
+      0     0     2454.1085   486                Cliques: 193     8030
+      0     0     2445.2558   490                Cliques: 163     8528
+      0     0     2435.8981   488                Cliques: 148     9037
+      0     0     2428.3000   493                Cliques: 156     9478
+      0     0     2422.2752   477                Cliques: 116     9817
+      0     0     2418.3515   490                 Cliques: 81    10141
+      0     0     2415.1963   475                 Cliques: 80    10442
+      0     0     2412.7452   474                 Cliques: 84    10725
+      0     0     2409.8494   485                 Cliques: 58    10983
+      0     0     2408.0603   481                 Cliques: 67    11202
+      0     0     2406.0701   491                 Cliques: 70    11418
+      0     0     2403.9711   497                 Cliques: 63    11665
+      0     0     2402.2089   485                 Cliques: 65    11921
+      0     0     2400.4066   485                 Cliques: 74    12166
+      0     0     2399.3155   488                 Cliques: 43    12346
+      0     0     2398.5973   495                 Cliques: 23    12473
+      0     0     2397.7663   492                 Cliques: 37    12613
+      0     0     2396.8194   496                 Cliques: 53    12769
+      0     0     2395.9330   495                 Cliques: 46    12934
+      0     0     2394.8455   501                 Cliques: 49    13137
+      0     0     2393.8973   504                 Cliques: 55    13309
+      0     0     2392.6750   500                 Cliques: 47    13494
+      0     0     2392.1467   499                 Cliques: 19    13623
+      0     0     2391.4833   507                 Cliques: 28    13743
+      0     2     2391.4833   507                   2391.4833    13743
+Elapsed time = 67.50 sec. (35121.56 ticks, tree = 0.02 MB, solutions = 0)
+      1     3     2391.1583   510                   2391.4813    13878
+      2     4     2389.8321   501                   2391.4813    14232
+      6     6     2093.2768   171                   2391.1578    17868
+      9     5     2053.7796   168                   2389.8288    20401
+     12     3    infeasible                         2389.8288    16306
+     13     5     2385.6491   510                   2389.8288    20804
+     14     3    infeasible                         2389.8288    21602
+     16     2    infeasible                         2388.0505    25274
+     18     4     2383.8831   499                   2384.3817    26820
+*    37     8      integral     0     2040.0000     2383.8720    31537   16.86%
+     54     6     2044.4466   118     2040.0000     2380.2870    38952   16.68%
+Elapsed time = 79.95 sec. (39786.62 ticks, tree = 0.06 MB, solutions = 1)
+     73     5     2377.2276   496     2040.0000     2379.9244    42133   16.66%
+     83     6     2364.4335   489     2040.0000     2375.4210    49464   16.44%
+     94     8        cutoff           2040.0000     2370.4023    54935   16.20%
+    133     2        cutoff           2040.0000     2361.3817    67008   15.75%
+    136     4     2345.0755   485     2040.0000     2348.3474    68246   15.12%
+    147     7        cutoff           2040.0000     2347.0246    71334   15.05%
+    172     8    infeasible           2040.0000     2328.9375    81004   14.16%
+    192     4        cutoff           2040.0000     2320.7935    86646   13.76%
+    206    14     2290.1646   461     2040.0000     2315.3987    91056   13.50%
+    215     9        cutoff           2040.0000     2303.3522    94755   12.91%
+Elapsed time = 106.92 sec. (50190.02 ticks, tree = 0.25 MB, solutions = 1)
+    247    11     2258.2659   462     2040.0000     2278.9619   102904   11.71%
+    255    12     2256.6825   456     2040.0000     2278.9619   103015   11.71%
+    270    17     2233.3602   444     2040.0000     2262.8435   106760   10.92%
+    292    25     2199.9697   413     2040.0000     2256.5842   109442   10.62%
+    317    17     2157.0342   401     2040.0000     2217.2098   116991    8.69%
+    354    13        cutoff           2040.0000     2185.3357   121038    7.12%
+    380    14        cutoff           2040.0000     2141.8853   124302    4.99%
+
+Clique cuts applied:  676
+
+Root node processing (before b&c):
+  Real time             =   67.37 sec. (35049.84 ticks)
+Parallel b&c, 8 threads:
+  Real time             =   56.88 sec. (23064.44 ticks)
+  Sync time (average)   =   30.47 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =  124.25 sec. (58114.28 ticks)
+MaximumVertices: 2040
+x: 82 114 133 178 194 328 345
+y: 113 127 137 150 168 189 382

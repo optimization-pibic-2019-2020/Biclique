@@ -1,0 +1,65 @@
+Using bound 2015
+Instance with 400 vertices and 39984 edges
+No edges = 39816
+Tried aggregator 1 time.
+MIP Presolve eliminated 143358 rows and 0 columns.
+MIP Presolve modified 17042 coefficients.
+Reduced MIP has 16644 rows, 800 columns, and 153001 nonzeros.
+Reduced MIP has 800 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 13.03 sec. (5614.02 ticks)
+Probing time = 0.05 sec. (3.46 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 16644 rows, 800 columns, and 153001 nonzeros.
+Reduced MIP has 800 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.72 sec. (218.37 ticks)
+Probing time = 0.02 sec. (3.78 ticks)
+Clique table members: 16642.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 3.58 sec. (918.08 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     8222.5352   677                   8222.5352       35
+      0     0     7873.9937   732                   Cuts: 214     4273
+      0     0     7773.5590   730                    Cuts: 83     6330
+      0     0     7712.5538   735                 Cliques: 70     7863
+      0     0     7669.0682   735                 Cliques: 49     9382
+      0     0     7648.1723   738                 Cliques: 30    10241
+      0     0     7627.4150   738                 Cliques: 31    11271
+      0     0     7611.8373   743                 Cliques: 21    12084
+      0     0     7600.2743   731                 Cliques: 18    12790
+      0     0     7590.9199   740                 Cliques: 19    13483
+      0     0     7584.9199   735                 Cliques: 14    13968
+      0     0     7579.1524   738                 Cliques: 16    14533
+      0     0     7571.2690   747                 Cliques: 13    15130
+      0     0     7564.6847   739                 Cliques: 17    15675
+      0     0     7559.9653   740                 Cliques: 13    16138
+      0     0     7543.9675   735                 Cliques: 25    17017
+      0     0     7532.5346   746                 Cliques: 23    17740
+      0     0     7525.1175   737                 Cliques: 16    18296
+      0     0     7512.5694   727                 Cliques: 22    19084
+      0     0     7501.1298   736                 Cliques: 26    19824
+      0     0     7494.7155   734                 Cliques: 16    20405
+      0     0     7487.6985   740                 Cliques: 22    20925
+      0     0     7482.2836   741                 Cliques: 16    21399
+      0     0     7478.9405   740                  Cliques: 9    21745
+      0     0     7473.3181   738                 Cliques: 16    22241
+      0     0     7469.9815   739                 Cliques: 16    22658
+      0     0     7466.5888   737                 Cliques: 12    22973
+      0     0     7462.8562   741                 Cliques: 13    23431
+      0     0     7460.5986   738                 Cliques: 10    23711
+      0     0     7456.8589   738                 Cliques: 15    24096
+      0     0     7453.5014   735                  Cliques: 9    24494
+      0     0     7449.5559   732                 Cliques: 12    24927
+      0     0     7446.5098   733                 Cliques: 11    25275
+      0     0     7442.1679   743                 Cliques: 19    25755
+      0     0     7439.3484   746                  Cliques: 7    26059
+      0     0     7435.1090   751                  Cliques: 9    26453
+      0     0     7432.0193   741                 Cliques: 13    26843
+*     0+    0                         2015.0000     7432.0193           268.83%
+      0     0     7429.9379   734     2015.0000   Cliques: 12    27196  268.73%
+      0     0     7428.0607   738     2015.0000   Cliques: 12    27451  268.64%
+Heuristic still looking.

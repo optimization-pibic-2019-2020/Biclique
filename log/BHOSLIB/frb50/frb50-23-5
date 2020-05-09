@@ -1,0 +1,44 @@
+Using bound 8441
+Instance with 1150 vertices and 580640 edges
+No edges = 80035
+Tried aggregator 1 time.
+Presolve has eliminated 1268385 rows and 0 columns...
+MIP Presolve eliminated 1268385 rows and 0 columns.
+MIP Presolve modified 55265 coefficients.
+Reduced MIP has 54117 rows, 2300 columns, and 1006389 nonzeros.
+Reduced MIP has 2300 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 94.22 sec. (34051.73 ticks)
+Probing time = 0.12 sec. (6.47 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 54117 rows, 2300 columns, and 1006389 nonzeros.
+Reduced MIP has 2300 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 2.76 sec. (1357.86 ticks)
+Probing time = 0.03 sec. (6.50 ticks)
+Clique table members: 54115.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 32.61 sec. (7509.09 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     8955.5387   950                   8955.5387       21
+*     0+    0                         8441.0000     8955.5387             6.10%
+      0     0     8524.0622  1024     8441.0000    Cuts: 1098     7099    0.98%
+      0     0        cutoff           8441.0000                   9143     ---
+Elapsed time = 461.88 sec. (132838.78 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  687
+
+Root node processing (before b&c):
+  Real time             =  461.89 sec. (132841.87 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =  461.89 sec. (132841.87 ticks)
+MaximumVertices: 8441
+x: 88 92 98 107 114 121 128 155 173 177 178 179 258 260 292 302 323 330 346 355 358 392 393 398 432 440 472 525 532 537 557 560 562 576 577 578 579 580 581 582 583 584 585 586 587 588 589 590 591 592 593 594 595 596 597 598 624 629 639 640 658 678 685 687 689 691 695 708 725 730 731 735 736 757 759 764 780 782 904 917 945 957 993 997 1004 1009 1063 1128 1129 1141 1147 1150
+y: 60 80 101 103 104 111 116 117 118 121 123 124 126 128 131 132 135 139 140 141 144 146 148 149 150 151 153 154 155 156 157 159 174 175 176 177 183 188 190 191 194 198 200 268 279 290 291 292 296 297 299 301 306 314 316 323 330 331 332 334 336 337 338 345 346 357 369 370 371 372 373 374 375 376 377 378 379 380 381 382 383 384 385 386 387 388 389 390 391 392 394 395 396 398 399 488 495 498 500 506 507 510 511 513 518 521 523 525 532 534 535 541 542 543 545 555 559 563 564 566 580 581 585 591 597 599 600 691 693 698 704 706 707 709 712 714 716 726 727 729 737 740 741 742 743 745 746 749 750 751 752 753 756 758 762 764 765 766 767 770 771 774 775 778 779 780 781 782 786 787 789 790 791 792 796 797 798 799 800 871 875 877 878 883 887 889 894 899 902 904 908 911 914 915 922 924 926 927 932 934 938 939 940 942 945 946 947 948 950 951 953 955 956 957 958 960 961 962 964 965 968 969 972 974 976 979 980 982 983 984 986 987 989 994 1000 1070 1090 1099 1101 1104 1107 1111 1112 1113 1115 1118 1123 1124 1125 1126 1127 1134 1136 1147

@@ -1,0 +1,51 @@
+Using bound 2035
+Instance with 500 vertices and 125248 edges
+No edges = 62126
+Tried aggregator 1 time.
+MIP Presolve eliminated 225771 rows and 0 columns.
+MIP Presolve modified 24729 coefficients.
+Reduced MIP has 24231 rows, 1000 columns, and 231539 nonzeros.
+Reduced MIP has 1000 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 18.67 sec. (9437.64 ticks)
+Probing time = 0.07 sec. (4.23 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 24231 rows, 1000 columns, and 231539 nonzeros.
+Reduced MIP has 1000 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 1.19 sec. (328.30 ticks)
+Probing time = 0.04 sec. (4.25 ticks)
+Clique table members: 24229.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 5.03 sec. (1447.19 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     8891.4649   834                   8891.4649       29
+      0     0     8566.0327   888                   Cuts: 268     5574
+      0     0     8429.5520   909                   Cuts: 146     9292
+      0     0     8378.0543   916                 Cliques: 60    11245
+      0     0     8344.6783   920                 Cliques: 56    13009
+      0     0     8326.9132   910                 Cliques: 36    14193
+      0     0     8313.8490   910                 Cliques: 25    15100
+      0     0     8302.6232   910                 Cliques: 21    16026
+      0     0     8295.0065   905                 Cliques: 25    16768
+      0     0     8287.9480   905                 Cliques: 28    17543
+      0     0     8279.1103   900                 Cliques: 26    18374
+      0     0     8270.6397   899                 Cliques: 20    19064
+      0     0     8266.0825   897                 Cliques: 12    19632
+      0     0     8255.0485   896                 Cliques: 28    20527
+      0     0     8247.2529   907                 Cliques: 22    21270
+*     0+    0                         2035.0000     8247.2529           305.27%
+      0     0     8239.0425   909     2035.0000   Cliques: 25    22067  304.87%
+      0     0     8230.9816   908     2035.0000   Cliques: 25    22801  304.47%
+      0     0     8220.8041   908     2035.0000   Cliques: 28    23676  303.97%
+      0     0     8214.6272   913     2035.0000   Cliques: 14    24260  303.67%
+      0     0     8208.8970   919     2035.0000   Cliques: 16    24920  303.39%
+      0     0     8204.4656   914     2035.0000   Cliques: 13    25517  303.17%
+      0     0     8199.6059   911     2035.0000   Cliques: 15    26242  302.93%
+      0     0     8189.4906   913     2035.0000   Cliques: 18    27093  302.43%
+      0     0     8181.8374   912     2035.0000   Cliques: 20    27847  302.06%
+      0     0     8177.1126   915     2035.0000   Cliques: 15    28528  301.82%
+      0     0     8173.4440   922     2035.0000   Cliques: 14    29026  301.64%

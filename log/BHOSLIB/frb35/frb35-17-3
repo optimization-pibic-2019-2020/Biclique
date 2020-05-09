@@ -1,0 +1,42 @@
+Using bound 6222
+Instance with 595 vertices and 148784 edges
+No edges = 27931
+Tried aggregator 1 time.
+MIP Presolve eliminated 332146 rows and 0 columns.
+MIP Presolve modified 22474 coefficients.
+Reduced MIP has 21881 rows, 1190 columns, and 319732 nonzeros.
+Reduced MIP has 1190 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 13.23 sec. (9710.45 ticks)
+Probing time = 0.03 sec. (4.47 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 21881 rows, 1190 columns, and 319732 nonzeros.
+Reduced MIP has 1190 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.83 sec. (437.62 ticks)
+Probing time = 0.02 sec. (4.47 ticks)
+Clique table members: 21879.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 7.03 sec. (1749.84 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     6513.7731   543                   6513.7731       24
+*     0+    0                         6222.0000     6513.7731             4.69%
+      0     0        cutoff           6222.0000                   2119     ---
+Elapsed time = 57.58 sec. (26851.18 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  648
+
+Root node processing (before b&c):
+  Real time             =   57.59 sec. (26852.21 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   57.59 sec. (26852.21 ticks)
+MaximumVertices: 6222
+x: 280 292 470 475 518 527 534 579 580 581 582 583 584 585 586 587 588 589 590 591 592 593 594 595
+y: 93 94 97 100 101 112 114 120 122 125 126 131 132 133 136 137 141 142 144 148 150 151 152 154 156 159 166 168 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 252 262 274 279 280 287 288 296 305 307 308 312 315 320 321 325 326 328 330 331 334 336 337 343 346 348 350 351 353 355 358 364 381 393 397 399 434 447 459 461 468 469 480 484 485 505 506 514 518 520 521 523 524 526 532 533 539 544 549 553 554 556 557 564 566 567 569 571 574 576 577

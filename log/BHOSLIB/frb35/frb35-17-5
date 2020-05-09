@@ -1,0 +1,43 @@
+Using bound 6222
+Instance with 595 vertices and 148572 edges
+No edges = 28143
+Tried aggregator 1 time.
+MIP Presolve eliminated 332238 rows and 0 columns.
+MIP Presolve modified 22382 coefficients.
+Reduced MIP has 21789 rows, 1190 columns, and 317612 nonzeros.
+Reduced MIP has 1190 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 14.01 sec. (9948.99 ticks)
+Probing time = 0.06 sec. (4.47 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 21789 rows, 1190 columns, and 317612 nonzeros.
+Reduced MIP has 1190 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 1.52 sec. (435.13 ticks)
+Probing time = 0.03 sec. (4.44 ticks)
+Clique table members: 21787.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 5.06 sec. (1655.92 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     6590.2477   561                   6590.2477       22
+*     0+    0                         6222.0000     6590.2477             5.92%
+      0     0     6255.7276   587     6222.0000     Cuts: 671     3222    0.54%
+      0     0        cutoff           6222.0000                   3504     ---
+Elapsed time = 67.86 sec. (31830.48 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  423
+
+Root node processing (before b&c):
+  Real time             =   67.86 sec. (31831.48 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   67.86 sec. (31831.48 ticks)
+MaximumVertices: 6222
+x: 9 17 90 112 115 119 130 140 152 153 164 195 196 273 289 298 306 313 319 326 346 349 359 378 383 392 395 403 481 503 512 514 530 535 537 563 576 579 580 581 582 583 584 585 586 587 588 589 590 591 592 593 594 595
+y: 42 89 90 105 111 115 117 134 136 137 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 194 195 264 276 284 287 313 317 319 328 344 348 357 361 385 466 483 485 490 495 505 509 511 520 539 557 558 560 562 575

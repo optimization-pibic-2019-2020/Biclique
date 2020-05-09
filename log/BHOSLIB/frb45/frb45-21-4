@@ -1,0 +1,71 @@
+Using bound 7728
+Instance with 945 vertices and 387491 edges
+No edges = 58549
+Tried aggregator 1 time.
+Presolve has eliminated 852805 rows and 0 columns...
+MIP Presolve eliminated 852805 rows and 0 columns.
+MIP Presolve modified 41165 coefficients.
+Reduced MIP has 40222 rows, 1890 columns, and 695839 nonzeros.
+Reduced MIP has 1890 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 60.50 sec. (23210.19 ticks)
+Probing time = 0.10 sec. (5.77 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 40222 rows, 1890 columns, and 695839 nonzeros.
+Reduced MIP has 1890 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 1.84 sec. (943.06 ticks)
+Probing time = 0.02 sec. (5.71 ticks)
+Clique table members: 40220.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 22.95 sec. (4708.81 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     8263.6926   817                   8263.6926       23
+*     0+    0                         7728.0000     8263.6926             6.93%
+      0     0     7827.0321   859     7728.0000     Cuts: 901     5862    1.28%
+      0     0     7732.9323   846     7728.0000  Cliques: 496     8921    0.06%
+
+Repeating presolve.
+Tried aggregator 1 time.
+MIP Presolve eliminated 3134 rows and 995 columns.
+MIP Presolve modified 6216 coefficients.
+Reduced MIP has 37085 rows, 895 columns, and 370239 nonzeros.
+Reduced MIP has 895 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 6.50 sec. (2084.43 ticks)
+Probing time = 0.03 sec. (4.25 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 37085 rows, 895 columns, and 370239 nonzeros.
+Reduced MIP has 895 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 1.81 sec. (508.87 ticks)
+Represolve time = 8.84 sec. (2706.75 ticks)
+Probing time = 0.03 sec. (4.25 ticks)
+Clique table members: 37083.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 9.17 sec. (2938.89 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                         7728.0000     7732.9323             0.06%
+      0     0        cutoff           7728.0000     7728.0000     8940    0.00%
+      0     0        cutoff           7728.0000     7728.0000     8940    0.00%
+Elapsed time = 291.70 sec. (101582.46 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  377
+
+Root node processing (before b&c):
+  Real time             =  291.71 sec. (101583.63 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =  291.71 sec. (101583.63 ticks)
+MaximumVertices: 7728
+x: 26 31 90 92 94 95 97 112 120 124 128 131 148 160 166 179 184 196 198 234 238 250 285 289 295 303 304 305 309 313 317 319 321 325 327 335 355 358 361 368 369 379 380 381 382 383 384 385 386 387 388 389 390 391 392 393 394 395 396 397 398 399 430 470 486 490 502 506 511 513 516 519 542 546 558 559 562 567 573 579 581 584 589 597 696 701 703 704 710 716 721 722 726 731 735 747 751 758 760 761 767 768 769 770 781 787 794 795 797 798 833 840 842 844 853 859 860 873 878 887 890 897 899 901 903 906 922 923 925 926 929 931 933 935 942
+y: 84 95 106 112 120 125 128 129 130 132 137 139 140 143 144 145 147 148 156 157 158 166 167 169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 192 195 197 198 200 253 260 278 281 286 289 296 310 311 313 317 321 326 327 331 336 342 346 348 351 352 357 358 364 366 367 371 376 475 477 478 481 487 504 506 508 510 511 513 515 516 518 519 520 522 524 525 528 529 530 531 532 533 534 537 538 541 543 545 549 553 554 556 557 558 563 564 566 567 569 575 578 579 585 591 592 666 669 692 700 701 702 706 713 716 722 725 729 731 732 736 738 739 740 741 742 744 746 756 757 764 765 767 775 776 779 780 784 788 790 792 796 797 798 799 833 849 856 866 873 878 885 886 894 896 909 912 916 919 922 923 927 928 929 933 934 938 941

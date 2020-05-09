@@ -1,0 +1,44 @@
+Using bound 9048
+Instance with 1272 vertices and 714129 edges
+No edges = 94227
+Tried aggregator 1 time.
+Presolve has eliminated 1556302 rows and 0 columns...
+MIP Presolve eliminated 1556302 rows and 0 columns.
+MIP Presolve modified 62954 coefficients.
+Reduced MIP has 61684 rows, 2544 columns, and 1188652 nonzeros.
+Reduced MIP has 2544 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 130.99 sec. (42352.70 ticks)
+Probing time = 0.14 sec. (6.98 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 61684 rows, 2544 columns, and 1188652 nonzeros.
+Reduced MIP has 2544 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 4.42 sec. (1602.69 ticks)
+Probing time = 0.06 sec. (6.97 ticks)
+Clique table members: 61682.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 47.83 sec. (10697.26 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     9454.0905  1078                   9454.0905       25
+*     0+    0                         9048.0000     9454.0905             4.49%
+      0     0     9061.5796  1125     9048.0000    Cuts: 1212     6867    0.15%
+      0     0        cutoff           9048.0000                   7011     ---
+Elapsed time = 475.86 sec. (160153.00 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  740
+
+Root node processing (before b&c):
+  Real time             =  475.86 sec. (160156.61 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =  475.86 sec. (160156.61 ticks)
+MaximumVertices: 9048
+x: 1177 1178 1179 1180 1181 1182 1183 1184 1185 1186 1187 1188 1189 1190 1191 1192 1193 1194 1195 1196 1197 1198 1199 1200
+y: 577 578 579 580 581 582 583 584 585 586 587 588 589 590 591 592 593 594 595 596 597 598 599 600

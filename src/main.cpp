@@ -6,16 +6,18 @@
 
 using namespace std;
 
-double z = 0.8; // variable related to the number of vertices that will be removed in the function shake()
-int k = 100; // limit of iterations that dont improve the biclique
-double p = 0.5; // variable related to the quality based construction in the RCL list
-int total_iterations = 1000; // number of ils iterations
+int k; // limit of iterations that dont improve the biclique (beta)
+double p = 0.0; // variable related to the quality based construction in the RCL list (alpha)
+int total_iterations; // number of ils iterations
 double total_time = 0, time_to_best = 0;
+
 
 int main() {
 	try {
 		int v, e;
 		cin >> v >> e;
+		total_iterations = e / 5;
+		k = total_iterations / 2;
 
 		if(v == 0 || e == 0) { // The algorithm cannot run if the number of vertices or edges is equal to zero
 			cout << "The number of vertices or edges is equal to 0!" << endl;
@@ -25,7 +27,6 @@ int main() {
 		Graph *graph = new Graph(v, e);
 		graph->readWeight(); // read all the weight and put into the weight vector
 		graph->readEdges(); // read all the edges and put into the adjList
-		graph->initializeVertexDegreeList();
 		graph->sort(); 
 		//graph->showGraphInformations(); // show all the informations of the input Graph
 		Solution s(graph); // initialize all the variables and structures for solution
@@ -38,10 +39,7 @@ int main() {
         // start timing
         start = std::chrono::system_clock::now();
         while(loop--) {
-	        // start the first random solution
-			//s.generateRandomSolution();
-			//if(s.checkBicliqueSize() == false) s.balanceBiclique();
-
+	        // start the first greedy random solution
 			s.greedyRandomizedConstructive(p);
 			if(s.checkBicliqueSize() == false) s.balanceBiclique();
 
@@ -62,6 +60,9 @@ int main() {
 
 				if(x == 0) break;
 				
+				p += 0.01;
+				p = fmod(p, 0.11);
+
 				next_s.restartSolution();
 				assert(next_s.checkIntegrity());
 				assert(next_s.checkMu());
@@ -85,9 +86,6 @@ int main() {
 
 			s.restartSolution();
 		}
-
-		// print final solution
-		//s.printSolution();
 		
 		// end timing
         end = std::chrono::system_clock::now();
@@ -97,10 +95,8 @@ int main() {
 
         //5 digits precision is enough
         total_time += elapsed_seconds.count();
-        cout << best_solution << "\t" << avarage_solution / 10 << "\t" << std::setprecision(4) << total_time / 10.0 << "\t" << time_to_best << "\t";
+        cout << best_solution << "\t" << avarage_solution / 10 << "\t" << std::setprecision(4) << total_time / 10 << "\t" << time_to_best << "\t";
 		best_s.printSolution();
-        // execution time
-	    //cout << "Execution time: " << std::setprecision(4) << total_time << " seconds." << endl;
 	}
 	catch (std::exception &e) {
 		cerr << e.what();

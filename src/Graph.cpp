@@ -7,7 +7,6 @@ using namespace std;
 Graph::Graph(int v, int e) {
 	this->v = v;
 	this->e = e;
-	vertexDegreeList.resize(v);
 	adjList.resize(v);
 	weight.resize(v);
 }
@@ -24,23 +23,16 @@ int Graph::get_weight(int u) {
 	return weight[u];
 }
 
-vector<int> Graph::get_vertex_degree_list() {
-	return vertexDegreeList;
+vector<int> &Graph::get_weight_list() {
+	return weight;
 }
 
-vector<int> Graph::get_vertex_adjList(int u) {
+vector<int> &Graph::get_vertex_adjList(int u) {
 	return adjList[u];
 }
 
-vector<vector<int>> Graph::get_adjList() {
+vector<vector<int>> &Graph::get_adjList() {
 	return adjList;
-}
-
-void Graph::initializeVertexDegreeList() { // talvez mudar o nome depois, já que estou utilizando o peso e nao o grau
-	for(int iter = 0; iter < this->v; iter++) {
-		vertexDegreeList[iter] = weight[iter]; // for maximum balanced weighted vertex biclique problem
-		//vertexDegreeList[iter] = adjList[iter].size(); // for maximum balanced unweighted biclique problem
-	}
 }
 
 void Graph::addEdges(int u, int t) {

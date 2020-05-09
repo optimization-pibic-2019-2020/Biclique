@@ -1,0 +1,43 @@
+Using bound 7049
+Instance with 760 vertices and 247157 edges
+No edges = 41263
+Tried aggregator 1 time.
+Presolve has eliminated 547243 rows and 0 columns...
+MIP Presolve eliminated 547243 rows and 0 columns.
+MIP Presolve modified 31117 coefficients.
+Reduced MIP has 30359 rows, 1520 columns, and 492689 nonzeros.
+Reduced MIP has 1520 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 25.91 sec. (15422.40 ticks)
+Probing time = 0.04 sec. (5.09 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 30359 rows, 1520 columns, and 492689 nonzeros.
+Reduced MIP has 1520 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 1.28 sec. (669.67 ticks)
+Probing time = 0.03 sec. (5.04 ticks)
+Clique table members: 30357.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 23.57 sec. (6457.87 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     7318.3911   672                   7318.3911       23
+*     0+    0                         7049.0000     7318.3911             3.82%
+      0     0        cutoff           7049.0000                   3750     ---
+Elapsed time = 105.66 sec. (45768.91 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  725
+
+Root node processing (before b&c):
+  Real time             =  105.66 sec. (45770.46 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =  105.66 sec. (45770.46 ticks)
+MaximumVertices: 7049
+x: 99 145 168 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 198 276 333 363 487 496 523 540 554 570 698 706
+y: 104 110 184 194 325 331 333 350 381 382 383 384 385 386 387 388 389 390 391 392 393 394 395 396 397 398 399 477 518 520 527 554 730

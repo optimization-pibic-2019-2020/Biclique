@@ -1,0 +1,44 @@
+Using bound 6222
+Instance with 595 vertices and 148859 edges
+No edges = 27856
+Tried aggregator 1 time.
+MIP Presolve eliminated 331733 rows and 0 columns.
+MIP Presolve modified 22887 coefficients.
+Reduced MIP has 22294 rows, 1190 columns, and 329823 nonzeros.
+Reduced MIP has 1190 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 12.40 sec. (9729.25 ticks)
+Probing time = 0.06 sec. (4.45 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 22294 rows, 1190 columns, and 329823 nonzeros.
+Reduced MIP has 1190 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 1.49 sec. (450.92 ticks)
+Probing time = 0.03 sec. (4.47 ticks)
+Clique table members: 22292.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 4.59 sec. (1658.62 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     6577.4660   561                   6577.4660       21
+*     0+    0                         6222.0000     6577.4660             5.71%
+      0     0     6268.1611   611     6222.0000     Cuts: 652     3916    0.74%
+      0     0        cutoff           6222.0000                   4347     ---
+Elapsed time = 56.14 sec. (31614.48 ticks, tree = 0.01 MB, solutions = 1)
+
+Clique cuts applied:  387
+Gomory fractional cuts applied:  1
+
+Root node processing (before b&c):
+  Real time             =   56.15 sec. (31615.52 ticks)
+Parallel b&c, 8 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&cut) =   56.15 sec. (31615.52 ticks)
+MaximumVertices: 6222
+x: 40 62 100 120 126 133 140 142 162 166 181 187 191 260 261 267 272 280 315 336 367 387 395 398 408 427 441 449 488 522 526 558 579 580 581 582 583 584 585 586 587 588 589 590 591 592 593 594 595
+y: 77 83 94 96 97 101 108 111 113 127 128 138 139 140 142 146 150 151 159 161 162 163 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 191 198 256 270 280 283 302 304 305 306 307 308 311 312 314 316 321 326 331 337 347 363 364 376 380 392 469 475 480 513 514 516 519 522 530 536 551 554 555 556 564 567 568 576

@@ -1,0 +1,36 @@
+Using bound 5684
+Instance with 1024 vertices and 434176 edges
+No edges = 89600
+Tried aggregator 1 time.
+Presolve has eliminated 951220 rows and 0 columns...
+MIP Presolve eliminated 951220 rows and 0 columns.
+MIP Presolve modified 98380 coefficients.
+Reduced MIP has 97358 rows, 2048 columns, and 1136971 nonzeros.
+Reduced MIP has 2048 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 92.16 sec. (29376.93 ticks)
+Probing time = 0.09 sec. (6.84 ticks)
+Tried aggregator 1 time.
+Reduced MIP has 97358 rows, 2048 columns, and 1136971 nonzeros.
+Reduced MIP has 2048 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 4.66 sec. (1557.15 ticks)
+Probing time = 0.07 sec. (6.84 ticks)
+Clique table members: 97356.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 8 threads.
+Root relaxation solution time = 36.79 sec. (7788.28 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0     9967.8388  1064                   9967.8388       29
+      0     0     8820.4152  1197                  Cuts: 1210    13003
+      0     0     8205.2133  1228                   Cuts: 965    23594
+      0     0     7887.2641  1253                Cliques: 898    31843
+      0     0     7669.2015  1269                Cliques: 870    38894
+      0     0     7547.3003  1261                Cliques: 730    44285
+      0     0     7461.3043  1274                Cliques: 604    49034
+      0     0     7404.1999  1282                Cliques: 579    53430
+      0     0     7357.5858  1289                Cliques: 525    56798
+      0     0     7325.2231  1293                Cliques: 421    59546
+      0     0     7298.5516  1274                Cliques: 381    61908 

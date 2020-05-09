@@ -3,16 +3,17 @@ TEST = ./test
 DEBUG = ./debug
 
 all: main.o Graph.o Solution.o
-	g++ main.o Graph.o Solution.o -o main
+	g++ -O3 main.o Graph.o Solution.o -o main
+	cp main \debug
 
 main.o: $(SRC)/main.cpp
-	g++ -c $(SRC)/main.cpp
+	g++ -c -O3 $(SRC)/main.cpp 
 
 Graph.o: $(SRC)/Graph.cpp $(SRC)/Graph.hpp
-	g++ -c $(SRC)/Graph.cpp
+	g++ -c -O3 $(SRC)/Graph.cpp
 
 Solution.o: $(SRC)/Solution.cpp $(SRC)/Solution.hpp
-	g++ -c $(SRC)/Solution.cpp
+	g++ -c -O3 $(SRC)/Solution.cpp
 
 exec: 
 	./main <$(TEST)/in
