@@ -16,7 +16,11 @@ int main() {
 	try {
 		int v, e;
 		cin >> v >> e;
-		total_iterations = e / 5;
+
+		total_iterations = e / 100; // 1% of the edges
+		if(total_iterations > 20000) total_iterations = 20000; 
+		else if(total_iterations < 1000) total_iterations = 3000;
+
 		k = total_iterations / 2;
 
 		if(v == 0 || e == 0) { // The algorithm cannot run if the number of vertices or edges is equal to zero
@@ -29,7 +33,7 @@ int main() {
 		graph->readEdges(); // read all the edges and put into the adjList
 		graph->sort(); 
 		//graph->showGraphInformations(); // show all the informations of the input Graph
-		Solution s(graph); // initialize all the variables and structures for solution
+
 		Solution best_s(graph);
 
 		// initialize C++ timer
@@ -39,12 +43,13 @@ int main() {
         // start timing
         start = std::chrono::system_clock::now();
         while(loop--) {
+			Solution s(graph); // initialize all the variables and structures for solution
 	        // start the first greedy random solution
 			s.greedyRandomizedConstructive(p);
 			if(s.checkBicliqueSize() == false) s.balanceBiclique();
 
 			int x = k, best_weight = s.getTotalWeight(), local_weight;
-			Solution next_s(s);
+			Solution next_s(graph);
 			for(int iter = 0; iter < total_iterations; iter++) { // run ILS iterations
 				next_s.greedyRandomizedConstructive(p); // starts a new optimal solution
 				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
@@ -83,8 +88,6 @@ int main() {
 
 			assert(next_s.checkIntegrity());
 			assert(next_s.checkMu());
-
-			s.restartSolution();
 		}
 		
 		// end timing
