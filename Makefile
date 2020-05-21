@@ -33,7 +33,7 @@ generatorU:
 
 tester:
 	python3 $(DEBUG)/testerDimacs.py
-	python3 $(DEBUG)/testerBhoslib.py
+	#python3 $(DEBUG)/testerBhoslib.py
 	#python3 $(DEBUG)/testerBarabasiAlbert.py
 	#python3 $(DEBUG)/testerErdosRenyi.py
 

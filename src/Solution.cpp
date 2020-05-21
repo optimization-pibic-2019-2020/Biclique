@@ -758,6 +758,7 @@ void Solution::rclConstruction(int code, double p) { // construct the restricted
 		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // gets the c_min and c_max parameters from the free vertices
 			vertex = solution_A[iter];
 			vertex_weight = weight[vertex];
+
 			if(vertex_weight <= c_min) c_min = vertex_weight;
 			if(vertex_weight >= c_max) c_max = vertex_weight;
 		}
@@ -765,6 +766,7 @@ void Solution::rclConstruction(int code, double p) { // construct the restricted
 		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // creates the rcl List based in a quality-based construction
 			vertex = solution_A[iter];
 			vertex_weight = weight[vertex];
+
 			if((c_min + p * (c_max - c_min)) <= ((double) vertex_weight) && ((double) vertex_weight) <= c_max) { // condition to get a good quality in the RCL list
 				rclList.push_back(vertex);
 			}
@@ -786,6 +788,7 @@ void Solution::rclConstruction(int code, double p) { // construct the restricted
 		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // gets the c_min and c_max parameters from the free vertices
 			vertex = solution_B[iter];
 			vertex_weight = weight[vertex];
+
 			if(vertex_weight <= c_min) c_min = vertex_weight;
 			if(vertex_weight >= c_max) c_max = vertex_weight;
 		}
@@ -793,6 +796,7 @@ void Solution::rclConstruction(int code, double p) { // construct the restricted
 		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // creates the rcl List based in a quality-based construction
 			vertex = solution_B[iter];
 			vertex_weight = weight[vertex];
+
 			if((c_min + p * (c_max - c_min)) <= ((double) vertex_weight) && ((double) vertex_weight) <= c_max) { // condition to get a good quality in the RCL list
 				rclList.push_back(vertex);
 			}

@@ -6,22 +6,42 @@
 
 using namespace std;
 
-int k; // limit of iterations that dont improve the biclique (beta)
-double p = 0.0; // variable related to the quality based construction in the RCL list (alpha)
-int total_iterations; // number of ils iterations
+int total_iterations = 5000; // number of ils iterations
+int k = 1000; // limit of iterations that dont improve the biclique (beta)
+double p = 0; // variable related to the quality based construction in the RCL list (alpha)
 double total_time = 0, time_to_best = 0;
 
 
-int main() {
+int main(int argc, char* argv[]) {
 	try {
+		// setting parameters
+
+		if(argc > 1 && strcmp(argv[1], "-help") == 0) {
+			cout << "-  " << "I + number of iterations for total iterations of GRASP+VND" << endl;
+			cout << "-  " << "B + beta for the parameter beta" << endl;
+			cout << "-  " << "A + alpha for the parameter alpha of the quality-based RCL" << endl;
+			cout << "-  " << "If a instruction is not set then the non-used paremeters will have the default value" << endl;
+			return 0;
+		}
+
+		for(int iter = 1; iter < argc; iter++) {
+			if(strcmp(argv[iter], "-I") == 0) total_iterations = atoi(argv[++iter]);
+			else if(strcmp(argv[iter], "-B") == 0) k = atoi(argv[++iter]); 
+			else if(strcmp(argv[iter], "-A") == 0) p = stod(argv[++iter]);
+			else {
+				cout << "Parameters Failed." << endl << "Type -help to use the parameters correctly" << endl;
+				return 0;
+			}
+		}
+	
+		cout << "Total iterations = " << total_iterations << endl;
+		cout << "Beta = " << k << endl;
+		cout << "Alpha = " << p << endl;
+		
+		// end of setting parameters
+
 		int v, e;
 		cin >> v >> e;
-
-		total_iterations = e / 100; // 1% of the edges
-		if(total_iterations > 20000) total_iterations = 20000; 
-		else if(total_iterations < 1000) total_iterations = 3000;
-
-		k = total_iterations / 2;
 
 		if(v == 0 || e == 0) { // The algorithm cannot run if the number of vertices or edges is equal to zero
 			cout << "The number of vertices or edges is equal to 0!" << endl;
