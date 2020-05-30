@@ -57,19 +57,27 @@ int main(int argc, char* argv[]) {
 		Solution best_s(graph);
 
 		// initialize C++ timer
-        std::chrono::time_point<std::chrono::system_clock> start, end;
+        std::chrono::time_point<std::chrono::system_clock> start, time_to_best_start, end;
 
         int loop = 10, best_solution = -1, avarage_solution = 0, K = 3;
         // start timing
         start = std::chrono::system_clock::now();
+
+		cout << "Starting the algorithm...\n" << endl;
         while(loop--) {
+			cout << abs(10 - loop) << " execution" << endl;
 			Solution s(graph); // initialize all the variables and structures for solution
 	        // start the first greedy random solution
 			s.greedyRandomizedConstructive(p);
 			if(s.checkBicliqueSize() == false) s.balanceBiclique();
 
 			int x = k, best_weight = s.getTotalWeight(), local_weight;
+			cout << "Initial Solution: " << s.getTotalWeight() << endl;
 			Solution next_s(graph);
+
+			// start time_to_best timing
+			time_to_best_start = std::chrono::system_clock::now();
+
 			for(int iter = 0; iter < total_iterations; iter++) { // run ILS iterations
 				next_s.greedyRandomizedConstructive(p); // starts a new optimal solution
 				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
@@ -80,6 +88,9 @@ int main(int argc, char* argv[]) {
 					s = next_s;
 					best_weight = local_weight;
 					x = k;
+					std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - time_to_best_start; 
+					time_to_best = elapsed_seconds.count();
+					cout << "New best found: " << best_weight << endl;
 				}	
 				else if(local_weight == best_weight) x--;
 
@@ -98,18 +109,22 @@ int main(int argc, char* argv[]) {
 				best_weight = s.getTotalWeight();
 			}
 
+			cout << "End of execution " << abs(10 - loop) << endl;
+			cout << "Best: " << best_weight << endl;
+			cout << "Time to best: " << time_to_best << "s\n" << endl;
+
 			avarage_solution += best_weight;
 			if(best_solution < best_weight) {
 				best_s = s;
 				best_solution = best_weight;
-				std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - start; 
-				time_to_best = elapsed_seconds.count();
 			}
 
 			assert(next_s.checkIntegrity());
 			assert(next_s.checkMu());
 		}
 		
+		cout << "End of the algorithm" << endl;
+
 		// end timing
         end = std::chrono::system_clock::now();
 
@@ -118,8 +133,13 @@ int main(int argc, char* argv[]) {
 
         //5 digits precision is enough
         total_time += elapsed_seconds.count();
-        cout << best_solution << "\t" << avarage_solution / 10 << "\t" << std::setprecision(4) << total_time / 10 << "\t" << time_to_best << "\t";
+
+		cout << "Best Solution: " << best_solution << endl;
+		cout << "Avarage Solution: " << avarage_solution / 10 << endl;
+		cout << "Avarage Time: " << std::setprecision(4) << total_time / 10 << endl;
+		cout << "Solution: ";
 		best_s.printSolution();
+		cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" << endl;
 	}
 	catch (std::exception &e) {
 		cerr << e.what();

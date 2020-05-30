@@ -1,25 +1,28 @@
-from os.path import isfile, join
+from os.path import isfile, join, basename
+from datetime import datetime
 import os
 from pathlib import Path
 import subprocess
 import time
 
 file_path = list()
-current_path = str(Path(__file__).parent.absolute())
+current_path = str(Path(__file__).parent.absolute()) 
 
-#input_path = current_path + "/input/BHOSLIB/"
+# datetime object containing current date and time
+now = datetime.now()
+
+# dd/mm/YY H:M:S
+dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+
 input_path = current_path + "/input/BHOSLIB-V/"
-#input_path = current_path + "/input/BHOSLIB-U/"
 
 if not os.path.exists(input_path):
     os.mkdir(input_path)
 
-output_path = current_path + "/output/"
+output_path = current_path + "/logs/BHOSLIB/"
 
 if not os.path.exists(output_path):
     os.mkdir(output_path)
-else:
-    os.remove(output_path + "/BHOSLIB")
 
 for r, d, f in os.walk(input_path):
     for file in f:
@@ -28,8 +31,12 @@ for r, d, f in os.walk(input_path):
 file_path.sort(key=lambda x: (len(x[0]), x[0]))
 
 for (x, y) in file_path:
+    z = basename(Path(y).parent)
+    if not os.path.exists(output_path + z):
+        os.mkdir(output_path + z)
+
+    f = open(output_path + z + '/' + x, 'a+', buffering=1)
     print("Testing: " + x)
-    f = open(output_path + "/BHOSLIB", 'a+', buffering=1)
     cmd = str(current_path + "/main" +  " < " +  y)
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     #Send it to run
@@ -37,6 +44,7 @@ for (x, y) in file_path:
     (output, err) = process.communicate()
     pEndTime = time.time()
     #Now store values
-    f.write(x + "\t" + str(output.decode('UTF-8')))
+    f.write("Testing: " + x + " in " + dt_string + "\n") 
+    f.write(str(output.decode('UTF-8')))
     f.flush()
     f.close()
