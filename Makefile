@@ -22,9 +22,6 @@ clear:
 	rm main
 	rm ./*.o
 
-copy:
-	cp main \debug
-
 generatorW:
 	python3 $(DEBUG)/generatorWeightedVertices.py
 
