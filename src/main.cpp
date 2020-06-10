@@ -158,7 +158,7 @@ int main(int argc, char* argv[]) {
 			discrete_distribution<int> distribution(alphaProbability.begin(), alphaProbability.end());
 			std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 			execution_time = elapsed_seconds.count();
-			
+
 			cout << "\nAlpha probabilities (Reactive grasp)" << endl;
 			for(int i = 0; i < 11; i++) {
 				cout << "Alpha: " << ((double) i) / 10.0 << " Probability: " << distribution.probabilities()[i] * 100 << "%" << endl;
