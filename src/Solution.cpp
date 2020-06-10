@@ -748,12 +748,24 @@ void Solution::VND(int K) { // run VND iterations
 	}
 }
 
-void Solution::rclConstruction(int code, double p) { // construct the restricted candidate list for a specific partition and choose a random vertex from it to put in the solution
+void Solution::createRclProbability() { // function that creates the probability of each vertex based in linear bias function (1.0 / bias_rank)
+	double bias_rank = 1.0; // variable that represents the rank of each element in rcl
+	rclListProbability.push_back(1.0); 
+	for(int iter = 1; iter < rclList.size(); iter++) {
+		// when the weight in rcl gets worse then bias_rank will be increased (the probability is decreased)
+		if(rclList[iter] < rclList[iter - 1]) bias_rank += 1.0;
+
+		rclListProbability.push_back(1.0 / bias_rank);
+	}
+}
+
+void Solution::rclConstruction(int code, double alpha) { // construct the restricted candidate list for a specific partition and choose a random vertex from it to put in the solution
 	if(code == 0 && free_size_A != 0) { // partition A
 		int iter, vertex, vertex_weight;
 		int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
 		vector<int> &weight = graph->get_weight_list();
 		rclList.clear();
+		rclListProbability.clear();
 
 		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // gets the c_min and c_max parameters from the free vertices
 			vertex = solution_A[iter];
@@ -767,23 +779,37 @@ void Solution::rclConstruction(int code, double p) { // construct the restricted
 			vertex = solution_A[iter];
 			vertex_weight = weight[vertex];
 
-			if((c_min + p * (c_max - c_min)) <= ((double) vertex_weight) && ((double) vertex_weight) <= c_max) { // condition to get a good quality in the RCL list
+			if((c_min + alpha * (c_max - c_min)) <= ((double) vertex_weight) && ((double) vertex_weight) <= c_max) { // condition to get a good quality in the RCL list
 				rclList.push_back(vertex);
 			}
 		}
+
+		// sort rclList in descending order based on weight = (i % 200) + 1
+		sort(rclList.begin(), rclList.end(), [] (int v, int u) { 
+			return ((v % 200) + 1) > ((u % 200) + 1); // based on weight = (i % 200) + 1
+		});
+
+		// creates the rclListProbability
+		createRclProbability();
 		
-		// generate a random number between [0, rclList.size() - 1]
-		uniform_int_distribution<int> distribution(0, rclList.size() - 1);
+		// generate a random number between [0, rclList.size() - 1] using a linear bias function
+		discrete_distribution<int> distribution(rclListProbability.begin(), rclListProbability.end());
 		int pos = distribution(generator);
 		vertex = rclList[pos]; 
 		addVertex(vertex, 0);
 		checkFreePartition();
+
+		/*cout << "\nRCL probabilities (Bias Function)" << endl;
+		for(int i = 0; i < rclListProbability.size(); i++) {
+			cout << "Vertex: " << rclList[i] << " Weight: " << (rclList[i] % 200) + 1 << " Probability: " << distribution.probabilities()[i] * 100 << "%" << endl;
+		}*/
 	}
 	else if(code != 0 && free_size_B != 0) { // partition B
 		int iter, vertex, vertex_weight;
 		int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
 		vector<int> &weight = graph->get_weight_list();
 		rclList.clear();
+		rclListProbability.clear();
 
 		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // gets the c_min and c_max parameters from the free vertices
 			vertex = solution_B[iter];
@@ -797,17 +823,30 @@ void Solution::rclConstruction(int code, double p) { // construct the restricted
 			vertex = solution_B[iter];
 			vertex_weight = weight[vertex];
 
-			if((c_min + p * (c_max - c_min)) <= ((double) vertex_weight) && ((double) vertex_weight) <= c_max) { // condition to get a good quality in the RCL list
+			if((c_min + alpha * (c_max - c_min)) <= ((double) vertex_weight) && ((double) vertex_weight) <= c_max) { // condition to get a good quality in the RCL list
 				rclList.push_back(vertex);
 			}
 		}
+		
+		// sort rclList in descending order based on weight = (i % 200) + 1
+		sort(rclList.begin(), rclList.end(), [] (int v, int u) { 
+			return ((v % 200) + 1) > ((u % 200) + 1); // based on weight = (i % 200) + 1
+		});
 
-		// generate a random number between [0, rclList.size() - 1]
-		uniform_int_distribution<int> distribution(0, rclList.size() - 1);
+		// creates the rclListProbability
+		createRclProbability();
+
+		// generate a random number between [0, rclList.size() - 1] using a linear bias function
+		discrete_distribution<int> distribution(rclListProbability.begin(), rclListProbability.end());
 		int pos = distribution(generator);
 		vertex = rclList[pos]; 
 		addVertex(vertex, 1);
 		checkFreePartition();
+
+		/*cout << "\nRCL probabilities (Bias Function)" << endl;
+		for(int i = 0; i < rclListProbability.size(); i++) {
+			cout << "Vertex: " << rclList[i] << " Weight: " << (rclList[i] % 200) + 1 << " Probability: " << distribution.probabilities()[i] * 100 << "%" << endl;
+		}*/
 	}
 }
 

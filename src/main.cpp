@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
 			if(s.checkBicliqueSize() == false) s.balanceBiclique();
 
 			int x = beta, y = alpha_calibration, best_weight = s.getTotalWeight(), local_weight;
-			double solutionAvarage;
+			double solutionAvarage, totalProbability = 0;
 			cout << "Initial Solution: " << s.getTotalWeight() << endl;
 			Solution next_s(graph);
 
@@ -155,13 +155,13 @@ int main(int argc, char* argv[]) {
 			assert(next_s.checkMu());
 
 			// execution informations
-
+			discrete_distribution<int> distribution(alphaProbability.begin(), alphaProbability.end());
 			std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 			execution_time = elapsed_seconds.count();
-
+			
 			cout << "\nAlpha probabilities (Reactive grasp)" << endl;
 			for(int i = 0; i < 11; i++) {
-				cout << "Alpha: " << ((double) i) / 10.0 << " Probability: " << alphaProbability[i] << " Chosen: " << alphaTimesChosen[i]<< endl;
+				cout << "Alpha: " << ((double) i) / 10.0 << " Probability: " << distribution.probabilities()[i] * 100 << "%" << endl;
 			}
 
 			cout << "\nResults:\n";

@@ -52,6 +52,10 @@ private:
 	
 	vector<int> rclList;
 
+	// vector that represents the probability of each element in the rcl
+
+	vector<double> rclListProbability;
+
 public:
 	Solution(Graph *graph);
 	int getTotalWeight();
@@ -79,8 +83,9 @@ public:
 	bool addBestVertex();
 	void VND(int K);
 	void shake(double z);
-	void greedyRandomizedConstructive(double p);
+	void createRclProbability();
 	void rclConstruction(int code, double p);
+	void greedyRandomizedConstructive(double p);
 	void balanceBiclique();
 	void printSolution();
 };
