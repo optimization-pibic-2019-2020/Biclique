@@ -5,9 +5,11 @@
 #include <chrono>
 #include <random>
 
+using namespace std::chrono;
 using namespace std;
 
-int total_iterations = 5000; // number of ils iterations
+int total_iterations = 5000; // number of grasp iterations
+double execution_time_limit = 0; // time of each execution
 int beta = 1000; // limit of iterations that dont improve the biclique
 int alpha_calibration = 50; // variable related to the reactive grasp adjustment
 vector<double> alphas{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}; // all alpha values
@@ -22,15 +24,24 @@ int main(int argc, char* argv[]) {
 	try {
 		// setting parameters
 		if(argc > 1 && strcmp(argv[1], "-help") == 0) {
-			cout << "-  " << "I + number of iterations for total iterations of GRASP+VND" << endl;
-			cout << "-  " << "B + beta for the parameter beta" << endl;
-			cout << "-  " << "C + alpha_calibration for the reactive grasp calibration parameter" << endl;
+			cout << "-  " << "You can use only one command (I or T) for execution iteration" << endl;
+			cout << "-  " << "-I + number of iterations for total iterations of GRASP+VND" << endl;
+			cout << "-  " << "-T + time in seconds to define time per execution of GRASP+VND" << endl;
+			cout << "-  " << "-B + beta for the parameter beta" << endl;
+			cout << "-  " << "-C + alpha_calibration for the reactive grasp calibration parameter" << endl;
 			cout << "-  " << "If a instruction is not set then the non-used paremeters will have the default value" << endl;
 			return 0;
 		}
 
 		for(int iter = 1; iter < argc; iter++) {
-			if(strcmp(argv[iter], "-I") == 0) total_iterations = atoi(argv[++iter]);
+			if(strcmp(argv[iter], "-I") == 0) {
+				total_iterations = atoi(argv[++iter]);
+				execution_time_limit = 0.0;
+			}
+			if(strcmp(argv[iter], "-T") == 0) {
+				execution_time_limit = stod(argv[++iter]);
+				total_iterations = 0;
+			}
 			else if(strcmp(argv[iter], "-B") == 0) beta = atoi(argv[++iter]); 
 			else if(strcmp(argv[iter], "-C") == 0) alpha_calibration = atoi(argv[++iter]);
 			else {
@@ -40,6 +51,7 @@ int main(int argc, char* argv[]) {
 		}
 	
 		cout << "Total iterations = " << total_iterations << endl;
+		cout << "Execution Time Limit = " << execution_time_limit << endl;
 		cout << "Beta = " << beta << endl;
 		cout << "Alpha Calibration = " << alpha_calibration << endl;
 		
@@ -62,13 +74,16 @@ int main(int argc, char* argv[]) {
 		Solution best_s(graph);
 
 		// initialize C++ timer
-        std::chrono::time_point<std::chrono::system_clock> start, execution_start, end;
+        time_point<system_clock> start, execution_start, end;
+		duration<double> elapsed_seconds;
 
         int loop = 10, best_solution = -1, avarage_solution = 0, K = 3;
+
         // start timing
-        start = std::chrono::system_clock::now();
+        start = system_clock::now();
 
 		cout << "Starting the algorithm...\n" << endl;
+
         while(loop--) {
 			cout << abs(10 - loop) << " execution" << endl;
 
@@ -78,7 +93,7 @@ int main(int argc, char* argv[]) {
 			s.greedyRandomizedConstructive(0.0);
 			if(s.checkBicliqueSize() == false) s.balanceBiclique();
 
-			int x = beta, y = alpha_calibration, best_weight = s.getTotalWeight(), local_weight;
+			int x = beta, y = alpha_calibration, best_weight = s.getTotalWeight(), local_weight, iter = 0;
 			double solutionAvarage, totalProbability = 0;
 			cout << "Initial Solution: " << s.getTotalWeight() << endl;
 			Solution next_s(graph);
@@ -95,9 +110,11 @@ int main(int argc, char* argv[]) {
 			}
 
 			// start execution timing
-			execution_start = std::chrono::system_clock::now();
+			execution_start = system_clock::now();
+			elapsed_seconds = system_clock::now() - execution_start; 
+			execution_time = elapsed_seconds.count();
 
-			for(int iter = 0; iter < total_iterations; iter++) { // run ILS iterations
+			while((iter < total_iterations) || (execution_time <= execution_time_limit)) { // run ILS iterations
 				// choose the alpha based on reactive grasp
 				discrete_distribution<int> distribution(alphaProbability.begin(), alphaProbability.end());
 				alpha_chosen = distribution(generator);
@@ -114,7 +131,7 @@ int main(int argc, char* argv[]) {
 					s = next_s;
 					best_weight = local_weight;
 					x = beta;
-					std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
+					elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 					time_to_best = elapsed_seconds.count();
 					cout << "New best found: " << best_weight << endl;
 				}	
@@ -133,6 +150,14 @@ int main(int argc, char* argv[]) {
 							alphaProbability[i] =  ((double) best_weight) / solutionAvarage; // best weight divided by the avarage of the alpha solutions so far
 						} 
 					}
+				}
+
+				if(total_iterations == 0) {
+					elapsed_seconds = system_clock::now() - execution_start; 
+					execution_time = elapsed_seconds.count();
+				}
+				else {
+					iter++;
 				}
 
 				next_s.restartSolution();
@@ -156,7 +181,7 @@ int main(int argc, char* argv[]) {
 
 			// execution informations
 			discrete_distribution<int> distribution(alphaProbability.begin(), alphaProbability.end());
-			std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
+			elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 			execution_time = elapsed_seconds.count();
 
 			cout << "\nAlpha probabilities (Reactive grasp)" << endl;
@@ -181,7 +206,7 @@ int main(int argc, char* argv[]) {
         end = std::chrono::system_clock::now();
 
         // get difference
-        std::chrono::duration<double> elapsed_seconds = end - start;
+        elapsed_seconds = end - start;
 
         //5 digits precision is enough
         total_time += elapsed_seconds.count();

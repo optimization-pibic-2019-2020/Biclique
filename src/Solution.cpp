@@ -749,8 +749,9 @@ void Solution::VND(int K) { // run VND iterations
 }
 
 void Solution::createRclProbability() { // function that creates the probability of each vertex based in linear bias function (1.0 / bias_rank)
-	double bias_rank;
+	double bias_rank; // variable that represents the rank of each element in rcl
 	vector<int> &weight = graph->get_weight_list();
+	
 	for(int iter = 0; iter < rclList.size(); iter++) {
 		bias_rank = 1.0 / ((double) weight[rclList[iter]]);
 		rclListProbability.push_back(1.0 / bias_rank);
@@ -791,11 +792,6 @@ void Solution::rclConstruction(int code, double alpha) { // construct the restri
 		vertex = rclList[pos]; 
 		addVertex(vertex, 0);
 		checkFreePartition();
-
-		/*cout << "\nRCL probabilities (Bias Function)" << endl;
-		for(int i = 0; i < rclListProbability.size(); i++) {
-			cout << "Vertex: " << rclList[i] << " Weight: " << (rclList[i] % 200) + 1 << " Probability: " << distribution.probabilities()[i] * 100 << "%" << endl;
-		}*/
 	}
 	else if(code != 0 && free_size_B != 0) { // partition B
 		int iter, vertex, vertex_weight;
@@ -830,11 +826,6 @@ void Solution::rclConstruction(int code, double alpha) { // construct the restri
 		vertex = rclList[pos]; 
 		addVertex(vertex, 1);
 		checkFreePartition();
-
-		/*cout << "\nRCL probabilities (Bias Function)" << endl;
-		for(int i = 0; i < rclListProbability.size(); i++) {
-			cout << "Vertex: " << rclList[i] << " Weight: " << (rclList[i] % 200) + 1 << " Probability: " << distribution.probabilities()[i] * 100 << "%" << endl;
-		}*/
 	}
 }
 
