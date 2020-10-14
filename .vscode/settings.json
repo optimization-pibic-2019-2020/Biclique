@@ -27,6 +27,13 @@
         "xmemory": "cpp",
         "xstddef": "cpp",
         "xtr1common": "cpp",
+<<<<<<< Updated upstream
         "xtree": "cpp"
+=======
+        "xtree": "cpp",
+        "filesystem": "cpp",
+        "ostream": "cpp",
+        "list": "cpp"
+>>>>>>> Stashed changes
     }
 }

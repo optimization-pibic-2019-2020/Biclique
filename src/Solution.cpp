@@ -496,7 +496,7 @@ bool Solution::checkIntegrity() { // checks the integrity of the solution
 		}
 	}
 
-	for(int idx = solution_size_A + free_size_A; idx < V; idx++) { // verify if every non solution vertex in solution_A is correct
+	for(int idx = solution_size_A + free_size_A; idx < V - removed_size; idx++) { // verify if every non solution vertex in solution_A is correct
 		int vertex = solution_A[idx];
 		if(tightness_A[vertex] == 0 && tightness_B[vertex] == solution_size_B) {
 			cout << "Non Free Partition A does not meet the requirements" << endl;
@@ -504,7 +504,7 @@ bool Solution::checkIntegrity() { // checks the integrity of the solution
 		}
 	}
 
-	for(int idx = solution_size_B + free_size_B; idx < V; idx++) { // verify if every non solution vertex in solution_B is correct
+	for(int idx = solution_size_B + free_size_B; idx < V - removed_size; idx++) { // verify if every non solution vertex in solution_B is correct
 		int vertex = solution_B[idx];
 		if(tightness_B[vertex] == 0 && tightness_A[vertex] == solution_size_A) {
 			cout << "Non Free Partition B does not meet the requirements" << endl;
@@ -560,8 +560,12 @@ bool Solution::checkMu() { // check if mu_A and mu_B are correct
 void Solution::restartSolution() {
 	this->graph = graph;
 	int idx_weight, V = graph->getV();
+<<<<<<< Updated upstream
 
 	total_weight = 0;	
+=======
+	int jump = 0; // variable to deal with the removed vertices that need to be in the end of solution_ vector
+>>>>>>> Stashed changes
 
 	solution_size_A = 0;
 	solution_size_B = 0;
@@ -577,10 +581,14 @@ void Solution::restartSolution() {
 		tightness_A[idx] = 0;
 		tightness_B[idx] = 0;
 
+<<<<<<< Updated upstream
 		solution_A[idx] = idx;
 		solution_B[idx] = idx;
 
 		idx_weight = graph->get_weight(idx); 
+=======
+		idx_weight = graph->get_weight(idx); // maximum balanced biclique (unweighted)
+>>>>>>> Stashed changes
 		mu_A[idx] = idx_weight;
 		mu_B[idx] = idx_weight;
 	}
@@ -621,7 +629,11 @@ void Solution::oneImprovement(int vertex, int code) { // code == 0 for partition
 bool Solution::swap1_1(int code) { // code == 0 for partition A and code != 0 for partition B
 	int V = graph->getV(), vertex, best_vertex, improvement = 0; // improvement means how much weight the partition will get after the swap
 	if(code == 0) {
+<<<<<<< Updated upstream
 		for(int iter = solution_size_A + free_size_A; iter < V; iter++) {
+=======
+		for(int iter = solution_size_A + free_size_A; iter < V - removed_size; iter++) {
+>>>>>>> Stashed changes
 			vertex = solution_A[iter];
 			if(tightness_A[vertex] == 1 && tightness_B[vertex] == solution_size_B && mu_A[vertex] > improvement) { // possible candidate for swap(1,1)
 				best_vertex = vertex;
@@ -630,7 +642,11 @@ bool Solution::swap1_1(int code) { // code == 0 for partition A and code != 0 fo
 		}
 	}
 	else {
+<<<<<<< Updated upstream
 		for(int iter = solution_size_B + free_size_B; iter < V; iter++) {
+=======
+		for(int iter = solution_size_B + free_size_B; iter < V - removed_size; iter++) {
+>>>>>>> Stashed changes
 			vertex = solution_B[iter];
 			if(tightness_B[vertex] == 1 && tightness_A[vertex] == solution_size_A && mu_B[vertex] > improvement) { // possible candidate for swap(1,1)
 				best_vertex = vertex;
@@ -653,7 +669,7 @@ bool Solution::swap2_2(int code) { // code == 0 for partition A and code != 0 fo
 		for(int iter = solution_size_A + free_size_A; iter < V; iter++) {
 			vertex1 = solution_A[iter];
 			if(tightness_A[vertex1] == 1 && tightness_B[vertex1] == solution_size_B) { // possible candidate for swap2_2
-				for(int iter2 = iter; iter2 < V; iter2++) {
+				for(int iter2 = iter + 1; iter2 < V - removed_size; iter2++) {
 					vertex2 = solution_A[iter2];
 					if(tightness_A[vertex2] == 1 && tightness_B[vertex2] == solution_size_B) { // another possible candidate for swap2_2
 						if((mu_A[vertex1] + mu_A[vertex2]) > 0 && !isNeighbor(vertex1, vertex2) && !sameNeighbor(vertex1, vertex2, code)) { // verify if they are neighbors and if they share the same neighbor in the solution
@@ -759,6 +775,15 @@ void Solution::createRclProbability() { // function that creates the probability
 }
 
 void Solution::rclConstruction(int code, double alpha) { // construct the restricted candidate list for a specific partition and choose a random vertex from it to put in the solution
+<<<<<<< Updated upstream
+=======
+	int iter, vertex, vertex_weight;
+	int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
+	vector<int> &weight = graph->get_weight_list();
+	rclList.clear();
+	rclListProbability.clear();
+
+>>>>>>> Stashed changes
 	if(code == 0 && free_size_A != 0) { // partition A
 		int iter, vertex, vertex_weight;
 		int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
@@ -838,6 +863,72 @@ void Solution::greedyRandomizedConstructive(double p) {
 	}
 }
 
+<<<<<<< Updated upstream
+=======
+void Solution::removeVertexFromGraph(int vertex) { // remove all the edges from the vertex to be removed
+	vector<int> &vertex_neighbors = graph->get_vertex_adjList(vertex);
+	int neighbor;
+
+	for(int i = 0; i < vertex_neighbors.size(); i++) { // first loop to find all the neighbors
+		neighbor = vertex_neighbors[i];
+		vector<int> &neighbor_adjList = graph->get_vertex_adjList(neighbor);
+
+		for(int j = 0; j < neighbor_adjList.size(); j++) { // second loop to erase the edge from the neighbor that connects to the removed vertex 
+			if(neighbor_adjList[j] == vertex) { 
+				graph->removeVertexFromAdjList(neighbor, j); // removes the edge between the removed vertex and its neighbor
+
+				// recalculates neighbor informations due to the vertex remotion
+				graph->calculateHIndex(neighbor);  
+				graph->calculateAccumulatedSum(neighbor);
+
+				break;
+			}
+		}
+	}
+
+	graph->clearVertexAdjList(vertex); // remove all the edges from the vertex removed
+}
+
+int Solution::predictBicliqueWeight(int vertex) { // try to predict the best biclique possible with the vertex with h_index and accumulatedSum
+	int best_neighbor_weight = 0, neighbor, index, h_index = graph->getVertexHIndex(vertex);
+	vector<int> neighbors = graph->get_vertex_adjList(vertex);
+	vector<int> vertex_accumulatedSum = graph->get_vertex_accumulatedSum(vertex);
+
+	if(neighbors.empty()) return 0;
+
+	for(int idx = 0; idx < neighbors.size(); idx++) { // tries to predict the best biclique using h_index and accumulatedSum the neighbors
+		neighbor = neighbors[idx];
+		vector<int> neighbor_accumulatedSum = graph->get_vertex_accumulatedSum(neighbor);
+
+		if(h_index <= neighbor_accumulatedSum.size()) index = h_index - 1;
+		else index = neighbor_accumulatedSum.size() - 1;
+
+		if(neighbor_accumulatedSum[index] >= best_neighbor_weight) best_neighbor_weight = neighbor_accumulatedSum[index];
+	}
+
+	return vertex_accumulatedSum[h_index - 1] + best_neighbor_weight; 
+}
+
+void Solution::reduceGraph(vector<bool> &vertexInGraph, int best_weight) {
+	int vertex, biclique_predicted_weight, vertices_removed = 0;
+
+	for(int iter = 0; iter < solution_A.size(); iter++) { // examine all the vertices that are in the solution
+		vertex = solution_A[iter];
+		biclique_predicted_weight = predictBicliqueWeight(vertex);
+		
+		//cout << biclique_predicted_weight << " " << best_weight << endl;
+		if(biclique_predicted_weight <= best_weight && vertexInGraph[vertex] == true) { // removes u from graph
+			removeVertexFromGraph(vertex);
+			vertexInGraph[vertex] = false; 
+			removed_size++;
+			vertices_removed++;
+		}
+	}
+
+	if(vertices_removed > 0) reduceGraph(vertexInGraph, best_weight);
+}
+
+>>>>>>> Stashed changes
 void Solution::balanceBiclique() { // remove the vertex with the worst weight in solution A to balance the Biclique
 	int minimum_weight = solution_A[0], vertex_to_remove = solution_A[0], actual_vertex;
 	for(int iter = 1; iter < solution_size_A; iter++) {

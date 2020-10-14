@@ -86,6 +86,12 @@ public:
 	void createRclProbability();
 	void rclConstruction(int code, double p);
 	void greedyRandomizedConstructive(double p);
+<<<<<<< Updated upstream
+=======
+	void removeVertexFromGraph(int vertex);
+	int predictBicliqueWeight(int vertex);
+	void reduceGraph(vector<bool> &vertexInGraph, int best_weight);
+>>>>>>> Stashed changes
 	void balanceBiclique();
 	void printSolution();
 };

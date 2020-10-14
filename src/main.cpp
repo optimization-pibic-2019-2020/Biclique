@@ -20,6 +20,13 @@ double total_time = 0, time_to_best = 0, execution_time = 0;
 int alpha_chosen; // variable to store the chosen alpha for the current iteration 
 
 
+<<<<<<< Updated upstream
+=======
+vector<bool> vertexInGraph;  // stores the sum of each solution for each alpha
+long int verticesRemoved = 0, edgesRemoved = 0;
+
+
+>>>>>>> Stashed changes
 int main(int argc, char* argv[]) {
 	try {
 		// setting parameters
@@ -65,11 +72,23 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 
+<<<<<<< Updated upstream
 		Graph *graph = new Graph(v, e);
 		graph->readWeight(); // read all the weight and put into the weight vector
 		graph->readEdges(); // read all the edges and put into the adjList
 		graph->sort(); 
 		//graph->showGraphInformations(); // show all the informations of the input Graph
+=======
+		Graph original_graph(v, e);
+		original_graph.readWeight(); // read all the weight and put into the weight vector
+		original_graph.readEdges(); // read all the edges and put into the adjList
+		original_graph.sort(); 
+		original_graph.initializeHIndex();
+		original_graph.initializeAccumulatedSum();
+
+		Graph graph = original_graph; // copy original_graph to graph
+		//graph.showGraphInformations(); // show all the informations of the input Graph
+>>>>>>> Stashed changes
 
 		Solution best_s(graph);
 
@@ -128,12 +147,24 @@ int main(int argc, char* argv[]) {
 				alphaSolutions[alpha_chosen] += local_weight;
 
 				if(local_weight > best_weight) {
+<<<<<<< Updated upstream
 					s = next_s;
 					best_weight = local_weight;
 					x = beta;
 					elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 					time_to_best = elapsed_seconds.count();
 					cout << "New best found: " << best_weight << endl;
+=======
+					s = next_s; // update best local solution
+					best_weight = local_weight; // update best_weight
+					x = beta; // reinitialize parameter x
+
+					elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
+					time_to_best = elapsed_seconds.count(); // update time_to_best 
+					cout << "New best found: " << best_weight << endl;
+
+					next_s.reduceGraph(vertexInGraph, best_weight); // start graph reduction
+>>>>>>> Stashed changes
 				}	
 				else if(local_weight == best_weight) x--;
 
@@ -165,6 +196,12 @@ int main(int argc, char* argv[]) {
 				assert(next_s.checkMu());
 			}
 
+<<<<<<< Updated upstream
+=======
+			// restarting graph
+			graph = original_graph;
+
+>>>>>>> Stashed changes
 			if(s.checkBicliqueSize() == false) {
 				s.balanceBiclique();
 				best_weight = s.getTotalWeight();
