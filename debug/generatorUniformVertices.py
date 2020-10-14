@@ -10,10 +10,11 @@ files = list()
 
 absolute = str(Path(__file__).parent.absolute())
 
-folders = [(absolute+"/input/DIMACS/", absolute+"/input/DIMACS-U/")] 
+#folders = [(absolute+"/input/DIMACS/", absolute+"/input/DIMACS-U/")] 
 #folders += [(absolute+"/input/BHOSLIB/", absolute+"/input/BHOSLIB-U/")]
 #folders += [(absolute+"/input/Barabasi-Albert/", absolute+"/input/Barabasi-Albert-U/")]
 #folders += [(absolute+"/input/Erdos-Renyi/", absolute+"/input/Erdos-Renyi-U/")]
+folders = [(absolute+"/input/KONECT/", absolute+"/input/KONECT-U/")] 
 
 for (inputPath,outputPath) in folders:
 	if not os.path.exists(outputPath):

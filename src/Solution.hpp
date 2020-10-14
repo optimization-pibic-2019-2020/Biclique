@@ -29,6 +29,9 @@ private:
 	int free_size_A;
 	int free_size_B;
 
+	// size of the removed vertices partition (vertices are removed in both partitions)
+	int removed_size;
+
 	// for each vertex, the number of adjacent vertices that are in each solution
 
 	vector<int> tightness_A;
@@ -61,6 +64,7 @@ public:
 	int getTotalWeight();
 	bool isNeighbor(int vertex1, int vertex2);
 	bool sameNeighbor(int vertex1, int vertex2, int code);
+	int getBicliqueSize();
 	bool checkBicliqueSize();
 	void checkFreePartition();
 	void checkNonFreePartition();
@@ -75,7 +79,7 @@ public:
 	bool checkIntegrity();
 	bool checkMu();
 	void generateRandomSolution();
-	void restartSolution();
+	void restartSolution(vector<bool> &vertexInGraph);
 	void oneImprovement(int vertex, int code);
 	bool swap1_1(int code);
 	bool swap2_2(int code);
@@ -88,4 +92,6 @@ public:
 	void greedyRandomizedConstructive(double p);
 	void balanceBiclique();
 	void printSolution();
+	void removeVertexFromGraph(int vertex);
+	void reduceGraph(vector<bool> &vertexInGraph, int best_weight);
 };

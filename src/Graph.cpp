@@ -11,6 +11,18 @@ Graph::Graph(int v, int e) {
 	weight.resize(v);
 }
 
+Graph::Graph(Graph &graph) { // copy constructor
+	v = graph.getV();
+	e = graph.getE();
+
+	adjList.resize(v);
+	adjList = graph.get_adjList();
+
+	weight.resize(v);
+	weight = graph.get_weight_list();
+
+}
+
 int Graph::getV() {
 	return v;
 }
@@ -35,6 +47,14 @@ vector<vector<int>> &Graph::get_adjList() {
 	return adjList;
 }
 
+void Graph::removeVertexFromAdjList(int vertex, int position) {
+	adjList[vertex].erase(adjList[vertex].begin() + position); 
+}
+
+void Graph::clearVertexAdjList(int vertex) {
+	adjList[vertex].clear();
+}
+
 void Graph::addEdges(int u, int t) {
 	adjList[u].push_back(t);
 	adjList[t].push_back(u);
@@ -55,7 +75,7 @@ void Graph::readEdges() {
 	int u, t;
 	for(int idx = 0; idx < e; idx++) {
 		cin >> u >> t;
-		addEdges(u - 1, t - 1);
+		if(u != t) { addEdges(u - 1, t - 1); }
 	}
 }
 

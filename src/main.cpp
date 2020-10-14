@@ -8,10 +8,12 @@
 using namespace std::chrono;
 using namespace std;
 
-int total_iterations = 5000; // number of grasp iterations
+int total_iterations = 1000; // number of grasp iterations
+int loop = 10; // variable related to the total number of executions
 double execution_time_limit = 0; // time of each execution
-int beta = 1000; // limit of iterations that dont improve the biclique
+int beta = 200; // limit of iterations that dont improve the biclique
 int alpha_calibration = 50; // variable related to the reactive grasp adjustment
+int K = 3; // number of neighborhood structures
 vector<double> alphas{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}; // all alpha values
 vector<double> alphaProbability; // all alpha probabilities
 vector<int> alphaTimesChosen;  // stores how many each alpha was chosen
@@ -19,6 +21,9 @@ vector<int> alphaSolutions;  // stores the sum of each solution for each alpha
 double total_time = 0, time_to_best = 0, execution_time = 0;
 int alpha_chosen; // variable to store the chosen alpha for the current iteration 
 
+
+vector<bool> vertexInGraph;  // stores the sum of each solution for each alpha
+long int verticesRemoved = 0, edgesRemoved = 0;
 
 int main(int argc, char* argv[]) {
 	try {
@@ -65,19 +70,20 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 
-		Graph *graph = new Graph(v, e);
-		graph->readWeight(); // read all the weight and put into the weight vector
-		graph->readEdges(); // read all the edges and put into the adjList
-		graph->sort(); 
+		Graph original_graph(v, e);
+		original_graph.readWeight(); // read all the weight and put into the weight vector
+		original_graph.readEdges(); // read all the edges and put into the adjList
+		original_graph.sort(); 
+		Graph graph = original_graph;
 		//graph->showGraphInformations(); // show all the informations of the input Graph
 
-		Solution best_s(graph);
+		Solution best_s(&graph);
 
 		// initialize C++ timer
         time_point<system_clock> start, execution_start, end;
 		duration<double> elapsed_seconds;
 
-        int loop = 10, best_solution = -1, avarage_solution = 0, K = 3;
+        int best_solution = -1, avarage_solution = 0;
 
         // start timing
         start = system_clock::now();
@@ -87,7 +93,7 @@ int main(int argc, char* argv[]) {
         while(loop--) {
 			cout << abs(10 - loop) << " execution" << endl;
 
-			Solution s(graph); // initialize all the variables and structures for solution
+			Solution s(&graph); // initialize all the variables and structures for solution
 
 	        // start the first greedy random solution
 			s.greedyRandomizedConstructive(0.0);
@@ -96,7 +102,7 @@ int main(int argc, char* argv[]) {
 			int x = beta, y = alpha_calibration, best_weight = s.getTotalWeight(), local_weight, iter = 0;
 			double solutionAvarage, totalProbability = 0;
 			cout << "Initial Solution: " << s.getTotalWeight() << endl;
-			Solution next_s(graph);
+			Solution next_s(&graph);
 
 			// starting random generator for discrete distribution
 			random_device device;
@@ -109,12 +115,16 @@ int main(int argc, char* argv[]) {
 				alphaSolutions.push_back(0);
 			}
 
+			// initializing vertex removed vector
+			vertexInGraph.resize(v);
+			fill(vertexInGraph.begin(), vertexInGraph.end(), true); // initialize the vector with all values set to true meaning that all the vertex are in the graph
+
 			// start execution timing
 			execution_start = system_clock::now();
 			elapsed_seconds = system_clock::now() - execution_start; 
 			execution_time = elapsed_seconds.count();
 
-			while((iter < total_iterations) || (execution_time <= execution_time_limit)) { // run ILS iterations
+			while((iter < total_iterations) || (execution_time <= execution_time_limit)) { // run GRASP iterations
 				// choose the alpha based on reactive grasp
 				discrete_distribution<int> distribution(alphaProbability.begin(), alphaProbability.end());
 				alpha_chosen = distribution(generator);
@@ -123,18 +133,21 @@ int main(int argc, char* argv[]) {
 				next_s.greedyRandomizedConstructive(alphas[alpha_chosen]); // starts a new optimal solution
 				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
 
+				int before = next_s.getTotalWeight();
 				next_s.VND(K);
 				local_weight = next_s.getTotalWeight();
 				alphaSolutions[alpha_chosen] += local_weight;
 
 				if(local_weight > best_weight) {
+					if(before < local_weight) cout << "From: " << before << " 	To: " << local_weight << endl;
 					s = next_s;
 					best_weight = local_weight;
 					x = beta;
 					elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 					time_to_best = elapsed_seconds.count();
-					cout << "New best found: " << best_weight << endl;
-				}	
+					cout << "New best found: " << best_weight << endl;					
+					next_s.reduceGraph(vertexInGraph, best_weight);
+				}
 				else if(local_weight == best_weight) x--;
 
 				if(x == 0) break; // beta parameter
@@ -160,17 +173,21 @@ int main(int argc, char* argv[]) {
 					iter++;
 				}
 
-				next_s.restartSolution();
+				next_s.restartSolution(vertexInGraph);
 				assert(next_s.checkIntegrity());
 				assert(next_s.checkMu());
 			}
 
-			if(s.checkBicliqueSize() == false) {
+			// restarting graph
+			graph = original_graph;
+			
+
+			if(s.checkBicliqueSize() == false) { // checks if biclique is unbalanced
 				s.balanceBiclique();
 				best_weight = s.getTotalWeight();
 			}
 
-			avarage_solution += best_weight;
+			avarage_solution += s.getBicliqueSize();
 			if(best_solution < best_weight) {
 				best_s = s;
 				best_solution = best_weight;
@@ -189,8 +206,20 @@ int main(int argc, char* argv[]) {
 				cout << "Alpha: " << ((double) i) / 10.0 << " Probability: " << distribution.probabilities()[i] * 100 << "%" << endl;
 			}
 
+			for(int i = 0; i < v; i++) {
+				if(vertexInGraph[i] == false) {
+					verticesRemoved++;
+					edgesRemoved += graph.get_vertex_adjList(i).size();
+				}
+			}
+
+			cout << "\nGraph Reduce results:" << endl;
+			cout << "Vertices removed: " << verticesRemoved << " of " << v << endl;
+			cout << "Edges removed: " << edgesRemoved << " of " << e << endl;
+			cout << ((verticesRemoved * 1.0) / (v * 1.0)) * 100.0 << "% of vertices removed and " << ((edgesRemoved * 1.0) / (e * 1.0)) * 100.0 << "% of edges removed"<< endl;
+
 			cout << "\nResults:\n";
-			cout << "Best: " << best_weight << endl;
+			cout << "Best: " << s.getBicliqueSize() << endl;
 			cout << "Total time of execution: " << execution_time << endl;
 			cout << "Time to best: " << time_to_best << "s\n" << endl;
 
@@ -198,6 +227,11 @@ int main(int argc, char* argv[]) {
 			alphaProbability.clear(); 
 			alphaTimesChosen.clear();  
 			alphaSolutions.clear();
+
+			// restarting graph reduce parameters and structures
+			vertexInGraph.clear();
+			verticesRemoved = 0;
+			edgesRemoved = 0;
 		}
 		
 		cout << "End of the algorithm" << endl;
@@ -211,7 +245,7 @@ int main(int argc, char* argv[]) {
         //5 digits precision is enough
         total_time += elapsed_seconds.count();
 
-		cout << "Best Solution: " << best_solution << endl;
+		cout << "Best Solution: " << best_s.getBicliqueSize() << endl;
 		cout << "Avarage Solution: " << avarage_solution / 10 << endl;
 		cout << "Avarage Time: " << std::setprecision(4) << total_time / 10 << endl;
 		cout << "Solution: ";

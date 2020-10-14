@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.html": "njk",
         "vector": "cpp",
         "initializer_list": "cpp",
         "random": "cpp",
@@ -27,6 +28,8 @@
         "xmemory": "cpp",
         "xstddef": "cpp",
         "xtr1common": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "filesystem": "cpp",
+        "ostream": "cpp"
     }
 }

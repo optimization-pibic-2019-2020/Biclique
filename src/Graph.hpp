@@ -11,12 +11,15 @@ private:
 
 public:
 	Graph(int v, int e);
+	Graph(Graph &graph);
 	int getV();
 	int getE();
 	int get_weight(int u);
 	vector<int> &get_weight_list();
 	vector<int> &get_vertex_adjList(int u);
 	vector<vector<int>> &get_adjList();
+	void removeVertexFromAdjList(int vertex, int position);
+	void clearVertexAdjList(int vertex);
 	void showGraphInformations();
 	void showAdjList();
 	void showWeight();
