@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 #include "Graph.hpp"
 
-
 using namespace std;
 
 Graph::Graph(int v, int e) {
@@ -13,8 +12,6 @@ Graph::Graph(int v, int e) {
 	accumulatedSum.resize(v);
 }
 
-<<<<<<< Updated upstream
-=======
 Graph::Graph(Graph &graph) { // copy constructor
 	v = graph.getV();
 	e = graph.getE();
@@ -32,13 +29,20 @@ Graph::Graph(Graph &graph) { // copy constructor
 	accumulatedSum = graph.getAccumulatedSum();
 }
 
->>>>>>> Stashed changes
 int Graph::getV() {
 	return v;
 }
 
 int Graph::getE() {
 	return e;
+}
+
+int Graph::repeatedEdge(int u, int t) {
+	for(int i = 0; i < adjList[u].size(); i++) {
+		if(adjList[u][i] == t) { return 1; }
+	}
+
+	return 0;
 }
 
 int Graph::get_weight(int u) {
@@ -65,8 +69,6 @@ vector<vector<int>> &Graph::get_adjList() {
 	return adjList;
 }
 
-<<<<<<< Updated upstream
-=======
 vector<int> &Graph::getHIndex() {
 	return h_index;
 }
@@ -126,7 +128,7 @@ void Graph::calculateHIndex(int vertex) { // calculate h-index for each vertex
 			else hList[neighbor_degree]++;
 		}
 
-		for(int idx = neighbors.size(); idx > 0; idx++) {
+		for(int idx = neighbors.size(); idx > 0; idx--) {
 			count += hList[idx];
 
 			if(count >= idx) { // h-index was found
@@ -156,7 +158,6 @@ void Graph::clearVertexAdjList(int vertex) {
 	adjList[vertex].clear();
 }
 
->>>>>>> Stashed changes
 void Graph::addEdges(int u, int t) {
 	adjList[u].push_back(t);
 	adjList[t].push_back(u);
@@ -177,7 +178,8 @@ void Graph::readEdges() {
 	int u, t;
 	for(int idx = 0; idx < e; idx++) {
 		cin >> u >> t;
-		addEdges(u - 1, t - 1);
+
+		if(u != t && !repeatedEdge(u - 1, t - 1)) { addEdges(u - 1, t - 1); }
 	}
 }
 

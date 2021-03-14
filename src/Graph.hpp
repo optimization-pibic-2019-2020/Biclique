@@ -13,16 +13,16 @@ private:
 
 public:
 	Graph(int v, int e);
+	Graph(Graph &graph);
 	int getV();
 	int getE();
+	int repeatedEdge(int u, int t);
 	int get_weight(int u);
 	int getVertexHIndex(int u);
 	vector<int> &get_vertex_accumulatedSum(int u);
 	vector<int> &get_weight_list();
 	vector<int> &get_vertex_adjList(int u);
 	vector<vector<int>> &get_adjList();
-<<<<<<< Updated upstream
-=======
 	vector<int> &getHIndex();
 	vector<vector<int>> &getAccumulatedSum();
 	void calculateAccumulatedSum(int vertex);
@@ -31,7 +31,6 @@ public:
 	void initializeHIndex();
 	void removeVertexFromAdjList(int vertex, int position);
 	void clearVertexAdjList(int vertex);
->>>>>>> Stashed changes
 	void showGraphInformations();
 	void showAdjList();
 	void showWeight();

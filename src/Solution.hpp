@@ -29,6 +29,9 @@ private:
 	int free_size_A;
 	int free_size_B;
 
+	// size of the removed vertices partition (vertices are removed in both partitions)
+	int removed_size;
+
 	// for each vertex, the number of adjacent vertices that are in each solution
 
 	vector<int> tightness_A;
@@ -75,7 +78,7 @@ public:
 	bool checkIntegrity();
 	bool checkMu();
 	void generateRandomSolution();
-	void restartSolution();
+	void restartSolution(vector<bool> &vertexInGraph);
 	void oneImprovement(int vertex, int code);
 	bool swap1_1(int code);
 	bool swap2_2(int code);
@@ -86,12 +89,9 @@ public:
 	void createRclProbability();
 	void rclConstruction(int code, double p);
 	void greedyRandomizedConstructive(double p);
-<<<<<<< Updated upstream
-=======
 	void removeVertexFromGraph(int vertex);
 	int predictBicliqueWeight(int vertex);
 	void reduceGraph(vector<bool> &vertexInGraph, int best_weight);
->>>>>>> Stashed changes
 	void balanceBiclique();
 	void printSolution();
 };
