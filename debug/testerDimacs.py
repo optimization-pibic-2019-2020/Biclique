@@ -39,7 +39,7 @@ for (x, y) in file_path:
 
     f = open(output_path + z + '/' + x, 'a+', buffering=1)
     print("Testing: " + x)
-    cmd = str(current_path + "/main" +  " -T 1 " + " < " +  y)
+    cmd = str(current_path + "/main" + " < " +  y)
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     #Send it to run
     pStartTime = time.time()

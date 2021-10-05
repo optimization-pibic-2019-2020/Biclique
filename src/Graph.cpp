@@ -1,4 +1,6 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm> 
 #include "Graph.hpp"
 
 using namespace std;
@@ -38,7 +40,7 @@ int Graph::getE() {
 }
 
 int Graph::repeatedEdge(int u, int t) {
-	for(int i = 0; i < adjList[u].size(); i++) {
+	for(unsigned int i = 0; i < adjList[u].size(); i++) {
 		if(adjList[u][i] == t) { return 1; }
 	}
 
@@ -87,14 +89,14 @@ void Graph::calculateAccumulatedSum(int vertex) { // calculate the accumulated s
 		int neighbor_weight, accumulatedVertexSum = 0;
 		accumulatedSum[vertex].resize(neighbors.size());
 
-		for(int idx = 0; idx < neighbors_weight.size(); idx++) {
+		for(unsigned int idx = 0; idx < neighbors_weight.size(); idx++) {
 			neighbor_weight = get_weight(neighbors[idx]);
 			neighbors_weight[idx] = neighbor_weight;
 		}
 
 		std::sort(neighbors_weight.begin(), neighbors_weight.end(), greater<int>()); // sort neighbors weight in descending order
 
-		for(int idx = 0; idx < neighbors_weight.size(); idx++) { // start to fill the accumulated sum vector for the designated vertex
+		for(unsigned int idx = 0; idx < neighbors_weight.size(); idx++) { // start to fill the accumulated sum vector for the designated vertex
 			accumulatedVertexSum += neighbors_weight[idx];
 			accumulatedSum[vertex][idx] = accumulatedVertexSum; 
 		}
@@ -116,11 +118,11 @@ void Graph::calculateHIndex(int vertex) { // calculate h-index for each vertex
 	vector<int> hList; // vector used to find the h-index
 
 	if(!neighbors.empty()) {
-		int neighbor_vertex, neighbor_degree, count = 0; 
+		unsigned int neighbor_vertex, neighbor_degree, count = 0; 
 		hList.resize(neighbors.size() + 1);
 		fill(hList.begin(), hList.end(), 0);
 
-		for(int idx = 0; idx < neighbors.size(); idx++) {
+		for(unsigned int idx = 0; idx < neighbors.size(); idx++) {
 			neighbor_vertex = neighbors[idx];
 			neighbor_degree = get_vertex_adjList(neighbor_vertex).size();
 			
@@ -128,7 +130,7 @@ void Graph::calculateHIndex(int vertex) { // calculate h-index for each vertex
 			else hList[neighbor_degree]++;
 		}
 
-		for(int idx = neighbors.size(); idx > 0; idx--) {
+		for(unsigned int idx = neighbors.size(); idx > 0; idx--) {
 			count += hList[idx];
 
 			if(count >= idx) { // h-index was found
@@ -184,7 +186,6 @@ void Graph::readEdges() {
 }
 
 void Graph::readWeight() {
-	int u_weight;
 	for(int idx = 0; idx < v; idx++) {
 		cin >> weight[idx];
 	}
@@ -199,7 +200,7 @@ void Graph::showGraphInformations() {
 void Graph::showAdjList() {
 	for(int idx = 0; idx < v; idx++) {
 		cout << "Vertex: " << idx << endl;
-		for(int idy = 0; idy < adjList[idx].size(); idy++) {
+		for(unsigned int idy = 0; idy < adjList[idx].size(); idy++) {
 			cout << "Edge: " << idx << " -> " << adjList[idx][idy] << endl; 
 		}
 		cout << endl;

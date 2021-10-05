@@ -1,11 +1,16 @@
-#include <bits/stdc++.h>
-#include <random>
+#include <vector>
+
+#ifndef GRAPH_HPP
+#define GRAPH_HPP
+    
 #include "Graph.hpp"
+
+#endif
 
 using namespace std;
 
 class Solution {
-private:
+protected:
 	Graph *graph; // graph instance
 
 	/* 
@@ -29,8 +34,12 @@ private:
 	int free_size_A;
 	int free_size_B;
 
-	// size of the removed vertices partition (vertices are removed in both partitions)
-	int removed_size;
+	// size of the removed vertices partition 
+	int removed_size_A;
+	int removed_size_B;
+
+	// total of removed edges from the graph
+	int removed_edges;
 
 	// for each vertex, the number of adjacent vertices that are in each solution
 
@@ -41,11 +50,6 @@ private:
 
 	vector<int> position_A;
 	vector<int> position_B;
-
-	// weight of each vertex i minus the sum of the weights of its neighbors that are in each solution
-
-	vector<int> mu_A;
-	vector<int> mu_B;
 	
 	// current biclique weight
 	
@@ -60,38 +64,34 @@ private:
 	vector<double> rclListProbability;
 
 public:
-	Solution(Graph *graph);
 	int getTotalWeight();
+	int getRemovedEdges();
 	bool isNeighbor(int vertex1, int vertex2);
 	bool sameNeighbor(int vertex1, int vertex2, int code);
 	bool checkBicliqueSize();
-	void checkFreePartition();
-	void checkNonFreePartition();
 	void moveFreeToSolutionPartition(int u, int code);
 	void moveFreeToNonFreePartition(int u, int code);
  	void moveSolutionToFreePartition(int u, int code);
 	void moveNonFreeToFreePartition(int u, int code); 
-	void addVertex(int u, int code);
-	void removeVertex(int u, int code);
+	void moveVertexToRemovedVertices(int u, int code);
 	bool isMaximal(int code);
 	void addRandomVertex(int code);
 	bool checkIntegrity();
-	bool checkMu();
-	void generateRandomSolution();
-	void restartSolution(vector<bool> &vertexInGraph);
-	void oneImprovement(int vertex, int code);
-	bool swap1_1(int code);
-	bool swap2_2(int code);
-	bool addFirstVertex();
 	bool addBestVertex();
-	void VND(int K);
-	void shake(double z);
 	void createRclProbability();
-	void rclConstruction(int code, double p);
-	void greedyRandomizedConstructive(double p);
 	void removeVertexFromGraph(int vertex);
 	int predictBicliqueWeight(int vertex);
-	void reduceGraph(vector<bool> &vertexInGraph, int best_weight);
-	void balanceBiclique();
 	void printSolution();
+	void checkFreePartition();
+	void checkNonFreePartition();
+	void addVertex(int u, int code);
+	void removeVertex(int u, int code);
+	void restartSolution(vector<bool> &vertexInGraph);
+	void swapVertices(int vertex, int code);
+	bool swap1_1(int code);
+	bool swap2_2(int code);
+	void VND(int K);
+	void greedyRandomizedConstructive(double p);
+	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight);
+	void balanceBiclique();
 };
