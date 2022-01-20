@@ -474,7 +474,7 @@ void NonBipartiteSolution::greedyRandomizedConstructive(double p) {
 	}
 }
 
-void NonBipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight) {
+void NonBipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit) {
 	int vertex, bicliquePredictedWeight, verticesRemoved = 0;
 
 	if(minBicliqueWeight > bestWeight) { return; } // avoid a final loop if there is no possible vertex to be removed
@@ -494,7 +494,7 @@ void NonBipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeig
         }		
     }
 
-	if(verticesRemoved > 0) reduceGraph(vertexInGraph, bestWeight, minBicliqueWeight);
+	if(verticesRemoved > 0) reduceGraph(vertexInGraph, bestWeight, minBicliqueWeight, timeLimit);
 }
 
 void NonBipartiteSolution::balanceBiclique() { // remove the vertex with the worst weight in solution A to balance the Biclique

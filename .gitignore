@@ -1,3 +1,6 @@
 debug/input
 debug/logs
 exact/logs
+test
+out
+.vscode

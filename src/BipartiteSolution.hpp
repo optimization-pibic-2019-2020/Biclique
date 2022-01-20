@@ -23,10 +23,11 @@ public:
 	void swapVertices(int vertex_to_add, int vertex_to_remove, int code);
 	bool swap1_1(int code);
 	bool swap2_2(int code);
+	bool swap1_k(int code);
 	bool addPairOfVertices();
     void VND(int K);
 	void rclConstruction(int code, double p);
     void greedyRandomizedConstructive(double p);
-	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight);
+	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit);
 	void balanceBiclique();
 };

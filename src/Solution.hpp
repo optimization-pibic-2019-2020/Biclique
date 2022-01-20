@@ -93,5 +93,7 @@ public:
 	void VND(int K);
 	void greedyRandomizedConstructive(double p);
 	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight);
+	void restartAm(double beta);
+	void updateAm();
 	void balanceBiclique();
 };

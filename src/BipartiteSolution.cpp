@@ -1,11 +1,16 @@
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <algorithm> 
 #include <random>
 #include <ctime>
+#include <iomanip>
 #include "BipartiteSolution.hpp"
 #define NDEBUG
 #include <assert.h>
+#include <chrono>
+
+using namespace std::chrono;
 using namespace std;
 
 random_device BipartiteDevice;
@@ -240,6 +245,87 @@ bool BipartiteSolution::swap1_1(int code) { // code == 0 for partition A and cod
 	return false;
 }
 
+bool BipartiteSolution::swap1_k(int code) { // code == 0 for partition A and code != 0 for partition B
+    int vertex, vertexChosen;
+	bool operationSuccessFlag = false;
+	vector<int> possibleVerticesToSolution;
+
+	if(code == 0) {
+		// initial loop to get the possible vertices to join the solution
+        for(unsigned int iter = solution_size_A + free_size_A; iter < solution_A.size() - removed_size_A; iter++) { 
+			vertex = solution_A[iter];
+			if (tightness_B[vertex] == solution_size_B - 1) {
+				possibleVerticesToSolution.push_back(vertex);
+			}
+		}
+
+		if (possibleVerticesToSolution.size() == 0) { return operationSuccessFlag; }
+		
+		operationSuccessFlag = true;
+
+		srand(time(0));
+		vertexChosen = possibleVerticesToSolution[rand() % possibleVerticesToSolution.size()];
+
+		for(int iter = 0; iter < solution_size_B; iter++) { 
+			vertex = solution_B[iter];
+			if (!isNeighbor(vertex, vertexChosen)) {
+				//cout << "Removed vertex in B: " << vertex << endl; 
+				removeVertex(vertex, 1);
+			}
+		}
+
+		checkFreePartition();
+		checkNonFreePartition();
+
+		for(unsigned int iter = 0; iter < possibleVerticesToSolution.size(); iter++) { 
+			vertex = possibleVerticesToSolution[iter];
+			if (tightness_B[vertex] == solution_size_B && position_A[vertex] >= solution_size_A) {
+				//cout << vertex << endl;
+				addVertex(vertex, code);
+			}
+		}
+	}
+	else {
+		// initial loop to get the possible vertices to join the solution
+        for(unsigned int iter = solution_size_B + free_size_B; iter < solution_B.size() - removed_size_B; iter++) { 
+			vertex = solution_B[iter];
+			if (tightness_A[vertex] == solution_size_A - 1) {
+				possibleVerticesToSolution.push_back(vertex);
+			}
+		}
+
+		if (possibleVerticesToSolution.size() == 0) { return operationSuccessFlag; }
+		
+		operationSuccessFlag = true;
+
+		srand(time(0));
+		vertexChosen = possibleVerticesToSolution[rand() % possibleVerticesToSolution.size()];
+
+		for(int iter = 0; iter < solution_size_A; iter++) { 
+			vertex = solution_A[iter];
+			if (!isNeighbor(vertex, vertexChosen)) {
+				//cout << "Removed vertex in A: " << vertex << endl;
+				removeVertex(vertex, 0);
+			}
+		}
+
+		checkFreePartition();
+		checkNonFreePartition();
+
+		for(unsigned int iter = 0; iter < possibleVerticesToSolution.size(); iter++) { 
+			vertex = possibleVerticesToSolution[iter];
+			if (tightness_A[vertex] == solution_size_A && position_B[vertex] >= solution_size_B) {
+				addVertex(vertex, code);
+			}
+		}
+	}
+
+	checkFreePartition();
+	checkNonFreePartition();
+
+	return operationSuccessFlag;
+}
+
 bool BipartiteSolution::swap2_2(int code) { // code == 0 for partition A and code != 0 for partition B
     /*
 	int V = graph->getV(), vertex1, vertex2, improvement = 0; // improvement means how much weight the partition will get after the swap
@@ -329,15 +415,18 @@ void BipartiteSolution::VND(int K) { // run VND iterations
 				break;
 			case 2:
 				code = rand() % 2; // try to randomly choose a partition
-				if(swap1_1(code)) k = 1;
-				else if(swap1_1(abs(code - 1))) k = 1; // if first partition goes wrong it will try the next partition
-				else k++;
+				if(swap1_1(code)) { k = 1; }
+				else if(swap1_1(abs(code - 1))) { k = 1; } // if first partition goes wrong it will try the next partition
+				else { k++; }
 				break;
 			case 3:
+				// TODO ANALYZE THE LINE BELOW
+				//if (solution_size_A <= 1 || solution_size_B <= 1) { k++; break; }
 				code = rand() % 2; // try to randomly choose a partition
-				if(swap2_2(code)) k = 1;			
-				else if(swap2_2(abs(code - 1))) k = 1; // if first partition goes wrong it will try the next partition
-				else k++;
+				if (swap1_k(code)) { k = 1; }			
+				else { k++; }
+				//else if (swap1_k(abs(code - 1))) { k = 1; }// if first partition goes wrong it will try the next partition
+				
 				break;
 			default:
 				k++;
@@ -347,26 +436,31 @@ void BipartiteSolution::VND(int K) { // run VND iterations
 }
 
 void BipartiteSolution::rclConstruction(int code, double alpha) { // construct the restricted candidate list for a specific partition and choose a random vertex from it to put in the solution
-	int iter, vertex, vertex_weight;
+	int iter, vertex, vertexValue;
+	// int vertex_weight;
 	int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
-	vector<int> &weight = graph->get_weight_list();
+	//vector<int> &weight = graph->get_weight_list();
+	vector<int> &am = graph->getAmList();
 	rclList.clear();
 	rclListProbability.clear();
 
 	if(code == 0 && free_size_A != 0) { // partition A
 		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // gets the c_min and c_max parameters from the free vertices
 			vertex = solution_A[iter];
-			vertex_weight = weight[vertex];
+			//vertex_weight = weight[vertex];
+			vertexValue = am[vertex];
 
-			if(vertex_weight <= c_min) c_min = vertex_weight;
-			if(vertex_weight >= c_max) c_max = vertex_weight;
+
+			if(vertexValue <= c_min) c_min = vertexValue;
+			if(vertexValue >= c_max) c_max = vertexValue;
 		}
 
 		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // creates the rcl List based in a quality-based construction
 			vertex = solution_A[iter];
-			vertex_weight = weight[vertex];
+			//vertex_weight = weight[vertex];
+			vertexValue = am[vertex];
 
-			if((c_min + alpha * (c_max - c_min)) <= ((double) vertex_weight) && vertex_weight <= c_max) { // condition to get a good quality in the RCL list
+			if((c_min + alpha * (c_max - c_min)) <= ((double) vertexValue) && vertexValue <= c_max) { // condition to get a good quality in the RCL list
 				rclList.push_back(vertex);
 			}
 		}
@@ -383,17 +477,19 @@ void BipartiteSolution::rclConstruction(int code, double alpha) { // construct t
 	else if(code != 0 && free_size_B != 0) { // partition B
 		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // gets the c_min and c_max parameters from the free vertices
 			vertex = solution_B[iter];
-			vertex_weight = weight[vertex];
+			//vertex_weight = weight[vertex];
+			vertexValue = am[vertex];
 
-			if(vertex_weight <= c_min) c_min = vertex_weight;
-			if(vertex_weight >= c_max) c_max = vertex_weight;
+			if(vertexValue <= c_min) c_min = vertexValue;
+			if(vertexValue >= c_max) c_max = vertexValue;
 		}
 
 		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // creates the rcl List based in a quality-based construction
 			vertex = solution_B[iter];
-			vertex_weight = weight[vertex];
+			//vertex_weight = weight[vertex];
+			vertexValue = am[vertex];
 
-			if((c_min + alpha * (c_max - c_min)) <= ((double) vertex_weight) && vertex_weight <= c_max) { // condition to get a good quality in the RCL list
+			if((c_min + alpha * (c_max - c_min)) <= ((double) vertexValue) && vertexValue <= c_max) { // condition to get a good quality in the RCL list
 				rclList.push_back(vertex);
 			}
 		}
@@ -419,10 +515,17 @@ void BipartiteSolution::greedyRandomizedConstructive(double p) {
 	}
 }
 
-void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight) {
+void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit) {
 	int vertex, bicliquePredictedWeight, verticesRemoved = 0;
+	double totalTime = 0;
+	bool timeFlag = false;
+	time_point<system_clock> start, end;
+	duration<double> elapsedSeconds;
 	
 	if(minBicliqueWeight > bestWeight) { return; } // avoid a final loop if there is no possible vertex to be removed
+
+	// start counting time 
+	start = system_clock::now();
 
     for(unsigned int iter = 0; iter < solution_A.size() - removed_size_A; iter++) { // examine all the vertices that are in partition A
         vertex = solution_A[iter];
@@ -430,41 +533,81 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 
 		if(bicliquePredictedWeight < minBicliqueWeight) { minBicliqueWeight = bicliquePredictedWeight; }
 		
-        if(bicliquePredictedWeight <= bestWeight) { // removes u from graph 
+        if(bicliquePredictedWeight <= bestWeight) { // removes vertex from graph 
             removeVertexFromGraph(vertex);
             moveVertexToRemovedVertices(vertex, 0);
             verticesRemoved++;
         }
+
+		
+		end = std::chrono::system_clock::now();
+		elapsedSeconds = end - start;
+		totalTime = elapsedSeconds.count();
+
+		if(totalTime > timeLimit) {
+			timeFlag = true;
+			break;
+		} 
     }
-	
+
+	// start counting time
+	start = system_clock::now();
+	totalTime = 0;    
+
     for(unsigned int iter = 0; iter < solution_B.size() - removed_size_B; iter++) { // examine all the vertices that are in partition B
         vertex = solution_B[iter];
         bicliquePredictedWeight = predictBicliqueWeight(vertex);
 
 		if(bicliquePredictedWeight < minBicliqueWeight) { minBicliqueWeight = bicliquePredictedWeight; }
 
-        if(bicliquePredictedWeight <= bestWeight) { // removes u from graph
+        if(bicliquePredictedWeight <= bestWeight) { // removes vertex from graph
             removeVertexFromGraph(vertex);
             moveVertexToRemovedVertices(vertex, 1);
             verticesRemoved++;
         }
+
+		
+		end = std::chrono::system_clock::now();
+		elapsedSeconds = end - start;
+		totalTime = elapsedSeconds.count();
+
+		if(totalTime > timeLimit) {
+			timeFlag = true;
+			break;
+		}
     }
+
 	
-	if(verticesRemoved > 0) reduceGraph(vertexInGraph, bestWeight, minBicliqueWeight);
+	if(verticesRemoved > 0 && !timeFlag) reduceGraph(vertexInGraph, bestWeight, minBicliqueWeight, timeLimit);
 }
 
-void BipartiteSolution::balanceBiclique() { // remove the vertex with the worst weight in solution A to balance the Biclique
-	int minimum_weight = solution_A[0], vertex_to_remove = solution_A[0], actual_vertex, vertex_weight;
-	
-	for(int iter = 1; iter < solution_size_A; iter++) {
-		actual_vertex = solution_A[iter];
-		vertex_weight = graph->get_weight(actual_vertex);
-		if(vertex_weight < minimum_weight) {
-			vertex_to_remove = actual_vertex;
-			minimum_weight = vertex_weight;
+void BipartiteSolution::balanceBiclique() { // remove the worst vertices in the biggest part to balance the Biclique
+	int vertex, vertexWeight;
+	int diff = abs(solution_size_A - solution_size_B);
+	int code = (solution_size_A > solution_size_B) ? 0 : 1;
+   	priority_queue<pair<int, int>> pq;
+
+	if (code == 0) { 
+		for (int iter = 0; iter < solution_size_A; iter++) {
+			vertex = solution_A[iter];
+			vertexWeight = graph->get_weight(vertex);
+			pq.push(make_pair(vertexWeight, vertex));
 		}
 	}
-	
-	removeVertex(vertex_to_remove, 0); // remove the worst vertex in solution A	
+	else {
+		for (int iter = 0; iter < solution_size_B; iter++) {
+			vertex = solution_B[iter];
+			vertexWeight = graph->get_weight(vertex);
+			pq.push(make_pair(vertexWeight, vertex));
+		}
+	}
+
+	for (int iter = 0; iter < diff; iter++) {
+		vertex = pq.top().second;
+		removeVertex(vertex, code); 
+		pq.pop();
+	}
+		
+	checkFreePartition();
 	checkNonFreePartition();
 }

@@ -474,6 +474,41 @@ int Solution::predictBicliqueWeight(int vertex) {
 	return vertex_accumulatedSum[h_index - 1] + best_neighbor_weight - vertex_weight; 
 }
 
+void Solution::restartAm(double beta) {
+	int u, t;
+	for(int idx = 0; idx < solution_size_A; idx++) { 
+		u = solution_A[idx];
+		t = solution_B[idx];
+		
+		graph->setVertexAm(u, beta);
+		graph->setVertexAm(t, beta);
+	}
+
+	for(long unsigned int idx = solution_size_A; idx < solution_A.size() - removed_size_A; idx++) { 
+		u = solution_A[idx];
+		graph->setVertexAm(u, 1);
+	}
+
+	for(long unsigned int idx = solution_size_B; idx < solution_B.size() - removed_size_B; idx++) { 
+		u = solution_B[idx];
+		graph->setVertexAm(u, 1);
+	}
+}
+
+void Solution::updateAm() {
+	int u, t, uAmValue, tAmValue;
+	for(int idx = 0; idx < solution_size_A; idx++) { 
+		u = solution_A[idx];
+		uAmValue = graph->getVertexAm(u);
+
+		t = solution_B[idx];
+		tAmValue = graph->getVertexAm(t);
+
+		graph->setVertexAm(u, uAmValue + 1);
+		graph->setVertexAm(t, tAmValue + 1);
+	}
+}
+
 // show the current solution
 void Solution::printSolution() {
 	cout << "{ {";

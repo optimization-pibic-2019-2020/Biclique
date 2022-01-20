@@ -9,6 +9,7 @@ Graph::Graph(int v, int e) {
 	this->v = v;
 	this->e = e;
 	adjList.resize(v);
+	am.resize(v);
 	weight.resize(v);
 	h_index.resize(v);
 	accumulatedSum.resize(v);
@@ -23,6 +24,9 @@ Graph::Graph(Graph &graph) { // copy constructor
 
 	weight.resize(v);
 	weight = graph.get_weight_list();
+
+	am.resize(v);
+	am = graph.getAmList();
 
 	h_index.resize(v);
 	h_index = graph.getHIndex();
@@ -47,12 +51,30 @@ int Graph::repeatedEdge(int u, int t) {
 	return 0;
 }
 
+int Graph::getVertexAm(int u) {
+	return am[u];
+}
+
+void Graph::setVertexAm(int u, double newValue) {
+	am[u] = newValue;
+}
+
+void Graph::initializeAm() {
+	for(unsigned int i = 0; i < am.size(); i++) {
+		am[i] = 1;
+	}
+}
+
 int Graph::get_weight(int u) {
 	return weight[u];
 }
 
 int Graph::getVertexHIndex(int u) {
 	return h_index[u];
+}
+
+vector<int> &Graph::getAmList() {
+	return am;
 }
 
 vector<int> &Graph::get_vertex_accumulatedSum(int u) {

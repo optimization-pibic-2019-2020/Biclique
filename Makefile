@@ -1,10 +1,13 @@
+#TODO: look at each tester/generator and update the path
 SRC = ./src
 TEST = ./test
 DEBUG = ./debug
-
+OUT = ./out
+ 
 all: main.o Graph.o Solution.o NonBipartiteSolution.o BipartiteSolution.o
 	g++ -O3 -Wall main.o Graph.o Solution.o NonBipartiteSolution.o BipartiteSolution.o -o main
-	cp main \debug
+	cp ./*.o $(OUT)
+	rm ./*.o
 
 main.o: $(SRC)/main.cpp
 	g++ -c -O3 -Wall $(SRC)/main.cpp 
@@ -36,7 +39,7 @@ generatorU:
 
 tester:
 	python3 $(DEBUG)/testerKonect.py
-	#python3 $(DEBUG)/testerGNP.py
+	python3 $(DEBUG)/testerGNP.py
 	#python3 $(DEBUG)/testerGNPTest.py
 	#python3 $(DEBUG)/testerGNPBTest.py
 	#python3 $(DEBUG)/testerDimacs.py

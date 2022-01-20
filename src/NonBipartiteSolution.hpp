@@ -30,7 +30,7 @@ public:
     void VND(int K);
 	void rclConstruction(int code, double p);
     void greedyRandomizedConstructive(double p);
-	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight);
+	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit);
 	void balanceBiclique();
 };
 
