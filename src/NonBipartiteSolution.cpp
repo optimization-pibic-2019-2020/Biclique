@@ -399,79 +399,27 @@ void NonBipartiteSolution::VND(int K) { // run VND iterations
 	}
 }
 
-// construct the restricted candidate list for a specific partition and choose a random vertex from it to put in the solution
-void NonBipartiteSolution::rclConstruction(int code, double alpha) { 
-	int iter, vertex, vertex_weight;
-	int c_min = 100000000, c_max = -1; // variables to get the interval for the quality-based RCL list
-	vector<int> &weight = graph->get_weight_list();
-	rclList.clear();
-	rclListProbability.clear();
+// create a random solution for tabu-vnd
+void NonBipartiteSolution::randomConstructive() { 
+	srand (time(NULL));
+	int vertexToAdd, idx;
 
-	if(code == 0 && free_size_A != 0) { // partition A
-		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // gets the c_min and c_max parameters from the free vertices
-			vertex = solution_A[iter];
-			vertex_weight = weight[vertex];
-
-			if(vertex_weight <= c_min) c_min = vertex_weight;
-			if(vertex_weight >= c_max) c_max = vertex_weight;
-		}
-
-		for(iter = solution_size_A; iter < solution_size_A + free_size_A; iter++) { // creates the rcl List based in a quality-based construction
-			vertex = solution_A[iter];
-			vertex_weight = weight[vertex];
-
-			if((c_min + alpha * (c_max - c_min)) <= ((double) vertex_weight) && vertex_weight <= c_max) { // condition to get a good quality in the RCL list
-				rclList.push_back(vertex);
-			}
-		}
-
-		// creates the rclListProbability
-		createRclProbability();
-		
-		// generate a random number between [0, rclList.size() - 1] using a linear bias function
-		discrete_distribution<int> distribution(rclListProbability.begin(), rclListProbability.end());
-		int pos = distribution(NonBipartiteGenerator);
-		vertex = rclList[pos]; 
-		addVertex(vertex, 0);
-	}
-	else if(code != 0 && free_size_B != 0) { // partition B
-		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // gets the c_min and c_max parameters from the free vertices
-			vertex = solution_B[iter];
-			vertex_weight = weight[vertex];
-
-			if(vertex_weight <= c_min) c_min = vertex_weight;
-			if(vertex_weight >= c_max) c_max = vertex_weight;
-		}
-
-		for(iter = solution_size_B; iter < solution_size_B + free_size_B; iter++) { // creates the rcl List based in a quality-based construction
-			vertex = solution_B[iter];
-			vertex_weight = weight[vertex];
-
-			if((c_min + alpha * (c_max - c_min)) <= ((double) vertex_weight) && vertex_weight <= c_max) { // condition to get a good quality in the RCL list
-				rclList.push_back(vertex);
-			}
-		}
-	
-		// creates the rclListProbability
-		createRclProbability();
-
-		// generate a random number between [0, rclList.size() - 1] using a linear bias function
-		discrete_distribution<int> distribution(rclListProbability.begin(), rclListProbability.end());
-		int pos = distribution(NonBipartiteGenerator);
-		vertex = rclList[pos]; 
-		addVertex(vertex, 1);
-	}
-
-	checkFreePartition();
-}
-
-void NonBipartiteSolution::greedyRandomizedConstructive(double p) { 
 	while(free_size_A > 0 && free_size_B > 0) { // can generate a solution with an extra vertex in solution A
-		rclConstruction(0, p); 
-		rclConstruction(1, p); 
-		assert(checkIntegrity());
-		assert(checkMu());
+		// first randomly choose a free vertex to partition A
+		idx = solution_size_A + (rand() % free_size_A);
+		vertexToAdd = solution_A[idx];
+		addVertex(vertexToAdd, 0);
+		
+		// then select randomly a free vertex to partition B if there is a free vertex
+		if(free_size_B > 0) {
+			idx = solution_size_B + (rand() % free_size_B);
+			vertexToAdd = solution_B[idx];
+			addVertex(vertexToAdd, 1);
+		}
 	}
+
+	assert(checkIntegrity());
+	assert(checkMu());
 }
 
 void NonBipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit) {

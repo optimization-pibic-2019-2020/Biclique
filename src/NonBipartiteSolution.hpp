@@ -28,8 +28,7 @@ public:
 	bool swap2_2(int code);
 	bool addPairOfVertices();
     void VND(int K);
-	void rclConstruction(int code, double p);
-    void greedyRandomizedConstructive(double p);
+	void randomConstructive();
 	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit);
 	void balanceBiclique();
 };

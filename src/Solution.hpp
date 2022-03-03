@@ -55,15 +55,16 @@ protected:
 	
 	int total_weight;
 
-	// vector of the restricted candidate list for the greedy randomized construction
-	
-	vector<int> rclList;
+	// tabu list vector
 
-	// vector that represents the probability of each element in the rcl
+	vector<int> tabuList;
 
-	vector<double> rclListProbability;
+	// tabu list parameter: Quantity of iterations for a tabu movement
+	int tabuLimitIteration = 31;
 
 public:
+	void setTabuLimitIteration(int limit);
+	bool validateTabu(int v, int iteration);
 	int getTotalWeight();
 	int getRemovedEdges();
 	bool isNeighbor(int vertex1, int vertex2);
@@ -91,9 +92,7 @@ public:
 	bool swap1_1(int code);
 	bool swap2_2(int code);
 	void VND(int K);
-	void greedyRandomizedConstructive(double p);
+	void randomConstructive();
 	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight);
-	void restartAm(double beta);
-	void updateAm();
 	void balanceBiclique();
 };

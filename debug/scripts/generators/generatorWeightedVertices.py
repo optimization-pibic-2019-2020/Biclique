@@ -10,10 +10,10 @@ files = list()
 
 absolute = str(Path(__file__).parent.absolute())
 
-folders = [(absolute+"../input/DIMACS/", absolute+"../input/DIMACS-V/")]
-#folders = [(absolute+"../input/BHOSLIB/", absolute+"../input/BHOSLIB-V/")]
-#folders = [(absolute+"../input/Barabasi-Albert/", absolute+"../input/Barabasi-Albert-V/")]
-#folders = [(absolute+"../input/Erdos-Renyi/", absolute+"../input/Erdos-Renyi-V/")]
+folders = [(absolute+"/../../input/DIMACS/", absolute+"/../../input/DIMACS-V/")]
+#folders = [(absolute+"/../../input/BHOSLIB/", absolute+"/../../input/BHOSLIB-V/")]
+#folders = [(absolute+"/../../input/Barabasi-Albert/", absolute+"/../../input/Barabasi-Albert-V/")]
+#folders = [(absolute+"/../../input/Erdos-Renyi/", absolute+"/../../input/Erdos-Renyi-V/")]
 
 for (inputPath,outputPath) in folders:
 	if not os.path.exists(outputPath):
@@ -32,7 +32,7 @@ for (inputPath,outputPath) in folders:
 		vertex_count, edge_count = [int(z) for z in next(f).split()]
 		edges = []
 		edges = [[int(z) for z in line.split()] for line in f]
-		s.write(str(vertex_count) + " " + str(edge_count) + "\n")
+		s.write("1 " + str(vertex_count) + " " + str(edge_count) + "\n")
 		for i in range(vertex_count):
 			#s.write(str((i*int(edge_count/vertex_count)%vertex_count)+vertex_count-i) + '\n')
 			s.write(str((i%200)+1) + '\n')

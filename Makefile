@@ -1,7 +1,8 @@
 #TODO: look at each tester/generator and update the path
 SRC = ./src
 TEST = ./test
-DEBUG = ./debug
+GENERATOR = ./debug/scripts/generators
+TESTER = ./debug/scripts/testers
 OUT = ./out
  
 all: main.o Graph.o Solution.o NonBipartiteSolution.o BipartiteSolution.o
@@ -32,19 +33,20 @@ clear:
 	rm ./*.o
 
 generatorW:
-	python3 $(DEBUG)/generatorWeightedVertices.py
+	python3 $(GENERATORS)/generatorWeightedVertices.py
 
 generatorU:
-	python3 $(DEBUG)/generatorUniformVertices.py
+	python3 $(GENERATORS)/generatorUniformVertices.py
 
 tester:
-	python3 $(DEBUG)/testerKonect.py
-	python3 $(DEBUG)/testerGNP.py
-	#python3 $(DEBUG)/testerGNPTest.py
-	#python3 $(DEBUG)/testerGNPBTest.py
-	#python3 $(DEBUG)/testerDimacs.py
-	#python3 $(DEBUG)/testerBhoslib.py
-	#python3 $(DEBUG)/testerBarabasiAlbert.py
-	#python3 $(DEBUG)/testerErdosRenyi.py
+	$(TESTER)/konect_script.sh
+	#python3 $(TESTER)/testerKonect.py
+	#python3 $(TESTER)/testerGNP.py
+	#python3 $(TESTER)/testerGNPTest.py
+	#python3 $(TESTER)/testerGNPBTest.py
+	#python3 $(TESTER)/testerDimacs.py
+	#python3 $(TESTER)/testerBhoslib.py
+	#python3 $(TESTER)/testerBarabasiAlbert.py
+	#python3 $(TESTER)/testerErdosRenyi.py
 
 	

@@ -8,6 +8,14 @@
 #include <assert.h>
 using namespace std;
 
+void Solution::setTabuLimitIteration(int limit) {
+	tabuLimitIteration = limit;
+}
+
+bool Solution::validateTabu(int v, int iteration) { 
+	return (iteration - tabuList[v]) > tabuLimitIteration;
+}
+
 // check if the solution is maximal
 bool Solution::isMaximal(int code) { // code == 0 for solution A and code != 0 for solution B
 	if(code == 0) return free_size_A == 0;
@@ -328,7 +336,7 @@ bool Solution::checkIntegrity() {
 		int neighbor_amount_B = 0; // variable to check the amount of neighbors in solution B
 
 		if(tightness_A[vertex_u] > 0 || tightness_B[vertex_u] != solution_size_B) {
-			cout << "Tightness error" << endl;
+			cout << "Tightness error in partition A" << endl;
 			return false;
 		}
 
@@ -356,7 +364,7 @@ bool Solution::checkIntegrity() {
 		int neighbor_amount_A = 0; // variable to check the amount of neighbors in solution A
 
 		if(tightness_B[vertex_u] > 0 || tightness_A[vertex_u] != solution_size_A) {
-			cout << "Tightness error" << endl;
+			cout << "Tightness error in partition B" << endl;
 			return false;
 		}
 
@@ -413,19 +421,6 @@ bool Solution::checkIntegrity() {
 	return true;
 }
 
-// function that creates the probability of each vertex based in linear bias function (1.0 / bias_rank)
-void Solution::createRclProbability() { 
-	double bias_rank; // variable that represents the rank of each element in rcl
-	vector<int> &weight = graph->get_weight_list();
-	vector<vector<int>> &neighbors = graph->get_adjList();
-	
-	for(unsigned int iter = 0; iter < rclList.size(); iter++) {
-		bias_rank = 1.0 / ((double) (weight[rclList[iter]] + neighbors[iter].size()));
-		rclListProbability.push_back(1.0 / bias_rank);
-
-	}
-}
-
 // remove all the edges from the vertex to be removed
 void Solution::removeVertexFromGraph(int vertex) { 
 	int neighbor;
@@ -472,41 +467,6 @@ int Solution::predictBicliqueWeight(int vertex) {
 	}
 	
 	return vertex_accumulatedSum[h_index - 1] + best_neighbor_weight - vertex_weight; 
-}
-
-void Solution::restartAm(double beta) {
-	int u, t;
-	for(int idx = 0; idx < solution_size_A; idx++) { 
-		u = solution_A[idx];
-		t = solution_B[idx];
-		
-		graph->setVertexAm(u, beta);
-		graph->setVertexAm(t, beta);
-	}
-
-	for(long unsigned int idx = solution_size_A; idx < solution_A.size() - removed_size_A; idx++) { 
-		u = solution_A[idx];
-		graph->setVertexAm(u, 1);
-	}
-
-	for(long unsigned int idx = solution_size_B; idx < solution_B.size() - removed_size_B; idx++) { 
-		u = solution_B[idx];
-		graph->setVertexAm(u, 1);
-	}
-}
-
-void Solution::updateAm() {
-	int u, t, uAmValue, tAmValue;
-	for(int idx = 0; idx < solution_size_A; idx++) { 
-		u = solution_A[idx];
-		uAmValue = graph->getVertexAm(u);
-
-		t = solution_B[idx];
-		tAmValue = graph->getVertexAm(t);
-
-		graph->setVertexAm(u, uAmValue + 1);
-		graph->setVertexAm(t, tAmValue + 1);
-	}
 }
 
 // show the current solution
