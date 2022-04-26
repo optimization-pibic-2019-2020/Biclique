@@ -55,12 +55,20 @@ protected:
 	
 	int total_weight;
 
+	// vector of the restricted candidate list for the greedy randomized construction
+	
+	vector<int> rclList;
+
+	// vector that represents the probability of each element in the rcl
+
+	vector<double> rclListProbability;
+
 	// tabu list vector
 
 	vector<int> tabuList;
 
 	// tabu list parameter: Quantity of iterations for a tabu movement
-	int tabuLimitIteration = 31;
+	int tabuLimitIteration = 65;// 20;
 
 public:
 	void setTabuLimitIteration(int limit);
@@ -74,7 +82,8 @@ public:
 	void moveFreeToNonFreePartition(int u, int code);
  	void moveSolutionToFreePartition(int u, int code);
 	void moveNonFreeToFreePartition(int u, int code); 
-	void moveVertexToRemovedVertices(int u, int code);
+	void moveVertexToNonFreePartition(int u, int code);
+	void moveNonFreeToRemovedPartition(int u, int code);
 	bool isMaximal(int code);
 	void addRandomVertex(int code);
 	bool checkIntegrity();

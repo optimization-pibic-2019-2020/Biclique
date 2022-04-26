@@ -27,6 +27,9 @@ public:
 	bool swap1_k(int code, int iteration);
 	bool addPairOfVertices(int iteration);
 	void randomConstructive();
+	void rclConstruction(int code, double alpha, int iteration);
+	void greedyRandomizedConstructive(double p, int iteration);
+	void moveVertexToNonFreePartition(int u, int code);
 	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit);
 	void perturb();
 	void balanceBiclique();

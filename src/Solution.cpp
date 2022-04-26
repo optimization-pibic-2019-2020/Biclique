@@ -273,7 +273,7 @@ void Solution::moveNonFreeToFreePartition(int u, int code) { // code == 0 for so
 }
 
 // move a vertex to the removed partition
-void Solution::moveVertexToRemovedVertices(int u, int code) { // code == 0 for solution A and code != 0 for solution B
+void Solution::moveNonFreeToRemovedPartition(int u, int code) { // code == 0 for solution A and code != 0 for solution B
 	int V = graph->getV();
 	assert(u < V);
 
@@ -287,8 +287,8 @@ void Solution::moveVertexToRemovedVertices(int u, int code) { // code == 0 for s
 		// last vertex of the third partition
 		int j = solution_A[new_pos_u];
 
-		// ensures u is not a removed vertex of the solution vector A
-		assert(pos_u <= new_pos_u);
+		// ensures u is in non free partition of the solution vector A
+		assert((pos_u >= solution_size_A + free_size_A) && pos_u <= new_pos_u);
 
 		// swap u with the last vertex of the third partition
 		swap(solution_A[pos_u], solution_A[new_pos_u]);
@@ -308,8 +308,8 @@ void Solution::moveVertexToRemovedVertices(int u, int code) { // code == 0 for s
 		// last vertex of the third partition
 		int j = solution_B[new_pos_u];
 
-		// ensures u is not a removed vertex of the solution vector B
-		assert(pos_u <= new_pos_u);
+		// ensures u is in non free partition of the solution vector B
+		assert((pos_u >= solution_size_B + free_size_B) && pos_u <= new_pos_u);
 
 		// swap u with the last vertex of the third partition
 		swap(solution_B[pos_u], solution_B[new_pos_u]);
@@ -336,6 +336,7 @@ bool Solution::checkIntegrity() {
 		int neighbor_amount_B = 0; // variable to check the amount of neighbors in solution B
 
 		if(tightness_A[vertex_u] > 0 || tightness_B[vertex_u] != solution_size_B) {
+			cout << "Tightness A = " << tightness_A[vertex_u] << endl;
 			cout << "Tightness error in partition A" << endl;
 			return false;
 		}
@@ -364,6 +365,7 @@ bool Solution::checkIntegrity() {
 		int neighbor_amount_A = 0; // variable to check the amount of neighbors in solution A
 
 		if(tightness_B[vertex_u] > 0 || tightness_A[vertex_u] != solution_size_A) {
+			cout << "Tightness B = " << tightness_B[vertex_u] << endl;
 			cout << "Tightness error in partition B" << endl;
 			return false;
 		}
@@ -419,6 +421,19 @@ bool Solution::checkIntegrity() {
 	}
 
 	return true;
+}
+
+// function that creates the probability of each vertex based in linear bias function (1.0 / bias_rank)
+void Solution::createRclProbability() { 
+	double bias_rank; // variable that represents the rank of each element in rcl
+	vector<int> &weight = graph->get_weight_list();
+	vector<vector<int>> &neighbors = graph->get_adjList();
+	
+	for(unsigned int iter = 0; iter < rclList.size(); iter++) {
+		bias_rank = 1.0 / ((double) (weight[rclList[iter]] + neighbors[iter].size()));
+		rclListProbability.push_back(1.0 / bias_rank);
+
+	}
 }
 
 // remove all the edges from the vertex to be removed

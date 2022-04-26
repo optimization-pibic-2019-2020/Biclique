@@ -28,6 +28,14 @@ int verticesRemoved = 0, edgesRemoved = 0;
 int maxVerticesRemoved = 0, maxEdgesRemoved = 0;
 vector<bool> vertexInGraph; 
 
+// REACTIVE GRASP VARIABLES AND VECTORS (to help each alpha probability calculation)
+vector<double> alphas{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}; // all alpha values
+vector<double> alphaProbability; // all alpha probabilities
+vector<int> alphaTimesChosen;  // stores how many each alpha was chosen
+vector<int> alphaSolutions;  // stores the sum of each solution for each alpha
+int alphaChosen; // variable to store the chosen alpha for the current iteration 
+int alphaCalibration = 77; //100; 
+
 // TABU PARAMETERS
 int total_iterations = 0;//5000; // number of tabu iterations
 int loop = 10; // variable related to the total number of executions
@@ -35,15 +43,16 @@ double execution_time_limit = 60; // time of each execution
 int target = -1; // variable related to biclique target
 
 // Tabu VARIABLES
-int iterWithoutImprovement = 143;
+int thirdNeighborLimit = 35; //8;
 int tabuLimitIteration = 0;
+int restartSolutionLimit = 192; //100;
 
 // EXECUTION TIME VARIABLES 
-double total_time = 0, time_to_best = 0, execution_time = 0, timeLimit;
+double total_time = 0, time_to_best = 0,execution_time = 0, timeLimit;
 
 // constant related of how much time an individual edge should waste in reduction
 // to calculate timeLimit (variable related to time limit in reduction) you need to multiply the quantity of edge (e) per edgeTimeConst
-double edgeTimeConst = 0.000005586; 
+double edgeTimeConst = 0.000005586; // 0.5932109;  
 
 void BipartiteReactiveGrasp() {
 	try {
@@ -64,19 +73,26 @@ void BipartiteReactiveGrasp() {
 		duration<double> elapsed_seconds;
 
 		// tabu execution variables
-		int local_search_iter, iter;
-        int best_weight, local_weight, local_search_best_weight, best_solution = -1, avarage_solution = 0;
+		int mainIter, multiStartIter;
+        int bestWeight, localWeight; // variables related to the results of a loop 
+		int bestSolution = -1, avarageSolution = 0; // variables related to the best results of each loop
+
+		// local search variables 
 		int partitionCode; 
+
+		// reactive grasp execution variable
+		double avarageAlphaResults;
+		int reactiveGraspIter;
 
 		srand (time(NULL));
 
         // start timing
         start = system_clock::now();
 		
-		cout << "Starting the algorithm...\n" << endl;
+		//cout << "Starting the algorithm...\n" << endl;
 
         while(loop--) {
-			cout << abs(10 - loop) << " execution" << endl;
+			//cout << abs(10 - loop) << " execution" << endl;
 
 			BipartiteSolution s(&graph, partitionA_size, partitionB_size); // initialize all the variables and structures for solution
 
@@ -84,10 +100,12 @@ void BipartiteReactiveGrasp() {
 			s.randomConstructive();
 			if(s.checkBicliqueSize() == false) s.balanceBiclique();
 			
-			iter = 0;
-			best_weight = s.getTotalWeight();
+			mainIter = 0;
+			multiStartIter = 0;
+			reactiveGraspIter = alphaCalibration;
+			bestWeight = s.getTotalWeight();
 
-			cout << "Initial Solution: " << s.getTotalWeight() << endl;
+			//cout << "Initial Solution: " << s.getTotalWeight() << endl;
 			
 			BipartiteSolution next_s(&graph, partitionA_size, partitionB_size);
 			if(tabuLimitIteration != 0) {
@@ -97,6 +115,13 @@ void BipartiteReactiveGrasp() {
 			// starting random generator for discrete distribution
 			random_device device;
 			mt19937 generator(device());
+
+			// initializing alpha vectors
+			for(int i = 0; i < 11; i++) {
+				alphaProbability.push_back(1.0); 
+				alphaTimesChosen.push_back(0);  
+				alphaSolutions.push_back(0);
+			}
 
 			// initializing vertex removed vector
 			vertexInGraph.resize(v);
@@ -108,67 +133,80 @@ void BipartiteReactiveGrasp() {
 			execution_time = elapsed_seconds.count();
 
 			next_s.randomConstructive(); // starts a new optimal solution
-			if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
-			local_weight = next_s.getTotalWeight();
 
-			while((iter < total_iterations) || (execution_time <= execution_time_limit)) { // run ILS iterations	
-				// local search 
+			while((mainIter < total_iterations) || (execution_time <= execution_time_limit)) { // run ILS iterations	
+				if (multiStartIter == restartSolutionLimit) {
+					// restart the solution
+					next_s.restartSolution(vertexInGraph); 
+
+					// choose the alpha based on reactive grasp
+					discrete_distribution<int> distribution(alphaProbability.begin(), alphaProbability.end());
+					alphaChosen = distribution(generator);
+					alphaTimesChosen[alphaChosen]++;
+					next_s.greedyRandomizedConstructive(alphas[alphaChosen], mainIter); // starts a new optimal solution
+
+					multiStartIter = 0;
+				}
+
+				// starting local search 
 
 				// first neighbor structure
-				while(next_s.addPairOfVertices(iter));
+				while(next_s.addPairOfVertices(mainIter));
 
 				// second neighbor structure
-				// it uses tabu list
-				local_search_iter = iterWithoutImprovement;
-				local_search_best_weight = local_weight;
+				partitionCode = 0;
+				while(next_s.swap1_1(partitionCode, mainIter));
 
-				while(local_search_iter--) {
-					partitionCode = random() % 2;
-					next_s.swap1_1(partitionCode, iter);
-
-					if(local_search_best_weight < next_s.getTotalWeight()) {
-						local_search_best_weight = next_s.getTotalWeight(); 
-						local_search_iter = iterWithoutImprovement;
-					}
-				}
+				partitionCode = 1;
+				while(next_s.swap1_1(partitionCode, mainIter));
 
 				// third neighbor structure
 				// it uses tabu list
-				local_search_iter = iterWithoutImprovement;
+				/*if(mainIter % thirdNeighborLimit == 0) {
+					next_s.swap1_k(0, mainIter);
+					next_s.swap1_k(1, mainIter);
+				}*/
 				
-				while(local_search_iter--) {
-					partitionCode = random() % 2;
-					next_s.swap1_1(partitionCode, iter);
+			
+				// end of local search
+				if(next_s.checkBicliqueSize() == false) { next_s.balanceBiclique(); }
+				localWeight = next_s.getTotalWeight();
+				assert(next_s.checkIntegrity());
 
-					if(local_search_best_weight < next_s.getTotalWeight()) {
-						local_search_best_weight = next_s.getTotalWeight(); 
-						local_search_iter = iterWithoutImprovement;
+				if(localWeight > bestWeight) {
+					s = next_s; // update best local solution
+					bestWeight = localWeight; // update best_weight
+					multiStartIter = 0; // restart count from iteration zero 
+						
+					
+					if (bestWeight > bestSolution) {
+						elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
+						time_to_best = elapsed_seconds.count(); // update time_to_best
+					} 
+					//cout << "New best found: " << bestWeight << endl;
+					
+					//next_s.reduceGraph(vertexInGraph, bestWeight, -1, timeLimit); // start graph reduction
+					
+				} else { 
+					multiStartIter++; // did not improve solution
+				}
+
+				reactiveGraspIter++; // parameter related to reactive grasp calibration 
+
+				if(reactiveGraspIter == alphaCalibration) { // reactive grasp (alpha calibration)
+					reactiveGraspIter = 0; // reset the parameter
+			
+					for(int i = 0; i < 11; i++) {
+						if(alphaTimesChosen[i] > 0) {
+							avarageAlphaResults = ((double) alphaSolutions[i]) / ((double) alphaTimesChosen[i]); // avarage of alpha solutions
+							alphaProbability[i] =  ((double) bestWeight) / avarageAlphaResults; // best weight divided by the avarage of the alpha solutions so far
+						} 
 					}
 				}
-				// end of local search
-
-				if(next_s.checkBicliqueSize() == false) { next_s.balanceBiclique(); }
-				local_weight = next_s.getTotalWeight();
-
-				if(local_weight > best_weight) {
-					s = next_s; // update best local solution
-					best_weight = local_weight; // update best_weight
-						
-					elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
-					time_to_best = elapsed_seconds.count(); // update time_to_best 
-					cout << "New best found: " << best_weight << endl;
-					
-					// TODO OLHAR LINHA ABAIXO - REDUCAO COM PROBLEMAS
-					//next_s.reduceGraph(vertexInGraph, best_weight, -1, timeLimit); // start graph reduction
-				}
-
-				next_s.perturb();
 				
 				elapsed_seconds = system_clock::now() - execution_start; 
 				execution_time = elapsed_seconds.count();
-				iter++;
-
-				assert(next_s.checkIntegrity());
+				mainIter++;
 			}
 
 			// restarting graph
@@ -176,16 +214,16 @@ void BipartiteReactiveGrasp() {
 
 			if(s.checkBicliqueSize() == false) {
 				s.balanceBiclique();
-				best_weight = s.getTotalWeight();
+				bestWeight = s.getTotalWeight();
+				assert(s.checkIntegrity());
 			}
 
-			avarage_solution += best_weight;
-			if(best_solution < best_weight) {
+			avarageSolution += bestWeight;
+			if(bestSolution < bestWeight) {
 				best_s = s;
-				best_solution = best_weight;
+				bestSolution = bestWeight;
+				assert(best_s.checkIntegrity());
 			}
-
-			assert(next_s.checkIntegrity());
 
 			// execution informations
 			elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
@@ -197,24 +235,22 @@ void BipartiteReactiveGrasp() {
 			maxVerticesRemoved = max(maxVerticesRemoved, verticesRemoved);
 			maxEdgesRemoved = max(maxEdgesRemoved, edgesRemoved);
 
-			cout << "\nGraph Reduce results:" << endl;
+			/*cout << "\nGraph Reduce results:" << endl;
 			cout << "Vertices removed: " << verticesRemoved << " of " << v << endl;
 			cout << "Edges removed: " << edgesRemoved << " of " << e << endl;
 			cout << ((verticesRemoved * 1.0) / (v * 1.0)) * 100.0 << "% of vertices removed and " << ((edgesRemoved * 1.0) / (e * 1.0))* 100.0 << "% of edges removed"<< endl;
 
 			cout << "\nResults:\n";
-			cout << "Best: " << best_weight << endl;
+			cout << "Best: " << bestWeight << endl;
 			cout << "Total time of execution: " << execution_time << endl;
-			cout << "Time to best: " << time_to_best << "s\n" << endl;
-			//cout << best_weight << "," << execution_time << endl;
-			//cout << best_weight << "," << time_to_best << endl;
+			cout << "Time to best: " << time_to_best << "s\n" << endl;*/
 
 			// restarting removed vertices stats
 			verticesRemoved = 0;
 			edgesRemoved = 0;
 		}
 		
-		cout << "End of the algorithm" << endl;
+		//cout << "End of the algorithm" << endl;
 
 		// end timing
         end = std::chrono::system_clock::now();
@@ -225,13 +261,13 @@ void BipartiteReactiveGrasp() {
         //5 digits precision is enough
         total_time += elapsed_seconds.count();
 
-		cout << "Best Solution: " << best_solution << endl;
-		cout << "Avarage Solution: " << avarage_solution / 10 << endl;
+		/*cout << "Best Solution: " << bestSolution << endl;
+		cout << "Avarage Solution: " << avarageSolution / 10 << endl;
 		cout << "Avarage Time: " << std::setprecision(4) << total_time / 10 << endl;
 		cout << "Solution: ";
 		best_s.printSolution();
-		cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" << endl;		
-		//cout << fixed << setprecision(3) << double(((maxVerticesRemoved * 1.0) / (v * 1.0)) * 100.0) << endl; // Using this print to get the results to generate the graphic
+		cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" << endl;		*/
+		cout << avarageSolution / 10 << "," << bestSolution << "," << std::setprecision(2) << time_to_best;
 	}
 	catch (std::exception &e) {
 		cerr << e.what();
@@ -396,9 +432,11 @@ int main(int argc, char* argv[]) {
 			cout << "-  " << "-I + number of iterations for total iterations of GRASP+VND" << endl;
 			cout << "-  " << "-T + time in seconds to define time per execution of GRASP+VND" << endl;
 			cout << "-  " << "-G + an integer to define a target for biclique" << endl;
-			cout << "-  " << "-iWI + iterWithoutImprovement for local search stop criteria" << endl;
+			cout << "-  " << "-tNL + thirdNeighborLimit for swap1_k local search stop criteria" << endl;
+			cout << "-  " << "-rSL + restartSolutionLimit to set quantity of iterations to restart the solution" << endl;
 			cout << "-  " << "-tLI + tabuLimitIteration to set quantity of iterations for a tabu movement" << endl;
-			cout << "-  " << "-eTc + edgeTimeConst for reduction optimization parameter" << endl;
+			cout << "-  " << "-aC + alphaCalibration to set quantity of iterations calibrate alpha parameter" << endl;
+			cout << "-  " << "-eTC + edgeTimeConst for reduction optimization parameter" << endl;
 			cout << "-  " << "If a instruction is not set then the non-used paremeters will have the default value" << endl;
 			return 0;
 		}
@@ -413,9 +451,11 @@ int main(int argc, char* argv[]) {
 				total_iterations = 0;
 			}
 			else if(strcmp(argv[iter], "-G") == 0) target = atoi(argv[++iter]); 
-			else if(strcmp(argv[iter], "-iWI") == 0) iterWithoutImprovement = atoi(argv[++iter]);
+			else if(strcmp(argv[iter], "-tNL") == 0) thirdNeighborLimit = atoi(argv[++iter]);
+			else if(strcmp(argv[iter], "-rSL") == 0) restartSolutionLimit = atoi(argv[++iter]);
 			else if(strcmp(argv[iter], "-tLI") == 0) tabuLimitIteration = atoi(argv[++iter]);
-			else if(strcmp(argv[iter], "-eTc") == 0) edgeTimeConst = stod(argv[++iter]);
+			else if(strcmp(argv[iter], "-aC") == 0) alphaCalibration = atoi(argv[++iter]);
+			else if(strcmp(argv[iter], "-eTC") == 0) edgeTimeConst = stod(argv[++iter]);
 			else {
 				cout << "Parameters Failed." << endl << "Type -help to use the parameters correctly" << endl;
 				return 0;
@@ -446,6 +486,10 @@ int main(int argc, char* argv[]) {
 		}
 
 		timeLimit = ceil(edgeTimeConst * e);
+
+		timeLimit = (timeLimit > 20) ? 20 : timeLimit;
+
+		// TODO -> Densidade grafo < 0.000010, ativa redução (Ver essa ideia)
 
 		(input_type == 1) ? NonBipartiteReactiveGrasp() : BipartiteReactiveGrasp();
 	}	
