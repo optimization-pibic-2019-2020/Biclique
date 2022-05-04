@@ -135,6 +135,8 @@ void NonBipartiteSolution::removeVertex(int u, int code) { // code == 0 for solu
 			}
 		}
 	}
+
+	checkNonFreePartition();
 }
 
 // add a vertex to solution A or B
@@ -164,6 +166,8 @@ void NonBipartiteSolution::addVertex(int u, int code) { // code == 0 for solutio
 			mu_B[neighbor] -= weight_u;
 		}
 	}
+
+	checkFreePartition();
 }
 
 bool NonBipartiteSolution::checkMu() { // check if mu_A and mu_B are correct
@@ -259,9 +263,6 @@ void NonBipartiteSolution::swapVertices(int vertex, int code) { // code == 0 for
 			}
 		}
 	}
-
-	checkFreePartition();
-	checkNonFreePartition();
 }
 
 bool NonBipartiteSolution::swap1_1(int code) { // code == 0 for partition A and code != 0 for partition B
@@ -362,7 +363,7 @@ bool NonBipartiteSolution::addPairOfVertices() {
 			if(vertex1 != -1 && vertex2 != -1) {
 				addVertex(vertex1, 0);
 				addVertex(vertex2, 1);
-				checkFreePartition();
+				
 				return true;
 			}
 			iter++;
@@ -461,8 +462,6 @@ void NonBipartiteSolution::rclConstruction(int code, double alpha) {
 		vertex = rclList[pos]; 
 		addVertex(vertex, 1);
 	}
-
-	checkFreePartition();
 }
 
 void NonBipartiteSolution::greedyRandomizedConstructive(double p) { 
@@ -509,5 +508,4 @@ void NonBipartiteSolution::balanceBiclique() { // remove the vertex with the wor
 	}
 
 	removeVertex(vertex_to_remove, 0); // remove the worst vertex in solution A	
-	checkNonFreePartition();
 }

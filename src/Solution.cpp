@@ -4,7 +4,7 @@
 #include <random>
 #include <ctime>
 #include "Solution.hpp"
-#define NDEBUG
+//#define NDEBUG
 #include <assert.h>
 using namespace std;
 
@@ -75,7 +75,7 @@ void Solution::moveFreeToSolutionPartition(int u, int code) { // code == 0 for s
 		int j = solution_A[solution_size_A];
 
 		// ensures u is in the free partition of the solution vector A
-		assert((solution_size_A <= pos_u) && (solution_size_A + free_size_A > pos_u));
+		assert((solution_size_A <= pos_u) && (pos_u < solution_size_A + free_size_A));
 
 		// swap u with the first vertex of the second partition
 		swap(solution_A[pos_u], solution_A[new_pos_u]);
@@ -98,7 +98,15 @@ void Solution::moveFreeToSolutionPartition(int u, int code) { // code == 0 for s
 		int j = solution_B[solution_size_B];
 
 		// ensures u is in the free partition of the solution vector B
-		assert((solution_size_B <= pos_u) && (solution_size_B + free_size_B > pos_u));
+		
+		if((solution_size_B <= pos_u) && (pos_u < solution_size_B + free_size_B)){
+			
+		}
+		else {
+			cout << solution_size_B << " <= " << pos_u << " < " << solution_size_B + free_size_B << endl;
+			assert((solution_size_B <= pos_u) && (pos_u < solution_size_B + free_size_B));
+		}		
+		assert(tightness_A[u] == solution_size_A);	
 
 		// swap u with the first vertex of the second partition
 		swap(solution_B[pos_u], solution_B[new_pos_u]);
@@ -328,6 +336,8 @@ bool Solution::checkIntegrity() {
 		int neighbor_amount_B = 0; // variable to check the amount of neighbors in solution B
 
 		if(tightness_A[vertex_u] > 0 || tightness_B[vertex_u] != solution_size_B) {
+			cout << "tA: " << tightness_A[vertex_u] << endl;
+			cout << "tb: " << tightness_B[vertex_u] << " != " << solution_size_B << endl;
 			cout << "Tightness error" << endl;
 			return false;
 		}
@@ -422,7 +432,6 @@ void Solution::createRclProbability() {
 	for(unsigned int iter = 0; iter < rclList.size(); iter++) {
 		bias_rank = 1.0 / ((double) (weight[rclList[iter]] + neighbors[iter].size()));
 		rclListProbability.push_back(1.0 / bias_rank);
-
 	}
 }
 

@@ -13,7 +13,7 @@
 
 #include "NonBipartiteSolution.hpp"
 #include "BipartiteSolution.hpp"
-#define NDEBUG
+//#define NDEBUG
 #include <assert.h>
 #include <chrono>
 #include <random>
@@ -29,14 +29,13 @@ int maxVerticesRemoved = 0, maxEdgesRemoved = 0;
 vector<bool> vertexInGraph; 
 
 // GRASP-VND PARAMETERS
-int total_iterations = 5000; // number of grasp iterations
-int loop = 10; // variable related to the total number of executions
-double execution_time_limit = 0; // time of each execution
-int beta_var = 1000; // limit of iterations that dont improve the biclique
-/*int alpha_calibration = 50; // variable related to the reactive grasp adjustment*/
-int alpha_calibration = 40; 
+int total_iterations = -1; //5000; // number of grasp iterations 
+int loop = 10; 
+double execution_time_limit = 60; // time of each execution
+int beta_var = 2347; // limit of iterations that dont improve the biclique
+int alpha_calibration = 231; // variable related to reactive grasp adjustment
 int target = -1; // variable related to biclique target
-int K = 3; // number of neighborhood structures
+int K = 2; // 3; // number of neighborhood structures
 
 // REACTIVE GRASP VARIABLES AND VECTORS (to help each alpha probability calculation)
 vector<double> alphas{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0}; // all alpha values
@@ -48,14 +47,13 @@ int alpha_chosen; // variable to store the chosen alpha for the current iteratio
 // EXECUTION TIME VARIABLES 
 double total_time = 0, time_to_best = 0, execution_time = 0, timeLimit;
 
-// HYPERPARAMETERS FOR ADAPTATIVE MEMORY
-double amBetaParamater;
-double amEpsilonParameter;
-
+// HYPERPARAMETERS FOR ADAPTIVE MEMORY
+int amBetaParamater = 11586;
+int amEpsilonParameter = 58768;
 
 // constant related of how much time an individual edge should waste in reduction
 // to calculate timeLimit (variable related to time limit in reduction) you need to multiply the quantity of edge (e) per edgeTimeConst
-double edgeTimeConst = 0.000005586; 
+double edgeTimeConst = 0.2614115754; 
 
 void BipartiteReactiveGrasp() {
 	try {
@@ -127,9 +125,10 @@ void BipartiteReactiveGrasp() {
 				next_s.greedyRandomizedConstructive(alphas[alpha_chosen]); // starts a new optimal solution
 				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
 				
-				next_s.VND(K);
+				//next_s.VND(K);
 				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
 				local_weight = next_s.getTotalWeight();
+				assert(next_s.checkIntegrity());
 
 				// avoiding a problem where many vertices are removed then local weight always results in 0
 				// then all probabilites goes to 0 or -nan
@@ -152,11 +151,14 @@ void BipartiteReactiveGrasp() {
 					if(target != -1 && target <= local_weight) { 
 						next_s.restartSolution(vertexInGraph);
 						assert(next_s.checkIntegrity());
-						assert(next_s.checkMu());
+		
 						break; 
 					} 
 					
-					next_s.reduceGraph(vertexInGraph, best_weight, -1, timeLimit); // start graph reduction
+					elapsed_seconds = system_clock::now() - execution_start; 
+					execution_time = elapsed_seconds.count();
+
+					next_s.reduceGraph(vertexInGraph, best_weight, -1, timeLimit - execution_time); // start graph reduction
 				} else { 
 					next_s.updateAm();
 				}	
@@ -178,7 +180,7 @@ void BipartiteReactiveGrasp() {
 					}
 				}
 
-				if(total_iterations == 0) {
+				if(total_iterations <= 0) {
 					elapsed_seconds = system_clock::now() - execution_start; 
 					execution_time = elapsed_seconds.count();
 				}
@@ -188,7 +190,6 @@ void BipartiteReactiveGrasp() {
 
 				next_s.restartSolution(vertexInGraph);
 				assert(next_s.checkIntegrity());
-				assert(next_s.checkMu());
 			}
 
 			// restarting graph
@@ -205,8 +206,7 @@ void BipartiteReactiveGrasp() {
 				best_solution = best_weight;
 			}
 
-			assert(next_s.checkIntegrity());
-			assert(next_s.checkMu());
+			assert(best_s.checkIntegrity());
 
 			// execution informations
 			discrete_distribution<int> distribution(alphaProbability.begin(), alphaProbability.end());
@@ -358,7 +358,10 @@ void NonBipartiteReactiveGrasp() {
 					cout << "New best found: " << best_weight << endl;
 					// TODO create time limit mechanism (just made in the bipartite solution)
 					// TODO add target conditional
-					//next_s.reduceGraph(vertexInGraph, best_weight, -1, timeLimit); // start graph reduction
+
+					elapsed_seconds = system_clock::now() - execution_start; 
+					execution_time = elapsed_seconds.count();
+					//next_s.reduceGraph(vertexInGraph, best_weight, -1, timeLimit - execution_time); // start graph reduction
 				}	
 				else if(local_weight == best_weight) x--;
 
@@ -476,8 +479,11 @@ int main(int argc, char* argv[]) {
 			cout << "-  " << "-I + number of iterations for total iterations of GRASP+VND" << endl;
 			cout << "-  " << "-T + time in seconds to define time per execution of GRASP+VND" << endl;
 			cout << "-  " << "-G + an integer to define a target for biclique" << endl;
-			cout << "-  " << "-B + beta_var for the parameter beta_var" << endl;
-			cout << "-  " << "-C + alpha_calibration for the reactive grasp calibration parameter" << endl;
+			cout << "-  " << "-B + beta_var for parameter beta_var" << endl;
+			cout << "-  " << "-C + alpha_calibration for reactive grasp calibration parameter" << endl;
+			cout << "-  " << "-amB + amBetaParamater for adaptive memory parameter" << endl;
+			cout << "-  " << "-amE + amEpsilonParameter for adaptive memory parameter" << endl;
+			cout << "-  " << "-eTc + edgeTimeConst for reduction optimization parameter" << endl;
 			cout << "-  " << "If a instruction is not set then the non-used paremeters will have the default value" << endl;
 			return 0;
 		}
@@ -487,13 +493,16 @@ int main(int argc, char* argv[]) {
 				total_iterations = atoi(argv[++iter]);
 				execution_time_limit = 0.0;
 			}
-			if(strcmp(argv[iter], "-T") == 0) {
+			else if(strcmp(argv[iter], "-T") == 0) {
 				execution_time_limit = stod(argv[++iter]);
 				total_iterations = 0;
 			}
 			else if(strcmp(argv[iter], "-B") == 0) beta_var = atoi(argv[++iter]); 
 			else if(strcmp(argv[iter], "-G") == 0) target = atoi(argv[++iter]); 
 			else if(strcmp(argv[iter], "-C") == 0) alpha_calibration = atoi(argv[++iter]);
+			else if(strcmp(argv[iter], "-amB") == 0) amBetaParamater = atoi(argv[++iter]);
+			else if(strcmp(argv[iter], "-amE") == 0) amEpsilonParameter = atoi(argv[++iter]);
+			else if(strcmp(argv[iter], "-eTc") == 0) edgeTimeConst = stod(argv[++iter]);
 			else {
 				cout << "Parameters Failed." << endl << "Type -help to use the parameters correctly" << endl;
 				return 0;
@@ -526,9 +535,6 @@ int main(int argc, char* argv[]) {
 		}
 
 		timeLimit = ceil(edgeTimeConst * e);
-		amBetaParamater = (v * 1.0) / 100.0;
-		amEpsilonParameter = (v * 1.0) / 5.0;
-
 		(input_type == 1) ? NonBipartiteReactiveGrasp() : BipartiteReactiveGrasp();
 	}	
 	catch (std::exception &e) {
