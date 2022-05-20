@@ -32,7 +32,7 @@ vector<bool> vertexInGraph;
 int total_iterations = -1; //5000; // number of grasp iterations 
 int loop = 10; 
 double execution_time_limit = 60; // time of each execution
-int beta_var = 2347; // limit of iterations that dont improve the biclique
+int beta_var = 1000000; // TODO --- 2347; // limit of iterations that dont improve the biclique
 int alpha_calibration = 231; // variable related to reactive grasp adjustment
 int target = -1; // variable related to biclique target
 int K = 2; // 3; // number of neighborhood structures
@@ -45,7 +45,7 @@ vector<int> alphaSolutions;  // stores the sum of each solution for each alpha
 int alpha_chosen; // variable to store the chosen alpha for the current iteration 
 
 // EXECUTION TIME VARIABLES 
-double total_time = 0, time_to_best = 0, execution_time = 0, timeLimit;
+double total_time = 0, time_to_best = 0, execution_time = 0, timeLimit, time_to_reduction;
 
 // HYPERPARAMETERS FOR ADAPTIVE MEMORY
 int amBetaParamater = 11586;
@@ -125,7 +125,7 @@ void BipartiteReactiveGrasp() {
 				next_s.greedyRandomizedConstructive(alphas[alpha_chosen]); // starts a new optimal solution
 				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
 				
-				//next_s.VND(K);
+				next_s.VND(K);
 				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
 				local_weight = next_s.getTotalWeight();
 				assert(next_s.checkIntegrity());
@@ -135,11 +135,7 @@ void BipartiteReactiveGrasp() {
 				if(local_weight != 0) { alphaSolutions[alpha_chosen] += local_weight; }
 				else { alphaTimesChosen[alpha_chosen]--; }
 
-				if(local_weight > best_weight) {
-					s = next_s; // update best local solution
-					best_weight = local_weight; // update best_weight
-					x = beta_var; // reinitialize parameter x
-						
+				if(local_weight > best_weight) {	
 					elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 					time_to_best = elapsed_seconds.count(); // update time_to_best 
 					cout << "New best found: " << best_weight << endl;
@@ -158,7 +154,12 @@ void BipartiteReactiveGrasp() {
 					elapsed_seconds = system_clock::now() - execution_start; 
 					execution_time = elapsed_seconds.count();
 
-					next_s.reduceGraph(vertexInGraph, best_weight, -1, timeLimit - execution_time); // start graph reduction
+					time_to_reduction = (timeLimit < execution_time_limit - execution_time) ? timeLimit : execution_time_limit - execution_time;
+					next_s.reduceGraph(vertexInGraph, best_weight, -1, time_to_reduction); // start graph reduction
+
+					s = next_s; // update best local solution
+					best_weight = local_weight; // update best_weight
+					x = beta_var; // reinitialize parameter x
 				} else { 
 					next_s.updateAm();
 				}	
@@ -191,6 +192,9 @@ void BipartiteReactiveGrasp() {
 				next_s.restartSolution(vertexInGraph);
 				assert(next_s.checkIntegrity());
 			}
+
+			// checking if the algorithm is trapped in a loop 
+			assert(execution_time < 65);
 
 			// restarting graph
 			graph = original_graph;

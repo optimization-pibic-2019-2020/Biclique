@@ -98,15 +98,7 @@ void Solution::moveFreeToSolutionPartition(int u, int code) { // code == 0 for s
 		int j = solution_B[solution_size_B];
 
 		// ensures u is in the free partition of the solution vector B
-		
-		if((solution_size_B <= pos_u) && (pos_u < solution_size_B + free_size_B)){
-			
-		}
-		else {
-			cout << solution_size_B << " <= " << pos_u << " < " << solution_size_B + free_size_B << endl;
-			assert((solution_size_B <= pos_u) && (pos_u < solution_size_B + free_size_B));
-		}		
-		assert(tightness_A[u] == solution_size_A);	
+		assert((solution_size_B <= pos_u) && (pos_u < solution_size_B + free_size_B));
 
 		// swap u with the first vertex of the second partition
 		swap(solution_B[pos_u], solution_B[new_pos_u]);

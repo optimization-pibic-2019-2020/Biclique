@@ -1,7 +1,7 @@
 #!/bin/bash
 
 Path="../../input/KONECT-V/KONECT";
-log_folder="../../logs/KONECT_WITH_MEMORY";
+log_folder="../../logs/KONECT_ASSERT_TEST";
 mkdir -p $log_folder;
 
 targets=("1859" "3255" "2300" "1500" "1222" "1345" "1392" "1823" "1668" "1621" "5820" "2438" "5800" "2800" "2747") 

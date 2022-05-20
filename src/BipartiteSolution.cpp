@@ -241,7 +241,7 @@ bool BipartiteSolution::swap1_1(int code) { // code == 0 for partition A and cod
         }	
 	}
 
-	if(vertex_to_remove > -1) {
+	if(best_vertex > -1 && vertex_to_remove > -1 && improvement > worsen) {
         swapVertices(best_vertex, vertex_to_remove, code);
         return true;
     } 
@@ -485,16 +485,26 @@ void BipartiteSolution::rclConstruction(int code, double alpha) { // construct t
 }
 
 void BipartiteSolution::greedyRandomizedConstructive(double p) { 
+	// avoiding infinite loop when rclConstruction does not add a vertex to solution in both partitions
+	int prev_free_size_A = free_size_A; 
+	int prev_free_size_B = free_size_B;
+
 	while(free_size_A > 0 && free_size_B > 0) { // can generate a solution with an extra vertex in solution A
 		rclConstruction(0, p); 
 		rclConstruction(1, p); 
+
+		if (prev_free_size_A == free_size_A && prev_free_size_B == free_size_B) {
+			break;
+		}
+
+		prev_free_size_A = free_size_A;
+		prev_free_size_B = free_size_B;
 	}
 }
 
 void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit) {
 	int vertex, bicliquePredictedWeight, verticesRemoved = 0;
 	double totalTime = 0;
-	bool timeFlag = false;
 	time_point<system_clock> start, end;
 	duration<double> elapsedSeconds;
 	
@@ -510,9 +520,11 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 		if(bicliquePredictedWeight < minBicliqueWeight) { minBicliqueWeight = bicliquePredictedWeight; }
 		
         if(bicliquePredictedWeight <= bestWeight) { // removes vertex from graph 
+			cout << "entrou" << endl;
             removeVertexFromGraph(vertex);
             moveVertexToRemovedVertices(vertex, 0);
             verticesRemoved++;
+			cout << "saiu" << endl;
         }
 
 		
@@ -521,16 +533,9 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 		totalTime = elapsedSeconds.count();
 
 		if(totalTime > timeLimit) {
-			timeFlag = true;
-			break;
+			return;
 		} 
     }
-
-	if(timeFlag) { return; }
-
-	// start counting time
-	//start = system_clock::now();
-	//totalTime = 0;    
 
     for(unsigned int iter = 0; iter < solution_B.size() - removed_size_B; iter++) { // examine all the vertices that are in partition B
         vertex = solution_B[iter];
@@ -539,9 +544,11 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 		if(bicliquePredictedWeight < minBicliqueWeight) { minBicliqueWeight = bicliquePredictedWeight; }
 
         if(bicliquePredictedWeight <= bestWeight) { // removes vertex from graph
+			cout << "entrou" << endl;
             removeVertexFromGraph(vertex);
             moveVertexToRemovedVertices(vertex, 1);
             verticesRemoved++;
+			cout << "saiu" << endl;
         }
 
 		
@@ -550,13 +557,16 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 		totalTime = elapsedSeconds.count();
 
 		if(totalTime > timeLimit) {
-			timeFlag = true;
-			break;
+			return;
 		}
     }
 
-	
-	if(verticesRemoved > 0 && !timeFlag) reduceGraph(vertexInGraph, bestWeight, minBicliqueWeight, timeLimit);
+	timeLimit -= totalTime;
+
+	if(verticesRemoved > 0 && timeLimit > 0) { 
+		cout << verticesRemoved << endl;
+		reduceGraph(vertexInGraph, bestWeight, minBicliqueWeight, timeLimit);
+	}
 }
 
 void BipartiteSolution::balanceBiclique() { // remove the worst vertices in the biggest part to balance the Biclique
