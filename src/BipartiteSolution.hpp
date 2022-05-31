@@ -13,6 +13,7 @@ private:
 
 public:
  	BipartiteSolution(Graph *graph, int partitionA_size, int partitionB_size);
+	BipartiteSolution(BipartiteSolution &solution);
 	int getRemovedVertices();
     void checkFreePartition();
     void checkNonFreePartition();

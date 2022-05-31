@@ -70,6 +70,46 @@ BipartiteSolution::BipartiteSolution(Graph *graph, int partitionA_size, int part
     }
 }
 
+BipartiteSolution::BipartiteSolution(BipartiteSolution &solution) { // copying object all the variables and vectors
+	this->graph = solution.graph;
+	int V = graph->getV();
+
+	solution_A.resize(V);
+	solution_B.resize(V);
+
+	position_A.resize(V);
+	position_B.resize(V);
+
+	tightness_A.resize(V);
+	tightness_B.resize(V);
+
+	partition_size_A = solution.partition_size_A;
+    partition_size_B = solution.partition_size_B;
+
+	free_size_A = solution.free_size_A;
+	free_size_B = solution.free_size_B;
+
+	solution_size_A = solution.solution_size_A;
+	solution_size_B = solution.solution_size_B;
+
+	total_weight = solution.total_weight;	
+	removed_edges = solution.removed_edges;
+
+    removed_size_A = solution.removed_size_A;
+    removed_size_B = solution.removed_size_B;
+    
+    for(int idx = 0; idx < V; idx++) {
+        tightness_A[idx] = solution.tightness_A[idx];
+        tightness_B[idx] = solution.tightness_B[idx];
+
+        position_A[idx] = solution.position_A[idx];
+        position_B[idx] = solution.position_B[idx];
+
+        solution_A[idx] = solution.solution_A[idx];
+        solution_B[idx] = solution.solution_B[idx];
+    }
+}
+
 // return how many vertices were removed
 int BipartiteSolution::getRemovedVertices() {
 	return (removed_size_A - partition_size_B) + (removed_size_B - partition_size_A);
@@ -148,9 +188,11 @@ void BipartiteSolution::addVertex(int u, int code) { // code == 0 for solution A
 
     // update tightness
 	if(code == 0) { // placing vertex u in solution A
+		assert(tightness_B[u] == solution_size_B);
 		for(int neighbor : neighbors) { tightness_A[neighbor]++; }
 	}
 	else { // placing vertex u in solution B
+		assert(tightness_A[u] == solution_size_A);
 		for(int neighbor : neighbors) { tightness_B[neighbor]++; }
 	}
 
@@ -505,7 +547,7 @@ void BipartiteSolution::greedyRandomizedConstructive(double p) {
 void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit) {
 	int vertex, bicliquePredictedWeight, verticesRemoved = 0;
 	double totalTime = 0;
-	time_point<system_clock> start, end;
+	time_point<system_clock> start, end, aux_s, aux_e;
 	duration<double> elapsedSeconds;
 	
 	if(minBicliqueWeight > bestWeight) { return; } // avoid a final loop if there is no possible vertex to be removed
@@ -520,15 +562,22 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 		if(bicliquePredictedWeight < minBicliqueWeight) { minBicliqueWeight = bicliquePredictedWeight; }
 		
         if(bicliquePredictedWeight <= bestWeight) { // removes vertex from graph 
-			cout << "entrou" << endl;
+			aux_s = system_clock::now();
             removeVertexFromGraph(vertex);
             moveVertexToRemovedVertices(vertex, 0);
+
+			aux_e = system_clock::now();
+			elapsedSeconds = aux_e - aux_s;
+			totalTime = elapsedSeconds.count();
+			if (totalTime > 1) {
+				cout << totalTime << " > " << "1" << endl;
+				assert(totalTime <= 1);
+			}
             verticesRemoved++;
-			cout << "saiu" << endl;
         }
 
 		
-		end = std::chrono::system_clock::now();
+		end = system_clock::now();
 		elapsedSeconds = end - start;
 		totalTime = elapsedSeconds.count();
 
@@ -544,15 +593,22 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 		if(bicliquePredictedWeight < minBicliqueWeight) { minBicliqueWeight = bicliquePredictedWeight; }
 
         if(bicliquePredictedWeight <= bestWeight) { // removes vertex from graph
-			cout << "entrou" << endl;
-            removeVertexFromGraph(vertex);
+			aux_s = system_clock::now();
+			removeVertexFromGraph(vertex);
             moveVertexToRemovedVertices(vertex, 1);
+			aux_e = system_clock::now();
+			elapsedSeconds = aux_e - aux_s;
+			totalTime = elapsedSeconds.count();
+
+			if (totalTime > 1) {
+				cout << totalTime << " > " << "1" << endl;
+				assert(totalTime <= 1);
+			}
             verticesRemoved++;
-			cout << "saiu" << endl;
         }
 
 		
-		end = std::chrono::system_clock::now();
+		end = system_clock::now();
 		elapsedSeconds = end - start;
 		totalTime = elapsedSeconds.count();
 
@@ -564,7 +620,6 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 	timeLimit -= totalTime;
 
 	if(verticesRemoved > 0 && timeLimit > 0) { 
-		cout << verticesRemoved << endl;
 		reduceGraph(vertexInGraph, bestWeight, minBicliqueWeight, timeLimit);
 	}
 }

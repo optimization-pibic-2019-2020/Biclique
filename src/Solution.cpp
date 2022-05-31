@@ -76,6 +76,7 @@ void Solution::moveFreeToSolutionPartition(int u, int code) { // code == 0 for s
 
 		// ensures u is in the free partition of the solution vector A
 		assert((solution_size_A <= pos_u) && (pos_u < solution_size_A + free_size_A));
+		assert(tightness_B[u] == solution_size_B);
 
 		// swap u with the first vertex of the second partition
 		swap(solution_A[pos_u], solution_A[new_pos_u]);
@@ -99,6 +100,7 @@ void Solution::moveFreeToSolutionPartition(int u, int code) { // code == 0 for s
 
 		// ensures u is in the free partition of the solution vector B
 		assert((solution_size_B <= pos_u) && (pos_u < solution_size_B + free_size_B));
+		assert(tightness_A[u] == solution_size_A);
 
 		// swap u with the first vertex of the second partition
 		swap(solution_B[pos_u], solution_B[new_pos_u]);
@@ -330,6 +332,12 @@ bool Solution::checkIntegrity() {
 		if(tightness_A[vertex_u] > 0 || tightness_B[vertex_u] != solution_size_B) {
 			cout << "tA: " << tightness_A[vertex_u] << endl;
 			cout << "tb: " << tightness_B[vertex_u] << " != " << solution_size_B << endl;
+			cout << "A: " << vertex_u << endl;
+			cout << "B: " << endl;
+			for(int idx = 0; idx < solution_size_B; idx++) {
+				int vertex_b = solution_B[idx];
+				cout << vertex_b << endl;
+			}
 			cout << "Tightness error" << endl;
 			return false;
 		}
@@ -348,6 +356,14 @@ bool Solution::checkIntegrity() {
 		}
 
 		if(neighbor_amount_B != solution_size_B || neighbor_amount_B != tightness_B[vertex_u]) {
+			cout << neighbor_amount_B << " != " <<  solution_size_B << endl;
+			cout << neighbor_amount_B << " != " <<  tightness_B[vertex_u] << endl;
+			cout << "A: " << vertex_u << endl;
+			cout << "B: " << endl;
+			for(int idx = 0; idx < solution_size_B; idx++) {
+				int vertex_b = solution_B[idx];
+				cout << vertex_b << endl;
+			}
 			cout << "The quantity of neighbors in solution B of a vertex in Solution A != solution_size_B\nOR\nThe quantity of neighbors in solution B of a vertex in Solution A != its tightness_B" << endl;
 			return false; 
 		}

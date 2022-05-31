@@ -89,6 +89,7 @@ void BipartiteReactiveGrasp() {
 	        // start the first greedy random solution
 			s.greedyRandomizedConstructive(0.0);
 			if(s.checkBicliqueSize() == false) s.balanceBiclique();
+			assert(s.checkIntegrity());
 			
 			int x = beta_var, y = alpha_calibration, best_weight = s.getTotalWeight(), local_weight, iter = 0;
 			double solutionAvarage;
@@ -123,10 +124,9 @@ void BipartiteReactiveGrasp() {
 				alphaTimesChosen[alpha_chosen]++;
 
 				next_s.greedyRandomizedConstructive(alphas[alpha_chosen]); // starts a new optimal solution
-				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
-				
 				next_s.VND(K);
-				if(next_s.checkBicliqueSize() == false) next_s.balanceBiclique();
+				if(next_s.checkBicliqueSize() == false) { next_s.balanceBiclique(); }
+
 				local_weight = next_s.getTotalWeight();
 				assert(next_s.checkIntegrity());
 
@@ -136,9 +136,14 @@ void BipartiteReactiveGrasp() {
 				else { alphaTimesChosen[alpha_chosen]--; }
 
 				if(local_weight > best_weight) {	
+					s = BipartiteSolution(next_s); // update best local solution
+					assert(s.checkIntegrity());
+					best_weight = local_weight; // update best_weight
+					x = beta_var; // reinitialize parameter x
+					cout << "New best found: " << best_weight << endl;
+
 					elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 					time_to_best = elapsed_seconds.count(); // update time_to_best 
-					cout << "New best found: " << best_weight << endl;
 
 					next_s.restartAm(amBetaParamater);
 					amBetaParamater +=  amBetaParamater * amEpsilonParameter;
@@ -147,7 +152,6 @@ void BipartiteReactiveGrasp() {
 					if(target != -1 && target <= local_weight) { 
 						next_s.restartSolution(vertexInGraph);
 						assert(next_s.checkIntegrity());
-		
 						break; 
 					} 
 					
@@ -156,10 +160,6 @@ void BipartiteReactiveGrasp() {
 
 					time_to_reduction = (timeLimit < execution_time_limit - execution_time) ? timeLimit : execution_time_limit - execution_time;
 					next_s.reduceGraph(vertexInGraph, best_weight, -1, time_to_reduction); // start graph reduction
-
-					s = next_s; // update best local solution
-					best_weight = local_weight; // update best_weight
-					x = beta_var; // reinitialize parameter x
 				} else { 
 					next_s.updateAm();
 				}	
@@ -194,23 +194,23 @@ void BipartiteReactiveGrasp() {
 			}
 
 			// checking if the algorithm is trapped in a loop 
-			assert(execution_time < 65);
+			assert(execution_time < 61);
 
 			// restarting graph
 			graph = original_graph;
 
 			if(s.checkBicliqueSize() == false) {
 				s.balanceBiclique();
-				best_weight = s.getTotalWeight();
 			}
 
+			best_weight = s.getTotalWeight();
 			avarage_solution += best_weight;
-			if(best_solution < best_weight) {
-				best_s = s;
-				best_solution = best_weight;
-			}
 
-			assert(best_s.checkIntegrity());
+			if(best_solution < best_weight) {
+				best_s = BipartiteSolution(s);
+				best_solution = best_weight;
+				assert(best_s.checkIntegrity());
+			}
 
 			// execution informations
 			discrete_distribution<int> distribution(alphaProbability.begin(), alphaProbability.end());
