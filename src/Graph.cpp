@@ -20,19 +20,18 @@ Graph::Graph(Graph &graph) { // copy constructor
 	e = graph.getE();
 
 	adjList.resize(v);
-	adjList = graph.get_adjList();
-
 	weight.resize(v);
-	weight = graph.get_weight_list();
-
 	am.resize(v);
-	am = graph.getAmList();
-
 	h_index.resize(v);
-	h_index = graph.getHIndex();
-
 	accumulatedSum.resize(v);
-	accumulatedSum = graph.getAccumulatedSum();
+
+	for (int i = 0; i < v; i++) {
+		adjList[i] = graph.adjList[i];
+		weight[i] = graph.weight[i];
+		am[i] = graph.am[i];
+		h_index[i] = graph.h_index[i];
+		accumulatedSum[i] = graph.accumulatedSum[i];
+	}
 }
 
 int Graph::getV() {

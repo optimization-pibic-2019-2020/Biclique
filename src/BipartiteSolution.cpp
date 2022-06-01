@@ -13,12 +13,11 @@
 using namespace std::chrono;
 using namespace std;
 
-random_device BipartiteDevice;
-mt19937 BipartiteGenerator(BipartiteDevice());
-
-BipartiteSolution::BipartiteSolution(Graph *graph, int partitionA_size, int partitionB_size) { // initialize all the variables and vectors
+BipartiteSolution::BipartiteSolution(Graph *graph, int partitionA_size, int partitionB_size, mt19937 &generator) { // initialize all the variables and vectors
 	this->graph = graph;
 	int V = graph->getV();
+
+	mt19937 BipartiteGenerator = generator;
 
     partition_size_A = partitionA_size;
     partition_size_B = partitionB_size;
@@ -73,6 +72,8 @@ BipartiteSolution::BipartiteSolution(Graph *graph, int partitionA_size, int part
 BipartiteSolution::BipartiteSolution(BipartiteSolution &solution) { // copying object all the variables and vectors
 	this->graph = solution.graph;
 	int V = graph->getV();
+
+	mt19937 BipartiteGenerator = solution.BipartiteGenerator;
 
 	solution_A.resize(V);
 	solution_B.resize(V);

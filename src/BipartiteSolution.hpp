@@ -1,18 +1,23 @@
 #ifndef SOLUTION_HPP
 #define SOLUTION_HPP
-    
+
 #include "Solution.hpp"
 
 #endif
+
+#include <random>    
+
+using namespace std;
 
 class BipartiteSolution: public Solution {
 private:
 	// size of each partition 
 	int partition_size_A;
-	int partition_size_B; 
+	int partition_size_B;
+	mt19937 BipartiteGenerator;
 
 public:
- 	BipartiteSolution(Graph *graph, int partitionA_size, int partitionB_size);
+ 	BipartiteSolution(Graph *graph, int partitionA_size, int partitionB_size, mt19937 &generator);
 	BipartiteSolution(BipartiteSolution &solution);
 	int getRemovedVertices();
     void checkFreePartition();

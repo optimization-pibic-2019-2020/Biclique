@@ -65,10 +65,14 @@ void BipartiteReactiveGrasp() {
 		original_graph.initializeHIndex();
 		original_graph.initializeAccumulatedSum();
 
-		Graph graph = original_graph; // copy original_graph to graph
+		Graph graph = Graph(original_graph); // copy original_graph to graph
 		//graph.showGraphInformations(); // show all the informations of the input Graph
+
+		// starting generator for discrete distribution
+		int seed = 1; // 870 -> parei nesse seed
+		mt19937 generator(seed);
 	
-		BipartiteSolution best_s(&graph, partitionA_size, partitionB_size);
+		BipartiteSolution best_s(&graph, partitionA_size, partitionB_size, generator);
 		
 		// initialize C++ timer
         time_point<system_clock> start, execution_start, end;
@@ -83,8 +87,9 @@ void BipartiteReactiveGrasp() {
 
         while(loop--) {
 			cout << abs(10 - loop) << " execution" << endl;
+			cout << "Seed = " << seed << endl;
 
-			BipartiteSolution s(&graph, partitionA_size, partitionB_size); // initialize all the variables and structures for solution
+			BipartiteSolution s(&graph, partitionA_size, partitionB_size, generator); // initialize all the variables and structures for solution
 
 	        // start the first greedy random solution
 			s.greedyRandomizedConstructive(0.0);
@@ -95,11 +100,7 @@ void BipartiteReactiveGrasp() {
 			double solutionAvarage;
 			cout << "Initial Solution: " << s.getTotalWeight() << endl;
 			
-			BipartiteSolution next_s(&graph, partitionA_size, partitionB_size);
-
-			// starting random generator for discrete distribution
-			random_device device;
-			mt19937 generator(device());
+			BipartiteSolution next_s(&graph, partitionA_size, partitionB_size, generator);
 
 			// initializing alpha vectors
 			for(int i = 0; i < 11; i++) {
@@ -197,7 +198,7 @@ void BipartiteReactiveGrasp() {
 			assert(execution_time < 61);
 
 			// restarting graph
-			graph = original_graph;
+			graph = Graph(original_graph);
 
 			if(s.checkBicliqueSize() == false) {
 				s.balanceBiclique();
@@ -248,6 +249,10 @@ void BipartiteReactiveGrasp() {
 			// restarting removed vertices stats
 			verticesRemoved = 0;
 			edgesRemoved = 0;
+
+			// restarting generator with another seed
+			generator.seed(seed);
+			seed++;
 		}
 		
 		cout << "End of the algorithm" << endl;
