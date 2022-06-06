@@ -6,7 +6,7 @@
 #include <ctime>
 #include <iomanip>
 #include "BipartiteSolution.hpp"
-//#define NDEBUG
+#define NDEBUG
 #include <assert.h>
 #include <chrono>
 

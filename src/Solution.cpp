@@ -4,7 +4,7 @@
 #include <random>
 #include <ctime>
 #include "Solution.hpp"
-//#define NDEBUG
+#define NDEBUG
 #include <assert.h>
 using namespace std;
 
