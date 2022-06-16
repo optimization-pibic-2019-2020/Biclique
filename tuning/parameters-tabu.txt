@@ -1,0 +1,7 @@
+### Parameter file for the REACTIVE GRASP software
+# name		switch		     type	values			[conditions (using R syntax)]
+thirdNeighborLimit  "-tNL " i   (5, 200)
+tabuLimitIteration  "-tLI " i   (5, 100)
+restartSolutionLimit  "-rSL " i   (5, 200)
+alphaCalibration  "-aC " i   (5, 200)
+edgeTimeConst  "-eTC " r   (0, 1)    

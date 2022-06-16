@@ -3,5 +3,6 @@ debug/logs
 exact/logs
 test/
 out/
-tuning/
+tuning/Instances
+tuning/tabu-arena
 .vscode/
