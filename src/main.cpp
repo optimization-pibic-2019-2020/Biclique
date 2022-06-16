@@ -135,7 +135,7 @@ void BipartiteReactiveGrasp() {
 					execution_time = elapsed_seconds.count();
 
 					time_to_reduction = (timeLimit < execution_time_limit - execution_time) ? timeLimit : execution_time_limit - execution_time;
-					next_s.reduceGraph(vertexInGraph, best_weight, -1, time_to_reduction); // start graph reduction
+					//next_s.reduceGraph(vertexInGraph, best_weight, -1, time_to_reduction); // start graph reduction
 				} else { 
 					next_s.updateAm();
 				}	

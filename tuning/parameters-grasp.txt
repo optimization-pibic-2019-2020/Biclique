@@ -1,0 +1,7 @@
+### Parameter file for the REACTIVE GRASP software
+# name		switch		     type	values			[conditions (using R syntax)]
+beta_var		"-B "			i	(100,5000)
+alpha_calibration		"-C "          i	(1,500)
+amBetaParameter     "-amB "            i   (100, 100000)
+amEpsilonParameter      "-amE "            i   (100, 200000)
+edgeTimeConst       "-eTc "            r   (0,1)
