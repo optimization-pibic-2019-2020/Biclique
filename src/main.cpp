@@ -13,7 +13,7 @@
 
 #include "NonBipartiteSolution.hpp"
 #include "BipartiteSolution.hpp"
-//#define NDEBUG
+#define NDEBUG
 #include <assert.h>
 #include <chrono>
 #include <random>
@@ -32,7 +32,7 @@ vector<bool> vertexInGraph;
 int total_iterations = -1; //5000; // number of grasp iterations 
 int loop = 10; 
 double execution_time_limit = 60; // time of each execution
-int beta_var = 1000000; // TODO --- 2347; // limit of iterations that dont improve the biclique
+int beta_var = 2347; // limit of iterations that dont improve the biclique
 int alpha_calibration = 231; // variable related to reactive grasp adjustment
 int target = -1; // variable related to biclique target
 int K = 2; // 3; // number of neighborhood structures
@@ -83,11 +83,11 @@ void BipartiteReactiveGrasp() {
         // start timing
         start = system_clock::now();
 		
-		cout << "Starting the algorithm...\n" << endl;
+		//cout << "Starting the algorithm...\n" << endl;
 
         while(loop--) {
-			cout << abs(10 - loop) << " execution" << endl;
-			cout << "Seed = " << seed << endl;
+			//cout << abs(10 - loop) << " execution" << endl;
+			//cout << "Seed = " << seed << endl;
 
 			BipartiteSolution s(&graph, partitionA_size, partitionB_size, generator); // initialize all the variables and structures for solution
 
@@ -98,7 +98,7 @@ void BipartiteReactiveGrasp() {
 			
 			int x = beta_var, y = alpha_calibration, best_weight = s.getTotalWeight(), local_weight, iter = 0;
 			double solutionAvarage;
-			cout << "Initial Solution: " << s.getTotalWeight() << endl;
+			//cout << "Initial Solution: " << s.getTotalWeight() << endl;
 			
 			BipartiteSolution next_s(&graph, partitionA_size, partitionB_size, generator);
 
@@ -141,7 +141,7 @@ void BipartiteReactiveGrasp() {
 					assert(s.checkIntegrity());
 					best_weight = local_weight; // update best_weight
 					x = beta_var; // reinitialize parameter x
-					cout << "New best found: " << best_weight << endl;
+					//cout << "New best found: " << best_weight << endl;
 
 					elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 					time_to_best = elapsed_seconds.count(); // update time_to_best 
@@ -160,7 +160,7 @@ void BipartiteReactiveGrasp() {
 					execution_time = elapsed_seconds.count();
 
 					time_to_reduction = (timeLimit < execution_time_limit - execution_time) ? timeLimit : execution_time_limit - execution_time;
-					next_s.reduceGraph(vertexInGraph, best_weight, -1, time_to_reduction); // start graph reduction
+					//next_s.reduceGraph(vertexInGraph, best_weight, -1, time_to_reduction); // start graph reduction
 				} else { 
 					next_s.updateAm();
 				}	
@@ -218,10 +218,10 @@ void BipartiteReactiveGrasp() {
 			elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 			execution_time = elapsed_seconds.count();
 
-			cout << "\nAlpha probabilities (Reactive grasp)" << endl;
+			/*cout << "\nAlpha probabilities (Reactive grasp)" << endl;
 			for(int i = 0; i < 11; i++) {
 				cout << "Alpha: " << ((double) i) / 10.0 << " Probability: " << distribution.probabilities()[i] * 100 << "%" << endl;
-			}
+			}*/
 
 			verticesRemoved = s.getRemovedVertices();
 			edgesRemoved = s.getRemovedEdges();
@@ -229,6 +229,7 @@ void BipartiteReactiveGrasp() {
 			maxVerticesRemoved = max(maxVerticesRemoved, verticesRemoved);
 			maxEdgesRemoved = max(maxEdgesRemoved, edgesRemoved);
 
+			/*
 			cout << "\nGraph Reduce results:" << endl;
 			cout << "Vertices removed: " << verticesRemoved << " of " << v << endl;
 			cout << "Edges removed: " << edgesRemoved << " of " << e << endl;
@@ -240,6 +241,7 @@ void BipartiteReactiveGrasp() {
 			cout << "Time to best: " << time_to_best << "s\n" << endl;
 			//cout << best_weight << "," << execution_time << endl;
 			//cout << best_weight << "," << time_to_best << endl;
+			*/
 
 			// clearing alpha vectors
 			alphaProbability.clear(); 
@@ -255,7 +257,7 @@ void BipartiteReactiveGrasp() {
 			seed++;
 		}
 		
-		cout << "End of the algorithm" << endl;
+		//cout << "End of the algorithm" << endl;
 
 		// end timing
         end = std::chrono::system_clock::now();
@@ -266,13 +268,14 @@ void BipartiteReactiveGrasp() {
         //5 digits precision is enough
         total_time += elapsed_seconds.count();
 
-		cout << "Best Solution: " << best_solution << endl;
+		/*cout << "Best Solution: " << best_solution << endl;
 		cout << "Avarage Solution: " << avarage_solution / 10 << endl;
 		cout << "Avarage Time: " << std::setprecision(4) << total_time / 10 << endl;
 		cout << "Solution: ";
 		best_s.printSolution();
 		cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" << endl;		
-		//cout << fixed << setprecision(3) << double(((maxVerticesRemoved * 1.0) / (v * 1.0)) * 100.0) << endl; // Using this print to get the results to generate the graphic
+		*/
+		cout << avarage_solution / 10 << "," << best_solution << "," << std::setprecision(2) << time_to_best;
 	}
 	catch (std::exception &e) {
 		cerr << e.what();
