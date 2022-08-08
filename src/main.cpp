@@ -13,7 +13,7 @@
 
 #include "NonBipartiteSolution.hpp"
 #include "BipartiteSolution.hpp"
-#define NDEBUG
+//#define NDEBUG
 #include <assert.h>
 #include <chrono>
 #include <random>
@@ -30,7 +30,7 @@ vector<bool> vertexInGraph;
 
 // GRASP-VND PARAMETERS
 int total_iterations = -1; //5000; // number of grasp iterations 
-int loop = 10; 
+int loop = 30; 
 double execution_time_limit = 60; // time of each execution
 int beta_var = 2347; // limit of iterations that dont improve the biclique
 int alpha_calibration = 231; // variable related to reactive grasp adjustment
@@ -53,7 +53,10 @@ int amEpsilonParameter = 58768;
 
 // constant related of how much time an individual edge should waste in reduction
 // to calculate timeLimit (variable related to time limit in reduction) you need to multiply the quantity of edge (e) per edgeTimeConst
-double edgeTimeConst = 0.2614115754; 
+double edgeTimeConst =  0.000005586; // 0.2614115754; 
+
+// REDUCTION PARAMETER 
+bool allow_reduction = true; // default value is false
 
 void BipartiteReactiveGrasp() {
 	try {
@@ -69,7 +72,7 @@ void BipartiteReactiveGrasp() {
 		//graph.showGraphInformations(); // show all the informations of the input Graph
 
 		// starting generator for discrete distribution
-		int seed = 1; // 870 -> parei nesse seed
+		int seed = 1; 
 		mt19937 generator(seed);
 	
 		BipartiteSolution best_s(&graph, partitionA_size, partitionB_size, generator);
@@ -79,15 +82,16 @@ void BipartiteReactiveGrasp() {
 		duration<double> elapsed_seconds;
 
         int best_solution = -1, avarage_solution = 0;
+		double best_vertices_removed_percentage, best_edges_removed_percentage;
 
         // start timing
         start = system_clock::now();
 		
-		//cout << "Starting the algorithm...\n" << endl;
+		cout << "Starting the algorithm...\n" << endl;
 
         while(loop--) {
-			//cout << abs(10 - loop) << " execution" << endl;
-			//cout << "Seed = " << seed << endl;
+			cout << abs(30 - loop) << " execution" << endl;
+			cout << "Seed = " << seed << endl;
 
 			BipartiteSolution s(&graph, partitionA_size, partitionB_size, generator); // initialize all the variables and structures for solution
 
@@ -98,7 +102,7 @@ void BipartiteReactiveGrasp() {
 			
 			int x = beta_var, y = alpha_calibration, best_weight = s.getTotalWeight(), local_weight, iter = 0;
 			double solutionAvarage;
-			//cout << "Initial Solution: " << s.getTotalWeight() << endl;
+			cout << "Initial Solution: " << s.getTotalWeight() << endl;
 			
 			BipartiteSolution next_s(&graph, partitionA_size, partitionB_size, generator);
 
@@ -118,7 +122,7 @@ void BipartiteReactiveGrasp() {
 			elapsed_seconds = system_clock::now() - execution_start; 
 			execution_time = elapsed_seconds.count();
 
-			while((iter < total_iterations) || (execution_time <= execution_time_limit)) { // run ILS iterations
+			while((iter < total_iterations) || (execution_time <= execution_time_limit) || x == 0) { // run ILS iterations
 				// choose the alpha based on reactive grasp
 				discrete_distribution<int> distribution(alphaProbability.begin(), alphaProbability.end());
 				alpha_chosen = distribution(generator);
@@ -141,10 +145,11 @@ void BipartiteReactiveGrasp() {
 					assert(s.checkIntegrity());
 					best_weight = local_weight; // update best_weight
 					x = beta_var; // reinitialize parameter x
-					//cout << "New best found: " << best_weight << endl;
+					cout << "New best found: " << best_weight << endl;
 
 					elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 					time_to_best = elapsed_seconds.count(); // update time_to_best 
+
 
 					next_s.restartAm(amBetaParamater);
 					amBetaParamater +=  amBetaParamater * amEpsilonParameter;
@@ -159,21 +164,21 @@ void BipartiteReactiveGrasp() {
 					elapsed_seconds = system_clock::now() - execution_start; 
 					execution_time = elapsed_seconds.count();
 
-					time_to_reduction = (timeLimit < execution_time_limit - execution_time) ? timeLimit : execution_time_limit - execution_time;
-					//next_s.reduceGraph(vertexInGraph, best_weight, -1, time_to_reduction); // start graph reduction
+					if (allow_reduction) {
+						time_to_reduction = (timeLimit < execution_time_limit - execution_time) ? timeLimit : execution_time_limit - execution_time;
+						next_s.reduceGraph(vertexInGraph, best_weight, -1, time_to_reduction); // start graph reduction
+					}
 				} else { 
 					next_s.updateAm();
 				}	
 				
-				if(local_weight == best_weight) x--;
-
-				if(x == 0) { break; }// beta_var parameter
+				if(!allow_reduction && local_weight == best_weight) x--;
 
 				y--; // parameter related to reactive grasp calibration 
 
 				if(y == 0) { // reactive grasp (alpha calibration)
 					y = alpha_calibration; // reset the parameter
-
+					
 					for(int i = 0; i < 11; i++) {
 						if(alphaTimesChosen[i] > 0) {
 							solutionAvarage = ((double) alphaSolutions[i]) / ((double) alphaTimesChosen[i]); // avarage of alpha solutions
@@ -189,7 +194,7 @@ void BipartiteReactiveGrasp() {
 				else {
 					iter++;
 				}
-
+			
 				next_s.restartSolution(vertexInGraph);
 				assert(next_s.checkIntegrity());
 			}
@@ -210,6 +215,14 @@ void BipartiteReactiveGrasp() {
 			if(best_solution < best_weight) {
 				best_s = BipartiteSolution(s);
 				best_solution = best_weight;
+
+				verticesRemoved = best_s.getRemovedVertices();
+				edgesRemoved = best_s.getRemovedEdges();
+
+				
+				best_vertices_removed_percentage = ((verticesRemoved * 1.0) / (v * 1.0)) * 100.0;
+				best_edges_removed_percentage = ((edgesRemoved * 1.0) / (e * 1.0)) * 100.0;
+
 				assert(best_s.checkIntegrity());
 			}
 
@@ -218,10 +231,10 @@ void BipartiteReactiveGrasp() {
 			elapsed_seconds = std::chrono::system_clock::now() - execution_start; 
 			execution_time = elapsed_seconds.count();
 
-			/*cout << "\nAlpha probabilities (Reactive grasp)" << endl;
+			cout << "\nAlpha probabilities (Reactive grasp)" << endl;
 			for(int i = 0; i < 11; i++) {
 				cout << "Alpha: " << ((double) i) / 10.0 << " Probability: " << distribution.probabilities()[i] * 100 << "%" << endl;
-			}*/
+			}
 
 			verticesRemoved = s.getRemovedVertices();
 			edgesRemoved = s.getRemovedEdges();
@@ -229,11 +242,11 @@ void BipartiteReactiveGrasp() {
 			maxVerticesRemoved = max(maxVerticesRemoved, verticesRemoved);
 			maxEdgesRemoved = max(maxEdgesRemoved, edgesRemoved);
 
-			/*
+			
 			cout << "\nGraph Reduce results:" << endl;
 			cout << "Vertices removed: " << verticesRemoved << " of " << v << endl;
 			cout << "Edges removed: " << edgesRemoved << " of " << e << endl;
-			cout << ((verticesRemoved * 1.0) / (v * 1.0)) * 100.0 << "% of vertices removed and " << ((edgesRemoved * 1.0) / (e * 1.0))* 100.0 << "% of edges removed"<< endl;
+			cout << ((verticesRemoved * 1.0) / (v * 1.0)) * 100.0 << "% of vertices removed and " << ((edgesRemoved * 1.0) / (e * 1.0)) * 100.0 << "% of edges removed"<< endl;
 
 			cout << "\nResults:\n";
 			cout << "Best: " << best_weight << endl;
@@ -241,7 +254,6 @@ void BipartiteReactiveGrasp() {
 			cout << "Time to best: " << time_to_best << "s\n" << endl;
 			//cout << best_weight << "," << execution_time << endl;
 			//cout << best_weight << "," << time_to_best << endl;
-			*/
 
 			// clearing alpha vectors
 			alphaProbability.clear(); 
@@ -253,11 +265,11 @@ void BipartiteReactiveGrasp() {
 			edgesRemoved = 0;
 
 			// restarting generator with another seed
-			generator.seed(seed);
 			seed++;
+			generator.seed(seed);
 		}
 		
-		//cout << "End of the algorithm" << endl;
+		cout << "End of the algorithm" << endl;
 
 		// end timing
         end = std::chrono::system_clock::now();
@@ -268,14 +280,14 @@ void BipartiteReactiveGrasp() {
         //5 digits precision is enough
         total_time += elapsed_seconds.count();
 
-		/*cout << "Best Solution: " << best_solution << endl;
-		cout << "Avarage Solution: " << avarage_solution / 10 << endl;
-		cout << "Avarage Time: " << std::setprecision(4) << total_time / 10 << endl;
+		cout << "Best Solution: " << best_solution << endl;
+		cout << "Avarage Solution: " << avarage_solution / 30 << endl;
+		cout << "Average Time: " << std::setprecision(4) << total_time / 10 << endl;
+		cout << "Vertices removed in Best Solution: " << best_vertices_removed_percentage << "%" << endl;
+		cout << "Edges removed in Best Solution: " << best_edges_removed_percentage << "%" << endl;
 		cout << "Solution: ";
 		best_s.printSolution();
-		cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" << endl;		
-		*/
-		cout << avarage_solution / 10 << "," << best_solution << "," << std::setprecision(2) << time_to_best;
+		cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" << endl;
 	}
 	catch (std::exception &e) {
 		cerr << e.what();
@@ -545,6 +557,9 @@ int main(int argc, char* argv[]) {
 			cout << "The number of vertices or edges is equal to 0!" << endl;
 			return 0;
 		}
+
+		// verifying if it is better to activate or not the reduction
+		allow_reduction = (v <= 1000000) ? true : false;
 
 		timeLimit = ceil(edgeTimeConst * e);
 		(input_type == 1) ? NonBipartiteReactiveGrasp() : BipartiteReactiveGrasp();

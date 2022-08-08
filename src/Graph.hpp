@@ -14,7 +14,7 @@ private:
 
 public:
 	Graph(int v, int e);
-	Graph(Graph &graph);
+	Graph(Graph *graph);
 	int getV();
 	int getE();
 	int repeatedEdge(int u, int t);

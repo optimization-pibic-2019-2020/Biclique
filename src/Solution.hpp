@@ -63,6 +63,10 @@ protected:
 
 	vector<double> rclListProbability;
 
+	// vector that represents a possible final output weight of each vertex
+
+	vector<int> predicted_weight_list;
+
 public:
 	int getTotalWeight();
 	int getRemovedEdges();

@@ -6,7 +6,7 @@
 #include <ctime>
 #include <iomanip>
 #include "BipartiteSolution.hpp"
-#define NDEBUG
+//#define NDEBUG
 #include <assert.h>
 #include <chrono>
 
@@ -17,7 +17,7 @@ BipartiteSolution::BipartiteSolution(Graph *graph, int partitionA_size, int part
 	this->graph = graph;
 	int V = graph->getV();
 
-	mt19937 BipartiteGenerator = generator;
+	mt19937 &BipartiteGenerator = generator;
 
     partition_size_A = partitionA_size;
     partition_size_B = partitionB_size;
@@ -37,6 +37,8 @@ BipartiteSolution::BipartiteSolution(Graph *graph, int partitionA_size, int part
 	tightness_A.resize(V);
 	tightness_B.resize(V);
 
+	predicted_weight_list.resize(V);
+
 	total_weight = 0;	
 	removed_edges = 0;
 
@@ -54,6 +56,8 @@ BipartiteSolution::BipartiteSolution(Graph *graph, int partitionA_size, int part
 
         solution_A[idx] = idx;
         solution_B[idx + free_size_B] = idx;
+
+		predicted_weight_list[idx] = predictBicliqueWeight(idx);
     }
     
     // partition B
@@ -66,6 +70,8 @@ BipartiteSolution::BipartiteSolution(Graph *graph, int partitionA_size, int part
 
         solution_A[idx] = idx;
         solution_B[idx - free_size_A] = idx;
+
+		predicted_weight_list[idx] = predictBicliqueWeight(idx);
     }
 }
 
@@ -73,7 +79,7 @@ BipartiteSolution::BipartiteSolution(BipartiteSolution &solution) { // copying o
 	this->graph = solution.graph;
 	int V = graph->getV();
 
-	mt19937 BipartiteGenerator = solution.BipartiteGenerator;
+	mt19937 &BipartiteGenerator = solution.BipartiteGenerator;
 
 	solution_A.resize(V);
 	solution_B.resize(V);
@@ -83,6 +89,8 @@ BipartiteSolution::BipartiteSolution(BipartiteSolution &solution) { // copying o
 
 	tightness_A.resize(V);
 	tightness_B.resize(V);
+
+	predicted_weight_list.resize(V);
 
 	partition_size_A = solution.partition_size_A;
     partition_size_B = solution.partition_size_B;
@@ -108,6 +116,8 @@ BipartiteSolution::BipartiteSolution(BipartiteSolution &solution) { // copying o
 
         solution_A[idx] = solution.solution_A[idx];
         solution_B[idx] = solution.solution_B[idx];
+
+		predicted_weight_list[idx] = solution.predicted_weight_list[idx];
     }
 }
 
@@ -311,7 +321,6 @@ bool BipartiteSolution::swap1_k(int code) { // code == 0 for partition A and cod
 		
 		operationSuccessFlag = true;
 
-		srand(time(0));
 		vertexChosen = possibleVerticesToSolution[rand() % possibleVerticesToSolution.size()];
 
 		cout << "comeca a remover" << endl;
@@ -346,7 +355,6 @@ bool BipartiteSolution::swap1_k(int code) { // code == 0 for partition A and cod
 		
 		operationSuccessFlag = true;
 
-		srand(time(0));
 		vertexChosen = possibleVerticesToSolution[rand() % possibleVerticesToSolution.size()];
 		cout << "comeca a remover" << endl;
 		for(int iter = 0; iter < solution_size_A; iter++) { 
@@ -409,7 +417,6 @@ bool BipartiteSolution::addPairOfVertices() { // verify if can add a pair of ver
 }
 
 void BipartiteSolution::VND(int K) { // run VND iterations
-	srand (time(NULL));
 	int k = 1, code;
 	
 	while(k <= K) {
@@ -532,6 +539,13 @@ void BipartiteSolution::greedyRandomizedConstructive(double p) {
 	int prev_free_size_A = free_size_A; 
 	int prev_free_size_B = free_size_B;
 
+ 	time_point<system_clock> start;
+	duration<double> elapsed_seconds;
+	double construction_solution_time;
+
+	// start timing
+    start = system_clock::now();
+
 	while(free_size_A > 0 && free_size_B > 0) { // can generate a solution with an extra vertex in solution A
 		rclConstruction(0, p); 
 		rclConstruction(1, p); 
@@ -543,6 +557,10 @@ void BipartiteSolution::greedyRandomizedConstructive(double p) {
 		prev_free_size_A = free_size_A;
 		prev_free_size_B = free_size_B;
 	}
+
+	elapsed_seconds = system_clock::now() - start; 
+	construction_solution_time = elapsed_seconds.count();
+	assert(construction_solution_time < 0.5);
 }
 
 void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit) {
@@ -558,7 +576,7 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 
     for(unsigned int iter = 0; iter < solution_A.size() - removed_size_A; iter++) { // examine all the vertices that are in partition A
         vertex = solution_A[iter];
-        bicliquePredictedWeight = predictBicliqueWeight(vertex);
+        bicliquePredictedWeight = predicted_weight_list[vertex];
 
 		if(bicliquePredictedWeight < minBicliqueWeight) { minBicliqueWeight = bicliquePredictedWeight; }
 		
@@ -570,13 +588,11 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 			aux_e = system_clock::now();
 			elapsedSeconds = aux_e - aux_s;
 			totalTime = elapsedSeconds.count();
-			if (totalTime > 1) {
-				cout << totalTime << " > " << "1" << endl;
-				assert(totalTime <= 1);
-			}
+
+			assert(totalTime <= 2);
             verticesRemoved++;
         }
-
+		
 		
 		end = system_clock::now();
 		elapsedSeconds = end - start;
@@ -589,7 +605,7 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 
     for(unsigned int iter = 0; iter < solution_B.size() - removed_size_B; iter++) { // examine all the vertices that are in partition B
         vertex = solution_B[iter];
-        bicliquePredictedWeight = predictBicliqueWeight(vertex);
+        bicliquePredictedWeight = predicted_weight_list[vertex];
 
 		if(bicliquePredictedWeight < minBicliqueWeight) { minBicliqueWeight = bicliquePredictedWeight; }
 
@@ -601,10 +617,8 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 			elapsedSeconds = aux_e - aux_s;
 			totalTime = elapsedSeconds.count();
 
-			if (totalTime > 1) {
-				cout << totalTime << " > " << "1" << endl;
-				assert(totalTime <= 1);
-			}
+			
+			assert(totalTime <= 2);
             verticesRemoved++;
         }
 
@@ -620,7 +634,7 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 
 	timeLimit -= totalTime;
 
-	if(verticesRemoved > 0 && timeLimit > 0) { 
+	if(timeLimit > 0) { 
 		reduceGraph(vertexInGraph, bestWeight, minBicliqueWeight, timeLimit);
 	}
 }

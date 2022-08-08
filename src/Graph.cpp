@@ -15,9 +15,9 @@ Graph::Graph(int v, int e) {
 	accumulatedSum.resize(v);
 }
 
-Graph::Graph(Graph &graph) { // copy constructor
-	v = graph.getV();
-	e = graph.getE();
+Graph::Graph(Graph *graph) { // copy constructor
+	v = graph->getV();
+	e = graph->getE();
 
 	adjList.resize(v);
 	weight.resize(v);
@@ -26,11 +26,11 @@ Graph::Graph(Graph &graph) { // copy constructor
 	accumulatedSum.resize(v);
 
 	for (int i = 0; i < v; i++) {
-		adjList[i] = graph.adjList[i];
-		weight[i] = graph.weight[i];
-		am[i] = graph.am[i];
-		h_index[i] = graph.h_index[i];
-		accumulatedSum[i] = graph.accumulatedSum[i];
+		adjList[i] = graph->adjList[i];
+		weight[i] = graph->weight[i];
+		am[i] = graph->am[i];
+		h_index[i] = graph->h_index[i];
+		accumulatedSum[i] = graph->accumulatedSum[i];
 	}
 }
 

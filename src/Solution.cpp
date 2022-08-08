@@ -4,7 +4,7 @@
 #include <random>
 #include <ctime>
 #include "Solution.hpp"
-#define NDEBUG
+//#define NDEBUG
 #include <assert.h>
 using namespace std;
 
@@ -465,9 +465,12 @@ void Solution::removeVertexFromGraph(int vertex) {
 				break;
 			}
 		}
+		// TODO -> TIRAR DAQUI E COLOCAR EM UM LOOP SEPADO
+		predictBicliqueWeight(neighbor);
 	}
 
 	graph->clearVertexAdjList(vertex); // remove all the edges from the vertex removed
+	predictBicliqueWeight(vertex);
 }
 
 // try to predict the best biclique possible with the vertex with h_index and accumulatedSum
