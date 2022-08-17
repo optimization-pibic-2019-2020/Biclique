@@ -13,7 +13,7 @@
 
 #include "NonBipartiteSolution.hpp"
 #include "BipartiteSolution.hpp"
-//#define NDEBUG
+#define NDEBUG
 #include <assert.h>
 #include <chrono>
 #include <random>
@@ -55,8 +55,10 @@ int amEpsilonParameter = 58768;
 // to calculate timeLimit (variable related to time limit in reduction) you need to multiply the quantity of edge (e) per edgeTimeConst
 double edgeTimeConst =  0.000005586; // 0.2614115754; 
 
-// REDUCTION PARAMETER 
+// REDUCTION PARAMETERS 
 bool allow_reduction = true; // default value is false
+int max_vertices_allowed = 1000000;
+double max_density_allowed = 0.001;
 
 void BipartiteReactiveGrasp() {
 	try {
@@ -282,7 +284,7 @@ void BipartiteReactiveGrasp() {
 
 		cout << "Best Solution: " << best_solution << endl;
 		cout << "Avarage Solution: " << avarage_solution / 30 << endl;
-		cout << "Average Time: " << std::setprecision(4) << total_time / 10 << endl;
+		cout << "Average Time: " << std::setprecision(4) << total_time / 30 << endl;
 		cout << "Vertices removed in Best Solution: " << best_vertices_removed_percentage << "%" << endl;
 		cout << "Edges removed in Best Solution: " << best_edges_removed_percentage << "%" << endl;
 		cout << "Solution: ";
@@ -541,15 +543,19 @@ int main(int argc, char* argv[]) {
 		// end of setting parameters
 
 		cin >> input_type;
+		double density = 0;
 
 		if(input_type == 1) { // not bipartitioned instance
 			cin >> v >> e;
 			partitionA_size = v;
 			partitionB_size = v;
+
+			density = (2.0 * e) / (v * (v - 1));
 		}
 		else { // bipartitioned instance
 			cin >> partitionA_size >> partitionB_size >> e;
 			v = partitionA_size + partitionB_size;
+			density = e / (partitionA_size * partitionB_size);
 		}
 		
 
@@ -559,7 +565,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		// verifying if it is better to activate or not the reduction
-		allow_reduction = (v <= 1000000) ? true : false;
+		allow_reduction = (v < max_vertices_allowed && density < max_density_allowed) ? true : false;
 
 		timeLimit = ceil(edgeTimeConst * e);
 		(input_type == 1) ? NonBipartiteReactiveGrasp() : BipartiteReactiveGrasp();

@@ -6,7 +6,7 @@
 #include <ctime>
 #include <iomanip>
 #include "BipartiteSolution.hpp"
-//#define NDEBUG
+#define NDEBUG
 #include <assert.h>
 #include <chrono>
 
@@ -634,7 +634,7 @@ void BipartiteSolution::reduceGraph(vector<bool> &vertexInGraph, int bestWeight,
 
 	timeLimit -= totalTime;
 
-	if(timeLimit > 0) { 
+	if(timeLimit > 0 && verticesRemoved > 0) { 
 		reduceGraph(vertexInGraph, bestWeight, minBicliqueWeight, timeLimit);
 	}
 }
