@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include <algorithm> 
+#include <map>
 #include <random>
 #include <ctime>
 #include <iomanip>
@@ -9,6 +10,7 @@
 #define NDEBUG
 #include <assert.h>
 #include <chrono>
+#include <fstream>
 
 using namespace std::chrono;
 using namespace std;
@@ -665,4 +667,92 @@ void BipartiteSolution::balanceBiclique() { // remove the worst vertices in the 
 		removeVertex(vertex, code); 
 		pq.pop();
 	}
+}
+
+void BipartiteSolution::save_output_graph() { // save output graph in a file
+	ofstream output_graph("./out.txt", ios::out | ios::trunc);
+	assert(output_graph);
+
+	int partition_A_current_size =  solution_A.size() - removed_size_A;
+	int partition_B_current_size =  solution_B.size() - removed_size_B;
+
+	int total_edges = graph->getE(); 
+	int current_total_edges = total_edges - removed_edges;
+
+	output_graph << "2 " << partition_A_current_size << " " << partition_B_current_size << " " << current_total_edges << endl;
+
+	// creating variables
+	int vertex;
+	int vertex_weight;
+	int vertex_count = 0;
+
+	vector<pair<int, int>> vertices_neighbors;
+	vector<int> vertex_neighbors;
+
+	int x = 0;
+
+	// partition A	
+	map<int, int> new_solution_A_vertices;
+	for(int iter = 0; iter < partition_A_current_size; iter++) { 
+		vertex = solution_A[iter];
+		new_solution_A_vertices.insert({vertex, vertex_count});
+
+		vertex_neighbors = graph->get_vertex_adjList(vertex);
+		x += vertex_neighbors.size();
+
+		for(int neighbor: vertex_neighbors) { 
+			if (position_B[neighbor] < partition_B_current_size) {
+				vertices_neighbors.push_back(make_pair(vertex, neighbor));
+			}
+		}
+
+		vertex_weight = graph->get_weight(vertex);
+		output_graph << vertex_weight << endl;
+
+		vertex_count += 1;
+	}
+	
+	// partition B
+	map<int, int> new_solution_B_vertices;
+	for(int iter = 0; iter < partition_B_current_size; iter++) { 
+		vertex = solution_B[iter];
+		new_solution_B_vertices.insert({vertex, vertex_count});
+
+		vertex_neighbors = graph->get_vertex_adjList(vertex);
+
+		for(int neighbor: vertex_neighbors) { 
+			if (position_A[neighbor] < partition_A_current_size) {
+				vertices_neighbors.push_back(make_pair(vertex, neighbor));
+			}
+		}
+
+		vertex_weight = graph->get_weight(vertex);
+		output_graph << vertex_weight << endl;
+
+		vertex_count += 1;
+	}
+
+	// writing edges
+	int source_vertex;
+	int target_vertex;
+	int mapped_source_vertex;
+	int mapped_target_vertex;
+
+	for(pair<int, int> vertices_pair: vertices_neighbors) { 
+		source_vertex = vertices_pair.first;
+		target_vertex = vertices_pair.second;
+
+		if (source_vertex < partition_size_A) {
+			mapped_source_vertex = new_solution_A_vertices.find(source_vertex)->second;
+			mapped_target_vertex = new_solution_B_vertices.find(target_vertex)->second;
+		} 
+		else {
+			mapped_source_vertex = new_solution_B_vertices.find(source_vertex)->second;
+			mapped_target_vertex = new_solution_A_vertices.find(target_vertex)->second;
+		}
+
+		output_graph << mapped_source_vertex << " " << mapped_target_vertex << endl;
+	}
+	
+	output_graph.close();
 }

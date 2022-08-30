@@ -30,8 +30,8 @@ vector<bool> vertexInGraph;
 
 // GRASP-VND PARAMETERS
 int total_iterations = -1; //5000; // number of grasp iterations 
-int loop = 30; 
-double execution_time_limit = 60; // time of each execution
+int loop = 1; 
+double execution_time_limit = 10; // time of each execution
 int beta_var = 2347; // limit of iterations that dont improve the biclique
 int alpha_calibration = 231; // variable related to reactive grasp adjustment
 int target = -1; // variable related to biclique target
@@ -92,7 +92,7 @@ void BipartiteReactiveGrasp() {
 		cout << "Starting the algorithm...\n" << endl;
 
         while(loop--) {
-			cout << abs(30 - loop) << " execution" << endl;
+			cout << abs(10 - loop) << " execution" << endl;
 			cout << "Seed = " << seed << endl;
 
 			BipartiteSolution s(&graph, partitionA_size, partitionB_size, generator); // initialize all the variables and structures for solution
@@ -283,13 +283,15 @@ void BipartiteReactiveGrasp() {
         total_time += elapsed_seconds.count();
 
 		cout << "Best Solution: " << best_solution << endl;
-		cout << "Avarage Solution: " << avarage_solution / 30 << endl;
-		cout << "Average Time: " << std::setprecision(4) << total_time / 30 << endl;
+		cout << "Avarage Solution: " << avarage_solution / 10 << endl;
+		cout << "Average Time: " << std::setprecision(4) << total_time / 10 << endl;
 		cout << "Vertices removed in Best Solution: " << best_vertices_removed_percentage << "%" << endl;
 		cout << "Edges removed in Best Solution: " << best_edges_removed_percentage << "%" << endl;
 		cout << "Solution: ";
 		best_s.printSolution();
 		cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" << endl;
+
+		best_s.save_output_graph();
 	}
 	catch (std::exception &e) {
 		cerr << e.what();
@@ -488,7 +490,7 @@ void NonBipartiteReactiveGrasp() {
 		cout << "Avarage Time: " << std::setprecision(4) << total_time / 10 << endl;
 		cout << "Solution: ";
 		best_s.printSolution();
-		cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" << endl;		
+		cout << "\n-------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" << endl;
 			
 		//cout << fixed << setprecision(3) << double(((maxVerticesRemoved * 1.0) / (v * 1.0)) * 100.0) << endl; // Using this print to get the results to generate the graphic
 	}

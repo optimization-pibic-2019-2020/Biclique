@@ -6,3 +6,4 @@ out/
 tuning/Instances
 tuning/reactive-grasp-arena
 .vscode/
+out.txt

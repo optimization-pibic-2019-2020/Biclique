@@ -36,4 +36,5 @@ public:
     void greedyRandomizedConstructive(double p);
 	void reduceGraph(vector<bool> &vertexInGraph, int bestWeight, int minBicliqueWeight, double timeLimit);
 	void balanceBiclique();
+	void save_output_graph();
 };
